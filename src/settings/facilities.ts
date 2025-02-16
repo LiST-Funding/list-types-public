@@ -3,8 +3,8 @@ import * as fs from 'fs';
 import { parse } from 'csv-parse/sync';
 // import csv2json from 'csv2json';
 
-function swapKeysAndValues(obj) {
-  return Object.entries(obj).reduce((acc, [key, value]) => {
+function swapKeysAndValues(obj: { [s: string]: unknown; } | ArrayLike<unknown>) {
+  return Object.entries(obj).reduce((acc: any, [key, value]) => {
     acc[value as string] = key;
     return acc;
   }, {});
@@ -35,10 +35,10 @@ export interface Statuses {
 
 
 export function exportAllFacilitiesToCsv(settings: FacilitiySettings) {
-  let result = [];
+  let result: any[] = [];
   Object.keys(settings.facilities.names).forEach(facilityName => {
     let facilityId = settings.facilities.names[facilityName];
-    let facility = { facilityName, facilityId };
+    let facility: any = { facilityName, facilityId };
     Object.keys(settings.EHR.names).forEach(ehrName => {
       let ehrFacilityName = settings.facilities.namesPerEhr[ehrName][facilityName];
       facility[ehrName] = ehrFacilityName || '';
@@ -57,8 +57,8 @@ export function importSettingsFromCsv(path: string) {
     trim: true
   });
 
-  const result = records.map(record => {
-    const obj = {};
+  const result = records.map((record: any) => {
+    const obj: { [key: string]: any } = {};
     for (const key in record) {
       obj[key] = record[key].replace(/^"|"$/g, '');
     }
@@ -66,18 +66,18 @@ export function importSettingsFromCsv(path: string) {
   });
 
   const ehrNames = Object.keys(result[0]).filter(key => key !== 'facilityName' && key !== 'facilityId');
-  const ehrNamesMap = ehrNames.reduce((acc, ehr) => {
+  const ehrNamesMap = ehrNames.reduce((acc: any, ehr) => {
     acc[ehr] = ehr;
     return acc;
   }, {});
 
-  const facilities = {};
-  const namesPerEhr = {};
-  const statuses = {
+  const facilities: { [key: string]: string } = {};
+  const namesPerEhr: { [key: string]: { [key: string]: string } } = {};
+  const statuses: Statuses = {
     names: [],
     namesPerEhr: {}
   };
-  result.forEach((row) => {
+  result.forEach((row: any) => {
 
     const facilityName = row.facilityName;
     const facilityId = row.facilityId;
@@ -85,7 +85,7 @@ export function importSettingsFromCsv(path: string) {
 
     facilities[facilityName] = facilityId;
 
-    ehrNames.forEach((ehr) => {
+    ehrNames.forEach((ehr: any) => {
       if (!namesPerEhr[ehr]) {
         namesPerEhr[ehr] = {};
       }
@@ -107,7 +107,7 @@ export function importSettingsFromCsv(path: string) {
       names: facilities
     },
     facilities: {
-      names: facilities,
+      names: facilities as any,
       namesPerEhr: namesPerEhr
     },
     statuses: statuses
@@ -141,8 +141,8 @@ export class FacilitiesService implements FacilitiySettings {
   }
 
   getFacilityEHRsNames(facilityName: string) {
-    let result = {};
-    Object.keys(this.EHR.names).forEach(ehr => {
+    let result: any = {};
+    Object.keys(this.EHR.names).forEach((ehr: string) => {
       let name = this.facilities.namesPerEhr[ehr][facilityName];
       if (name) {
         result[ehr] = name;
@@ -151,7 +151,7 @@ export class FacilitiesService implements FacilitiySettings {
     return result;
   }
 
-  getSiteName(ehrDisplayName, name) {
+  getSiteName(ehrDisplayName: string, name: string) {
     const ehr = this.mapEhrDisplayNameToNames[ehrDisplayName];
     return this.getSiteNameByEhr(ehr, name);
   }
@@ -166,11 +166,11 @@ export class FacilitiesService implements FacilitiySettings {
   }
 
   exportAllFacilitiesToCsv() {
-    let result = [];
+    let result: any[] = [];
     Object.keys(this.facilities.names).forEach(facilityName => {
       let facilityId = this.facilities.names[facilityName];
-      let facility = { facilityName, facilityId };
-      Object.keys(this.EHR.names).forEach(ehrName => {
+      let facility: any = { facilityName, facilityId };
+      Object.keys(this.EHR.names).forEach((ehrName: string) => {
         let ehrFacilityName = this.facilities.namesPerEhr[ehrName][facilityName];
         facility[ehrName] = ehrFacilityName || '';
       })
@@ -183,7 +183,7 @@ export class FacilitiesService implements FacilitiySettings {
     if (!basePatientInfo.userLastTimeView) {
       basePatientInfo.readStatus = ReadStatus.NEVER_READ;
     } else {
-      if (new Date(basePatientInfo.userLastTimeView) < new Date(basePatientInfo.lastTimeUpdate)) {
+      if (new Date(basePatientInfo.userLastTimeView) < new Date(basePatientInfo.lastTimeUpdate as Date)) {
         basePatientInfo.readStatus = ReadStatus.READ_BEFORE_UPDATES;
       } else {
         basePatientInfo.readStatus = ReadStatus.READ;
