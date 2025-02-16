@@ -1,0 +1,226 @@
+import { ReadStatus, SnfPatientDetails } from "../patient";
+import * as fs from 'fs';
+import { parse } from 'csv-parse/sync';
+// import csv2json from 'csv2json';
+
+function swapKeysAndValues(obj) {
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    acc[value as string] = key;
+    return acc;
+  }, {});
+}
+
+
+export interface EHR {
+  // list ehr name : display Name
+  names: { [key in string]: string };
+
+}
+
+export interface FacilitiySettings {
+  EHR: EHR;
+  facilities: Facilities;
+  statuses: Statuses;
+
+}
+export interface Facilities {
+  names: { [key in string]: number };
+  namesPerEhr: { [key in string]: { [key in string]: string } };
+}
+
+export interface Statuses {
+  names: string[];
+  namesPerEhr: { [key in string]: { [key in string]: string } }
+}
+
+
+export function exportAllFacilitiesToCsv(settings: FacilitiySettings) {
+  let result = [];
+  Object.keys(settings.facilities.names).forEach(facilityName => {
+    let facilityId = settings.facilities.names[facilityName];
+    let facility = { facilityName, facilityId };
+    Object.keys(settings.EHR.names).forEach(ehrName => {
+      let ehrFacilityName = settings.facilities.namesPerEhr[ehrName][facilityName];
+      facility[ehrName] = ehrFacilityName || '';
+    })
+    result.push(facility);
+  })
+  return result;
+
+}
+
+export function importSettingsFromCsv(path: string) {
+  const csvString = fs.readFileSync(path, 'utf8');
+  const records = parse(csvString, {
+    columns: true,
+    skip_empty_lines: true,
+    trim: true
+  });
+
+  const result = records.map(record => {
+    const obj = {};
+    for (const key in record) {
+      obj[key] = record[key].replace(/^"|"$/g, '');
+    }
+    return obj;
+  });
+
+  const ehrNames = Object.keys(result[0]).filter(key => key !== 'facilityName' && key !== 'facilityId');
+  const ehrNamesMap = ehrNames.reduce((acc, ehr) => {
+    acc[ehr] = ehr;
+    return acc;
+  }, {});
+
+  const facilities = {};
+  const namesPerEhr = {};
+  const statuses = {
+    names: [],
+    namesPerEhr: {}
+  };
+  result.forEach((row) => {
+
+    const facilityName = row.facilityName;
+    const facilityId = row.facilityId;
+    const ehrNames = Object.keys(row).filter(key => key !== 'facilityName' && key !== 'facilityId');
+
+    facilities[facilityName] = facilityId;
+
+    ehrNames.forEach((ehr) => {
+      if (!namesPerEhr[ehr]) {
+        namesPerEhr[ehr] = {};
+      }
+      namesPerEhr[ehr][facilityName] = row[ehr];
+
+      if (!statuses.names.includes(row[ehr])) {
+        statuses.names.push(row[ehr]);
+      }
+
+      if (!statuses.namesPerEhr[ehr]) {
+        statuses.namesPerEhr[ehr] = {};
+      }
+      statuses.namesPerEhr[ehr][facilityName] = row[ehr];
+    });
+  });
+
+  const facilitySettings: FacilitiySettings = {
+    EHR: {
+      names: facilities
+    },
+    facilities: {
+      names: facilities,
+      namesPerEhr: namesPerEhr
+    },
+    statuses: statuses
+  };
+  facilitySettings.EHR.names = ehrNamesMap;
+  return facilitySettings;
+}
+
+export class FacilitiesService implements FacilitiySettings {
+  EHR: EHR;
+  facilities: Facilities;
+  statuses: Statuses;
+
+  mapEhrDisplayNameToNames: { [key in string]: string } = {};
+  mapEhrFacilityNamesToPccNames: { [key in string]: { [key in string]: string } } = {};
+  sites: { [key in string]: number };
+  sitedIds: { [key in string]: string } = {};
+
+  constructor(json: { EHR: EHR, facilities: Facilities, statuses: Statuses }) {
+    this.EHR = json.EHR;
+    this.facilities = json.facilities;
+    this.statuses = json.statuses;
+
+    this.sites = this.facilities.names;
+    Object.keys(this.EHR.names).forEach(ehrName => {
+      this.mapEhrFacilityNamesToPccNames[ehrName] = swapKeysAndValues(this.facilities.namesPerEhr[ehrName]);
+    })
+
+    this.mapEhrDisplayNameToNames = swapKeysAndValues(this.EHR.names);
+    Object.keys(this.sites).forEach(item => this.sitedIds[this.sites[item]] = item);
+  }
+
+  getFacilityEHRsNames(facilityName: string) {
+    let result = {};
+    Object.keys(this.EHR.names).forEach(ehr => {
+      let name = this.facilities.namesPerEhr[ehr][facilityName];
+      if (name) {
+        result[ehr] = name;
+      }
+    })
+    return result;
+  }
+
+  getSiteName(ehrDisplayName, name) {
+    const ehr = this.mapEhrDisplayNameToNames[ehrDisplayName];
+    return this.getSiteNameByEhr(ehr, name);
+  }
+
+  getSiteNameByEhr(ehrName: string, name: string) {
+    let map = this.mapEhrFacilityNamesToPccNames[ehrName];
+    return map ? map[name] || name : name;
+  }
+  getSiteIdByName(name: string, ehr?: string) {
+    name = ehr ? this.getSiteNameByEhr(ehr, name) : name;
+    return this.sites[name];
+  }
+
+  exportAllFacilitiesToCsv() {
+    let result = [];
+    Object.keys(this.facilities.names).forEach(facilityName => {
+      let facilityId = this.facilities.names[facilityName];
+      let facility = { facilityName, facilityId };
+      Object.keys(this.EHR.names).forEach(ehrName => {
+        let ehrFacilityName = this.facilities.namesPerEhr[ehrName][facilityName];
+        facility[ehrName] = ehrFacilityName || '';
+      })
+      result.push(facility);
+    })
+    return result;
+  }
+
+  updateStatus(basePatientInfo: SnfPatientDetails) {
+    if (!basePatientInfo.userLastTimeView) {
+      basePatientInfo.readStatus = ReadStatus.NEVER_READ;
+    } else {
+      if (new Date(basePatientInfo.userLastTimeView) < new Date(basePatientInfo.lastTimeUpdate)) {
+        basePatientInfo.readStatus = ReadStatus.READ_BEFORE_UPDATES;
+      } else {
+        basePatientInfo.readStatus = ReadStatus.READ;
+      }
+    }
+
+  }
+
+}
+
+// TEST FROM CSV TO JSON
+// const json = importSettingsFromCsv('/Users/izikalgrisi/Desktop/facilities_out.csv');
+// const service = new FacilitiesService(json);
+
+// // TEST FROM JSON TO CSV
+// // const jsonPath = '/Users/izikalgrisi/Desktop/facilities.json';
+// // const json = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+// // const service = new FacilitiesService(json);
+
+// console.log('convert allScripts site name to pcc site name');
+// console.log(service.getSiteName('Navi', 'Cartersville Nursing, LLC'));
+// console.log('convert not existing site name to pcc site name', service.getSiteName('AllScripts', 'not existing site name'));
+// console.log('get facilityies ehr', service.getFacilityEHRsNames('Cartersville Nursing'));
+// console.log('get facility id', service.getSiteIdByName('Cartersville Nursing, LLC', 'Navi'));
+// console.log('get facility id', service.getSiteIdByName('Cartersville Nursing'));
+
+// function escapeCsvValue(value: string): string {
+//   if (value && typeof value == 'string' && value.includes(',')) {
+//     return `"${value}"`;
+//   }
+//   return value;
+// }
+// const headers = ['facilityName', 'facilityId', ...Object.keys(service.EHR.names)];
+// const csvContent = headers.join(",") + '\n' + service.exportAllFacilitiesToCsv()
+//   .map(row => Object.values(row).map(value => escapeCsvValue(value as string)).join(','))
+//   .join('\n');
+
+// fs.writeFileSync('/Users/izikalgrisi/Desktop/facilities_out.csv', csvContent);
+
+
