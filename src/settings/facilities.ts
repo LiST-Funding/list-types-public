@@ -140,7 +140,8 @@ export class FacilitiesService implements FacilitiySettings {
     Object.keys(this.sites).forEach(item => this.sitedIds[this.sites[item]] = item);
   }
 
-  getFacilityEHRsNames(facilityName: string) {
+
+  getFacilityEHRsNames(facilityName: string): { [key in string]: string } {
     let result: any = {};
     Object.keys(this.EHR.names).forEach((ehr: string) => {
       let name = this.facilities.namesPerEhr[ehr][facilityName];
@@ -150,6 +151,28 @@ export class FacilitiesService implements FacilitiySettings {
     })
     return result;
   }
+
+  getFacilityEHRsNamesByIds(facilityId: number): { [key in string]: string } {
+    const name = this.sitedIds[facilityId];
+    return this.getFacilityEHRsNames(name);
+  }
+
+  getFacilityEHRsNamesByIdsToArray(facilityId?: number): string[] {
+    const name = this.sitedIds[facilityId + '' || ''];
+    if(name)
+      return Object.values(this.getFacilityEHRsNames(name));
+    else {
+      const s = new Set<string>();
+      Object.keys(this.facilities.names).forEach((name: string) => {
+        Object.values(this.getFacilityEHRsNames(name)).forEach((value: string) => {
+          s.add(value);
+        });
+      });
+      return Array.from(s);
+    }
+  }
+
+
 
   getSiteName(ehrDisplayName: string, name: string) {
     const ehr = this.mapEhrDisplayNameToNames[ehrDisplayName];

@@ -1,0 +1,140 @@
+{
+    "EHR": {
+      "names": {
+        "AllScripts": "AllScripts",
+        "Navi": "Navi",
+        "Epic WellStar": "Epic WellStar",
+        "Epic Piedmont": "Epic Piedmont",
+        "Epic HealthEConnection": "Epic HealthEConnection"
+      }
+    },
+    "facilities": {
+      "names": {
+        "Anderson Mill Health and Rehab Center": 22,
+        "Buckhead Center for Nursing and Healing": 25,
+        "Canton Center for Nursing and Healing": 17,
+        "Cartersville Nursing": 2,
+        "Cherokee Center for Nursing and Healing": 21,
+        "Decatur Center for Nursing and Healing": 27,
+        "East Cobb for Nursing and Healing": 28,
+        "Fayetteville Center for Nursing & Healing": 11,
+        "Fulton Center for Rehabilitation": 1,
+        "Westbury Medical Care and Rehab": 10,
+        "Marietta Center for Nursing and Healing": 24,
+        "Powder Springs Center for Nursing and Healing": 7,
+        "Riverdale Healthcare": 4,
+        "Sandy Springs Health and Rehab": 23,
+        "Westbury Conyers LLC": 8,
+        "Westbury McDonough LLC": 9,
+        "Winder Health Care & Rehab": 26,
+        "The Meadows Center for Nursing and Healing": 13,
+        "West Orange Center for Nursing and Healing": 12,
+        "Woodstock Center for Nursing and Healing": 30,
+        "Roswell Center for Nursing and Healing": 29
+      },
+      "namesPerEhr": {
+        "Navi": {
+          "Cartersville Nursing": "Cartersville Nursing, LLC",
+          "East Cobb for Nursing and Healing": "East Cobb Center for Nursing and Healing LLC",
+          "Anderson Mill Health and Rehab Center": "Anderson Mill Health and Rehabilitation Center",
+          "Marietta Center for Nursing and Healing": "Marietta Center for Nursing and Healing",
+          "Canton Center for Nursing and Healing": "Canton Nursing Center",
+          "Cherokee Center for Nursing and Healing": "Cherokee Center for Nursing and Healing",
+          "Sandy Springs Health and Rehab": "Sandy Springs Center for Nursing and Healing",
+          "Decatur Center for Nursing and Healing": "Decatur Center for Nursing and Healing LLC",
+          "Winder Health Care & Rehab": "Winder Center for Nursing and Healing",
+          "Buckhead Center for Nursing and Healing": "Buckehead Center for Nursing and Healing",
+          "West Orange Center for Nursing and Healing": "West Orange Center for Nursing and Healing (formerly Ocoee)",
+          "The Meadows Center for Nursing and Healing": "The Meadows Center",
+          "Westbury Conyers LLC": "Westbury Health & Rehabilitation Center",
+          "Westbury Medical Care and Rehab": "Westbury of Jackson",
+          "Woodstock Center for Nursing and Healing": "Woodstock Nursing and Rehabilitation Center",
+          "Roswell Center for Nursing and Healing": "Roswell Nursing and Rehabilitation Center"
+        },
+        "AllScripts": {
+          "Cartersville Nursing": "Cartersville Center for Nursing and Healing (Formerly Cartersville Heights)",
+          "East Cobb for Nursing and Healing": "East Cobb Center for Nursing and Healing",
+          "Anderson Mill Health and Rehab Center": "Anderson Mill Center for Nursing and Healing LLC",
+          "Marietta Center for Nursing and Healing": "Marietta Center for Nursing and Healing",
+          "Canton Center for Nursing and Healing": "Canton Center for Nursing and Rehab",
+          "Cherokee Center for Nursing and Healing": "Cherokee Center for Nursing and Healing LLC",
+          "Sandy Springs Health and Rehab": "Sandy Springs Center for Nursing and Healing LLC",
+          "Decatur Center for Nursing and Healing": "Decatur Center for Nursing and Healing",
+          "Buckhead Center for Nursing and Healing": "Buckhead Center for Nursing and Healing",
+          "West Orange Center for Nursing and Healing": "West Orange Center for Nursing and Healing",
+          "The Meadows Center for Nursing and Healing": "The Meadows Center for Nursing and Healing",
+          "Fayetteville Center for Nursing & Healing": "Fayetteville Center for Nursing and Healing (formerly Concordia)",
+          "Fulton Center for Rehabilitation": "Fulton Center for Rehab (Formerly, Fox Glove Care Center)",
+          "Powder Springs Center for Nursing and Healing": "Powder Springs Nursing and Rehabilitation",
+          "Riverdale Healthcare": "Riverdale Center",
+          "Westbury Conyers LLC": "Westbury Health and Rehab Center - Conyers",
+          "Westbury McDonough LLC": "Westbury Health and Rehab Center - McDonough",
+          "Westbury Medical Care and Rehab": "Westbury Medical Care Home"
+        },
+        "Epic Piedmont": {
+          "Cartersville Nursing": "Cartersville Center for Nursing",
+          "East Cobb for Nursing and Healing": "East Cobb Center for Nursing & Healing",
+          "Anderson Mill Health and Rehab Center": "Empire Anderson Mill Ctr for Nursing & Healing",
+          "Marietta Center for Nursing and Healing": "Marietta Center for Nursing & Healing",
+          "Canton Center for Nursing and Healing": "",
+          "Cherokee Center for Nursing and Healing": "Cherokee Center for Nursing",
+          "Sandy Springs Health and Rehab": "Sandy Springs Ctr for Nursing & Healing",
+          "Decatur Center for Nursing and Healing": "Decatur Center for Nursing & Healing",
+          "Winder Health Care & Rehab": "Winder Center for Nursing & Healing",
+          "Buckhead Center for Nursing and Healing": "Buckhead Center for Nursing & Healing",
+          "West Orange Center for Nursing and Healing": "",
+          "The Meadows Center for Nursing and Healing": "",
+          "Fayetteville Center for Nursing & Healing": "Fayetteville Center for Nursing & Healing",
+          "Fulton Center for Rehabilitation": "Fulton Center for Rehabilitation",
+          "Powder Springs Center for Nursing and Healing": "Powder Springs Center for Nursing & Healing",
+          "Riverdale Healthcare": "Riverdale Nursing and Healing",
+          "Westbury Conyers LLC": "Westbury Center for Nursing & Healing",
+          "Westbury McDonough LLC": "",
+          "Westbury Medical Care and Rehab": "Westbury Jackson",
+          "Woodstock Center for Nursing and Healing": "Woodstock Nursing & Rehab",
+          "Roswell Center for Nursing and Healing": "Roswell Nursing & Rehab"
+        },
+        "Epic WellStar": {
+          "Cartersville Nursing": "(WS PAC) Cartersville Center for Nursing and Healing (Cartersville Nursing LLC)",
+          "East Cobb for Nursing and Healing": "East Cobb Center for Nursing and Healing LLC",
+          "Anderson Mill Health and Rehab Center": "(WS PAC) Anderson Mill Center for Nursing and Healing",
+          "Marietta Center for Nursing and Healing": "(WS PAC) Marietta Center For Nursing and Healing",
+          "Canton Center for Nursing and Healing": "Canton Nursing and Rehabilitation Center",
+          "Cherokee Center for Nursing and Healing": "ZZZ Brian Center Health and Rehabilitation",
+          "Sandy Springs Health and Rehab": "Sandy Springs Center for Nursing and Healing",
+          "Decatur Center for Nursing and Healing": "Decatur Center for Nursing and Healing LLC",
+          "Winder Health Care & Rehab": "",
+          "Buckhead Center for Nursing and Healing": "(WS PAC) Buckhead Center For Nursing and Healing",
+          "West Orange Center for Nursing and Healing": "",
+          "The Meadows Center for Nursing and Healing": "",
+          "Fayetteville Center for Nursing & Healing": "Fayetteville Center for Nursing and Healing",
+          "Fulton Center for Rehabilitation": "Fulton Center For Rehab and Care",
+          "Powder Springs Center for Nursing and Healing": "Powder Springs Center for Nursing and Healing",
+          "Riverdale Healthcare": "Riverdale Center for Nursing and Healing",
+          "Roswell Center for Nursing and Healing": "ROSWELL NURSING and HEALING",
+          "Westbury Conyers LLC": "",
+          "Westbury McDonough LLC": "",
+          "Westbury Medical Care and Rehab": "Westbury Center of Jackson for Nursing and Healing",
+          "Woodstock Center for Nursing and Healing": "(WS PAC) Woodstock Nursing & Rehabilitation"
+        },
+        "Epic HealthEConnection": {
+          "Cherokee Center for Nursing and Healing": "Cherokee Center for Nursing and Healing",
+          "Winder Health Care & Rehab": "Winder Health & Rehab",
+          "Woodstock Center for Nursing and Healing": "Woodstock Health & Rehab",
+          "Roswell Center for Nursing and Healing": "Roswell Health & Rehab"
+        }
+      }
+    },
+    "statuses": {
+      "names": [
+        "Accepted",
+        "Declined"
+      ],
+      "namesPerEhr": {
+        "Navi": {
+          "Accepted": "Selected"
+        }
+      }
+    },
+    "type": "facilities"
+  }

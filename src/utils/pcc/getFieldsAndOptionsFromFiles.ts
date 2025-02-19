@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import csv from 'csv-parser';
-import { getPccFieldsAndOptions } from '../../pcc/fieldsConfiguration';
 const readCSVFile = (filePath: string): Promise<any[]> => {
     return new Promise((resolve, reject) => {
         const results: any[] = [];
