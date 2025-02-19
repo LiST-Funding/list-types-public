@@ -1,0 +1,28 @@
+select,facility,listOption,listValue,optionValuePcc,isDefault
+gender,,Male,M,M,TRUE
+gender,,Female,F,F,
+gender,,Unknown,U,U,
+primaryLanguage,,Declined to Specify,9899,9899,
+primaryLanguage,,English,9046,9046,TRUE
+primaryLanguage,,Leave Blank,0,0,
+primaryLanguage,,Spanish,39628,39628,
+prefix,,Dr.,1056,1056,
+prefix,,Miss.,1057,1057,
+prefix,,Mr.,1049,1049,
+prefix,,Mrs.,1050,1050,
+prefix,,Ms.,1055,1055,
+prefix,,Pastor,10980,10980,
+suffix,,Jr,7000,7000,
+suffix,,Sr,7001,7001,
+medicareCoverage,19,Manged,3748,3748,
+medicareCoverage,19,MSP,3758,3758,
+medicareCoverage,19,Part A Only,3759,3759,
+medicareCoverage,19,No Coverage,3768,3768,
+medicareCoverage,19,Part A & B,3778,3778,
+medicareCoverage,19,Part A & D,3788,3788,
+medicareCoverage,19,"Part A, B & D",3798,3798,
+medicareCoverage,19,Part B Only,3799,3799,
+medicareCoverage,19,Part B & D,3808,3808,
+defaultPharmacy,19,DISCOVER RX,9379,9379,
+defaultPharmacy,19,SPECIALTY RX,8050,8050,TRUE
+defaultPharmacy,19,Speedy Rx,9454,9454,
