@@ -50,7 +50,7 @@ export class PCCDetails {
     countyId?: string;
     srcType?: string;
     provState?: string;
-
+    provStateId?: string;
 
 }
 //# sourceMappingURL=pccDetails.d.ts.map

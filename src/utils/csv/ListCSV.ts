@@ -1,7 +1,7 @@
 import  { Readable } from 'stream';
 import fs from 'fs';
 import { stringify } from 'csv-stringify/sync';
-import csvParser from 'csv-parser';
+// import csvParser from 'csv-parser';
 
 
 export function  getJSONArrayFromCSVString<T>(csvString: string): Promise<T[]> {
@@ -51,11 +51,11 @@ export function getCSVStringFromJSONObject(jsonObj: any) {
 function getJSONArrayFromCSVStream(readable: Readable): Promise<any> {
     return new Promise((resolve, reject) => {
         let jsonArray:any[] = [];
-        readable.pipe(csvParser())
-            .on('data', data => jsonArray.push(data))
-            .on('close', () => {
-                resolve(jsonArray);
-            })
+        // readable.pipe(csvParser())
+        //     .on('data', data => jsonArray.push(data))
+        //     .on('close', () => {
+        //         resolve(jsonArray);
+        //     })
     })
 }
 
