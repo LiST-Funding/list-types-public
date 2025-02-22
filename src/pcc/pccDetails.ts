@@ -1,4 +1,4 @@
-export interface PCCDetails {
+export class PCCDetails {
     loginUser?: string;
     loginPassword?: string;
     loginName?: string;
@@ -18,32 +18,39 @@ export interface PCCDetails {
     medicaid?: string;
     medicareCoverage?: string;
     vaccine?: string;
-    birthDate?: string;
-    mostRecentAdmission?: string | Date;
     primaryLanguage?: number;
     defaultPharmacy?: number;
     alergies?: string;
     allergiesBoolean?: boolean;
     gender?: string;
-    files?: string;
     concentVaccine?: string;
     concentPneumonia?: string;
     race?: string;
     address?: string;
     zipCode?: string;
     city?: string;
-    county?: string;
     country?: string;
     homePhone?: string;
     email?: string;
+    error?: {
+        msgs: [];
+        isCritical: false;
+    };
+    status?: {};
+
+    files?: any[];
+    birthDate?: Date;
+    filesCount?: number;
+    originAdmissionDate?: Date;
+    initialAdmissionDate?: Date;
+    mostRecentAdmission?: Date;
+    insuranceNumber?: string;
+    insuranceName?: string;
+    county?: string;
+    countyId?: string;
+    srcType?: string;
     provState?: string;
 
-    error?: {
-        msgs: [],
-        isCritical: false
-    }
-    status?:  {
 
-    }
 }
-
+//# sourceMappingURL=pccDetails.d.ts.map

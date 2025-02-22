@@ -50,7 +50,7 @@ const pccDetails2: PCCDetails = {
     firstName: 'Test',
     suffix: undefined,
     prefix: '',
-    birthDate: '01/01/1970',
+    birthDate: new Date('01/01/1970'),
     primaryLanguage: 9046,
     defaultPharmacy: 0,
     alergies: '',
