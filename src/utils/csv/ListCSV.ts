@@ -1,13 +1,19 @@
 import { stringify } from 'csv-stringify/sync';
-import fastcsv from 'fast-csv';
+import papaparse from 'papaparse';
 
 
 export async function  getJSONArrayFromCSVString<T>(csvString: string): Promise<T[]> {
     let jsonArray:T[] = [];
-    fastcsv.parseString(csvString, { headers: true }).on('data', (data) => jsonArray.push(data));
+    papaparse.parse(csvString, {
+        header: true,
+        complete: (result) => {
+            jsonArray = result.data as any;
+        }
+    });
     return jsonArray;
 }
 export async function getJSONArrayFromCSVFiles<T>(path: string): Promise<T[]>{
+    const fastcsv = await import('fast-csv');
     let jsonArray:T[] = [];
     fastcsv.parseFile(path, { headers: true }).on('data', (data) => jsonArray.push(data));
     return jsonArray;
