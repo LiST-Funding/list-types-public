@@ -1,16 +1,16 @@
-import  { Readable } from 'stream';
-import fs from 'fs';
 import { stringify } from 'csv-stringify/sync';
-console.log('csv parser!');
-import csvParser from 'csv-parser';
-console.log('csv parser!');
+import fastcsv from 'fast-csv';
 
 
-export function  getJSONArrayFromCSVString<T>(csvString: string): Promise<T[]> {
-    return getJSONArrayFromCSVStream(Readable.from(csvString));
+export async function  getJSONArrayFromCSVString<T>(csvString: string): Promise<T[]> {
+    let jsonArray:T[] = [];
+    fastcsv.parseString(csvString, { headers: true }).on('data', (data) => jsonArray.push(data));
+    return jsonArray;
 }
-export function getJSONArrayFromCSVFiles<T>(path: string): Promise<T>{
-    return getJSONArrayFromCSVStream(fs.createReadStream(path))
+export async function getJSONArrayFromCSVFiles<T>(path: string): Promise<T[]>{
+    let jsonArray:T[] = [];
+    fastcsv.parseFile(path, { headers: true }).on('data', (data) => jsonArray.push(data));
+    return jsonArray;
 }
 
 export function getCSVStringFromJSONStringsArray(jsonArray: [])  {
@@ -48,17 +48,6 @@ export function getCSVStringFromJSONObject(jsonObj: any) {
     }
 
     return stringify(array);
-}
-
-function getJSONArrayFromCSVStream(readable: Readable): Promise<any> {
-    return new Promise((resolve, reject) => {
-        let jsonArray:any[] = [];
-        readable.pipe(csvParser())
-            .on('data', data => jsonArray.push(data))
-            .on('close', () => {
-                resolve(jsonArray);
-            })
-    })
 }
 
 function jsonToCSV(json: [] | {}) {
