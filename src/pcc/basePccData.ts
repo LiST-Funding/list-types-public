@@ -1,4 +1,4 @@
-export const basePccData = {
+const basePccData = {
     "options": [
       {
         "select": "gender",
@@ -892,3 +892,5 @@ export const basePccData = {
       }
     ]
   };
+
+export default basePccData;
