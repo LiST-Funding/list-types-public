@@ -83,6 +83,8 @@ export interface PCCField {
     id: string;
     selector: string;
     selector2: string;
+    group: string;
+    order: string;
     options?: PCCFieldOption[];
 }
 
