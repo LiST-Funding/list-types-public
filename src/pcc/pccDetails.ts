@@ -3,7 +3,7 @@ export class PCCDetails {
     loginPassword?: string;
     loginName?: string;
     loginId?: string;
-    fac_id?: string;
+    fac_id?: number;
     fac_name?: string;
     referalId?: string;
     prefix?: string;
@@ -37,7 +37,6 @@ export class PCCDetails {
         isCritical: false;
     };
     status?: {};
-
     files?: any[];
     birthDate?: Date;
     filesCount?: number;
@@ -51,6 +50,7 @@ export class PCCDetails {
     srcType?: string;
     provState?: string;
     provStateId?: string;
-
+    medicareEligibilityType?: string;
+    admissionType?: string;
 }
 //# sourceMappingURL=pccDetails.d.ts.map

@@ -25,7 +25,15 @@
             "program": "${file}",
             "cwd": "${workspaceFolder}",
             "sourceMaps": true,
-            "outFiles": ["${workspaceFolder}/dist/**/*.js"]
+            "resolveSourceMapLocations": [
+              "${workspaceFolder}/**",
+              "!**/node_modules/**"
+            ],
+            "skipFiles": [
+              "<node_internals>/**",
+              "${workspaceFolder}/node_modules/**/*.js",
+              "**/ts-node/**"
+            ]
           }
     ]
 }
