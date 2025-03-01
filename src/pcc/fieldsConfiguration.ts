@@ -34,9 +34,10 @@ export function getPccFieldsAndOptionsByFacility(details: PCCDetails, allFields:
     // if fac_id in details then return only fields with empty facility or with same facility
     const fields = Object.values(uniqueFields).filter((field: any) => !details.fac_id || !field.facility || field.facility === details.fac_id);
 
+    // NOte we are using == because fac_id can be undefined or 19 or "19"
     fields.forEach((field: any) => {
         if (field.type === 'select') {
-            field.options = options.filter(option => option.select === field.listName && (! field.facility || option.facility === field.facility));
+            field.options = options.filter(option => option.select == field.listName && (! field.facility || option.facility == field.facility));
         }
     });
 
