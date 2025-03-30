@@ -335,7 +335,7 @@ const basePccData = {
     },
     {
       "select": "admissionType",
-      "facility": "",
+      "facility": "19",
       "listOption": "HOSPICE",
       "listValue": "HOSPICE",
       "optionValuePcc": "",
@@ -344,7 +344,7 @@ const basePccData = {
     },
     {
       "select": "admissionType",
-      "facility": "",
+      "facility": "19",
       "listOption": "LTC",
       "listValue": "LTC",
       "optionValuePcc": "",
@@ -353,7 +353,7 @@ const basePccData = {
     },
     {
       "select": "admissionType",
-      "facility": "",
+      "facility": "19",
       "listOption": "RESPITE",
       "listValue": "RESPITE",
       "optionValuePcc": "",
@@ -362,7 +362,7 @@ const basePccData = {
     },
     {
       "select": "admissionType",
-      "facility": "",
+      "facility": "19",
       "listOption": "SAR",
       "listValue": "SAR",
       "optionValuePcc": "",
@@ -371,7 +371,7 @@ const basePccData = {
     },
     {
       "select": "admissionType",
-      "facility": "",
+      "facility": "19",
       "listOption": "SAR to LT",
       "listValue": "SAR to LT",
       "optionValuePcc": "",
