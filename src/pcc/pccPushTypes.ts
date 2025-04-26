@@ -179,6 +179,13 @@ export interface PCC_TASK_STEP {
     data: any;
     date: Date;
 }
-export interface PCCTask extends Task<PCC_STEPS, PCC_TASK_STEP> {
+
+export enum PCC_TASK_SUB_TYPE {
+    push = 'push',
+    login = 'login',
+    selectFacility = 'selectFacility',
+    selectPatient = 'selectPatient'
+}
+export interface PCCTask extends Task<PCC_STEPS, PCC_TASK_STEP, PCC_TASK_SUB_TYPE> {
 }
 
