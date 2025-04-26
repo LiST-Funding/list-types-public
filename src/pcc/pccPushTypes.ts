@@ -194,8 +194,6 @@ export interface PCC_TASK_CREATE_API_BASE <DATA extends object = {}> {
     subType: PCC_TASK_SUB_TYPE;
     referalId?: string;
     srcType?: string;
-    executingUser: string;
-    executingUserName: string;
     data: DATA;
 }
 
