@@ -211,4 +211,3 @@ export interface PCC_TASK_CREATE_API_LOGIN extends  PCC_TASK_CREATE_API_BASE{
     subType: PCC_TASK_SUB_TYPE.login;
     data: {}
 }
-
