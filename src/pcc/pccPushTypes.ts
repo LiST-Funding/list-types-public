@@ -1,5 +1,17 @@
-export enum PCC_LEVELS {
+import { Task } from "../tasks/types";
+
+export enum PCC_LOGIN_TASK {
     hold = 'hold',
+    start = 'start',
+    login = 'login',
+    loginSuccess = 'loginSuccess',
+    loginFailed = 'loginFailed',
+    loginNeedsResetPassword = 'loginNeedsResetPassword'
+}
+
+export enum PCC_STEPS {
+    hold = 'hold',
+    inQueue = 'inQueue',
     start = 'start',
     waitingForLogin = 'waitingForLogin',
     loginFailed = 'loginFailed',
@@ -10,12 +22,12 @@ export enum PCC_LEVELS {
     waitingForFacilityAndPatient = 'waitingForFacilityAndPatient',
     facilityDataSent = 'facilityDataSent',
     selectFacility = 'selectFacility',
-    selectFacilityFailed = 'chooseFacilityFailed',
-    selectFacilitySuccess = 'chooseFacilitySuccess',
+    selectFacilityFailed = 'selectFacilityFailed',
+    selectFacilitySuccess = 'selectFacilitySuccess',
     waitingForPushData = 'waitingForPushData',
     pushDataSent = 'pushDataSent',
     serachPatient = 'serachPatient',
-    waithingForChoosePatient = 'waithingForChoosePatient',
+    waitingForSelectPatient = 'waitingForSelectPatient',
     patientSelected = 'patientSelected',
     fillFields = 'fillFields',
     fillFieldsSuccess = 'fillFieldsSuccess',
@@ -32,10 +44,11 @@ export enum PCC_LEVELS {
     fillInsuranceSuccess = 'fillInsuranceSuccess',
     fillInsuranceFailed = 'fillInsuranceFailed',
     fillInsuranceSuccessWithErrors = 'fillInsuranceSuccessWithErrors',
+    done = "done"
 }
 
-function getStepIndex(level: PCC_LEVELS): number {
-    return Object.values(PCC_LEVELS).indexOf(level);
+function getStepIndex(step: PCC_STEPS): number {
+    return Object.values(PCC_STEPS).indexOf(step);
   }
   
 
@@ -56,64 +69,70 @@ type StepGeneralMap = {
   };
   
 export const PCC_CLIENT_GENERAL_STEPS_MAP: StepGeneralMap = {
-    [PCC_CLIENT_GENERAL_STEPS.login]: getStepIndex(PCC_LEVELS.loginSuccess),
-    [PCC_CLIENT_GENERAL_STEPS.chooseFacility]: getStepIndex(PCC_LEVELS.selectFacilitySuccess),
-    [PCC_CLIENT_GENERAL_STEPS.searchPatient]: getStepIndex(PCC_LEVELS.patientSelected),
-    [PCC_CLIENT_GENERAL_STEPS.fillFields]: getStepIndex(PCC_LEVELS.fillFieldsSuccess),
-    [PCC_CLIENT_GENERAL_STEPS.uploadFiles]: getStepIndex(PCC_LEVELS.uploadFilesSuccess),
-    [PCC_CLIENT_GENERAL_STEPS.fillEmergencyContacts]: getStepIndex(PCC_LEVELS.fillEmergencyContactsSuccess),
-    [PCC_CLIENT_GENERAL_STEPS.fillInsurance]: getStepIndex(PCC_LEVELS.fillInsuranceSuccess),
+    [PCC_CLIENT_GENERAL_STEPS.login]: getStepIndex(PCC_STEPS.loginSuccess),
+    [PCC_CLIENT_GENERAL_STEPS.chooseFacility]: getStepIndex(PCC_STEPS.selectFacilitySuccess),
+    [PCC_CLIENT_GENERAL_STEPS.searchPatient]: getStepIndex(PCC_STEPS.patientSelected),
+    [PCC_CLIENT_GENERAL_STEPS.fillFields]: getStepIndex(PCC_STEPS.fillFieldsSuccess),
+    [PCC_CLIENT_GENERAL_STEPS.uploadFiles]: getStepIndex(PCC_STEPS.uploadFilesSuccess),
+    [PCC_CLIENT_GENERAL_STEPS.fillEmergencyContacts]: getStepIndex(PCC_STEPS.fillEmergencyContactsSuccess),
+    [PCC_CLIENT_GENERAL_STEPS.fillInsurance]: getStepIndex(PCC_STEPS.fillInsuranceSuccess),
 };
-export const PCC_WAITING_STATES: PCC_LEVELS[] = [
-    PCC_LEVELS.hold,
-    PCC_LEVELS.waitingForLogin,
-    PCC_LEVELS.waitingForNewCred,
-    PCC_LEVELS.waithingForChoosePatient,
+export const PCC_WAITING_STATES: PCC_STEPS[] = [
+    PCC_STEPS.hold,
+    PCC_STEPS.waitingForLogin,
+    PCC_STEPS.waitingForNewCred,
+    PCC_STEPS.waitingForFacilityAndPatient,
 ];
-type StepType = 'clientAction' | 'serverAction' | 'serviceAction';
+type StepType = 'clientAction' | 'serverAction' | 'serviceAction' | 'done';
 
-export const PCC_STEP_TYPES: { [key in PCC_LEVELS]?: StepType } = {
-    [PCC_LEVELS.hold]: 'serverAction',
-    [PCC_LEVELS.start]: 'serviceAction',
-    [PCC_LEVELS.waitingForLogin]: 'serviceAction',
-    [PCC_LEVELS.loginFailed]: 'clientAction',
-    [PCC_LEVELS.loginNeedsResetPassword]: 'clientAction',
-    [PCC_LEVELS.loginSuccess]: 'serviceAction',
-    [PCC_LEVELS.waitingForNewCred]: 'clientAction',
-    [PCC_LEVELS.newCredApplied]: 'serviceAction',
-    [PCC_LEVELS.waitingForFacilityAndPatient]: 'clientAction',
-    [PCC_LEVELS.facilityDataSent]: 'serviceAction',
-    [PCC_LEVELS.selectFacility]: 'serviceAction',
-    [PCC_LEVELS.selectFacilityFailed]: 'clientAction',
-    [PCC_LEVELS.selectFacilitySuccess]: 'serviceAction',
-    [PCC_LEVELS.waitingForPushData]: 'clientAction',
-    [PCC_LEVELS.pushDataSent]: 'serviceAction',
-    [PCC_LEVELS.serachPatient]: 'serviceAction',
-    [PCC_LEVELS.waithingForChoosePatient]: 'clientAction',
-    [PCC_LEVELS.patientSelected]: 'serviceAction',
-    [PCC_LEVELS.fillFields]: 'serviceAction',
-    [PCC_LEVELS.fillFieldsSuccess]: 'serviceAction',
-    [PCC_LEVELS.fillFieldsFailed]: 'clientAction',
-    [PCC_LEVELS.tryToUploadFiles]: 'serviceAction',
-    [PCC_LEVELS.uploadFilesSuccess]: 'serviceAction',
-    [PCC_LEVELS.uploadFilesFailed]: 'clientAction',
-    [PCC_LEVELS.uploadFilesSuccessWithErrors]: 'clientAction',
-    [PCC_LEVELS.fillEmergencyContacts]: 'serviceAction',
-    [PCC_LEVELS.fillEmergencyContactsSuccess]: 'serviceAction',
-    [PCC_LEVELS.fillEmergencyContactsFailed]: 'clientAction',
-    [PCC_LEVELS.fillEmergencyContactsSuccessWithErrors]: 'clientAction',
-    [PCC_LEVELS.fillInsurance]: 'serviceAction',
-    [PCC_LEVELS.fillInsuranceSuccess]: 'serviceAction',
-    [PCC_LEVELS.fillInsuranceFailed]: 'clientAction',
-    [PCC_LEVELS.fillInsuranceSuccessWithErrors]: 'clientAction',
+type PCCLevelsMap = {
+    [key in PCC_STEPS]: StepType;
+};
+
+export const PCC_STEP_TYPES: PCCLevelsMap = {
+    [PCC_STEPS.hold]: 'serverAction',
+    [PCC_STEPS.inQueue]: 'serverAction',
+    [PCC_STEPS.start]: 'serviceAction',
+    [PCC_STEPS.waitingForLogin]: 'serviceAction',
+    [PCC_STEPS.loginFailed]: 'clientAction',
+    [PCC_STEPS.loginNeedsResetPassword]: 'clientAction',
+    [PCC_STEPS.loginSuccess]: 'serviceAction',
+    [PCC_STEPS.waitingForNewCred]: 'clientAction',
+    [PCC_STEPS.newCredApplied]: 'serviceAction',
+    [PCC_STEPS.waitingForFacilityAndPatient]: 'clientAction',
+    [PCC_STEPS.facilityDataSent]: 'serviceAction',
+    [PCC_STEPS.selectFacility]: 'serviceAction',
+    [PCC_STEPS.selectFacilityFailed]: 'clientAction',
+    [PCC_STEPS.selectFacilitySuccess]: 'serviceAction',
+    [PCC_STEPS.waitingForPushData]: 'clientAction',
+    [PCC_STEPS.pushDataSent]: 'serviceAction',
+    [PCC_STEPS.serachPatient]: 'serviceAction',
+    [PCC_STEPS.waitingForSelectPatient]: 'clientAction',
+    [PCC_STEPS.patientSelected]: 'serviceAction',
+    [PCC_STEPS.fillFields]: 'serviceAction',
+    [PCC_STEPS.fillFieldsSuccess]: 'serviceAction',
+    [PCC_STEPS.fillFieldsFailed]: 'clientAction',
+    [PCC_STEPS.tryToUploadFiles]: 'serviceAction',
+    [PCC_STEPS.uploadFilesSuccess]: 'serviceAction',
+    [PCC_STEPS.uploadFilesFailed]: 'clientAction',
+    [PCC_STEPS.uploadFilesSuccessWithErrors]: 'clientAction',
+    [PCC_STEPS.fillEmergencyContacts]: 'serviceAction',
+    [PCC_STEPS.fillEmergencyContactsSuccess]: 'serviceAction',
+    [PCC_STEPS.fillEmergencyContactsFailed]: 'clientAction',
+    [PCC_STEPS.fillEmergencyContactsSuccessWithErrors]: 'clientAction',
+    [PCC_STEPS.fillInsurance]: 'serviceAction',
+    [PCC_STEPS.fillInsuranceSuccess]: 'serviceAction',
+    [PCC_STEPS.fillInsuranceFailed]: 'clientAction',
+    [PCC_STEPS.fillInsuranceSuccessWithErrors]: 'clientAction',
+    [PCC_STEPS.done]: 'done',
 
 };
 
-export function serviceNeedsPolling(step: PCC_LEVELS): boolean {
+export function serviceNeedsPolling(step: PCC_STEPS): boolean {
     return PCC_STEP_TYPES[step] === 'serverAction';
 }
 
-export function isClientPolling(step: PCC_LEVELS): boolean {
+export function isClientPolling(step: PCC_STEPS): boolean {
     return PCC_STEP_TYPES[step] === 'serviceAction' || PCC_STEP_TYPES[step] === 'serverAction';
 }
 
@@ -142,7 +161,7 @@ interface ManagerOptions {
 export interface PCCCallbackEvent {
     resetPassword: () => void;
     selectPatient: (patients: string[]) => void;
-    updateStep: (step: PCC_LEVELS) => void;
+    updateStep: (step: PCC_STEPS) => void;
     success: () => void;
     error: () => void;
 }
@@ -153,16 +172,13 @@ export interface PCCClientEventListener {
     setFacilityNameAndIdAndPatientName: (facilityName: string, facilityId: string, patientName: string) => void;
 }
 
-export interface PCCTask {
-    _id: string;
-    executingUser: string;
-    executingUserName: string;
-    timeId: string;
-    referalId: string;
-    status: 'hold' | 'start';
-    createdAt: string;
-    data: {};
-    type: 'pushToPcc';
-    stepStatus: PCC_LEVELS;
-    steps: {status: PCC_LEVELS, data: {}}[];
+export interface PCC_TASK_STEP {
+    step: PCC_STEPS;
+    type: 'clientAction' | 'serverAction' | 'serviceAction' | 'done';
+    createdBy: 'server' | 'service' | 'client'
+    data: any;
+    date: Date;
 }
+export interface PCCTask extends Task<PCC_STEPS, PCC_TASK_STEP> {
+}
+
