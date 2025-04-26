@@ -199,16 +199,16 @@ export interface PCC_TASK_CREATE_API_BASE <DATA extends object = {}> {
     data: DATA;
 }
 
-export interface PCC_TASK_LOGIN_DATA  {
-    fac_id: number;
-    fac_name: string;
+export interface PCC_TASK_FACILITY_DATA  {
+    fac_id?: number;
+    fac_name?: string;
     referalId?: string;
-    suffix: string;
-    birthDate: Date;
+    suffix?: string;
+    birthDate?: Date;
     SocialSecurity?: string;
 }
 export interface PCC_TASK_CREATE_API_LOGIN extends PCC_TASK_CREATE_API_BASE {
     subType: PCC_TASK_SUB_TYPE.login;
-    data: PCC_TASK_LOGIN_DATA;
+    // data: PCC_TASK_LOGIN_DATA;
 }
 
