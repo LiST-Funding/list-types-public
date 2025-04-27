@@ -33,7 +33,7 @@ export interface TaskMessage {
 
 
 
-export class Task <STEP_STATUS extends string = string, STEP_TYPE extends object = {}, SUB_TYPE extends string = string> {
+export interface Task <STEP_STATUS extends string = string, STEP_TYPE extends object = {}, SUB_TYPE extends string = string> {
     _id?: string;
     date?: Date;
     type?: TaskTypes;
@@ -47,6 +47,7 @@ export class Task <STEP_STATUS extends string = string, STEP_TYPE extends object
     status?: string;
     currentStep?: string;
     steps?: STEP_TYPE[];
+    stepStatus?: STEP_STATUS;
     updateStatusMsg?: string;
     updateStatus?: Object;
     createdAt?: Date;
@@ -56,7 +57,5 @@ export class Task <STEP_STATUS extends string = string, STEP_TYPE extends object
     messages?: TaskMessage[];
 
     timeId?: string;
-    referalId?: string;
     subType?: SUB_TYPE; 
-    stepStatus?: STEP_STATUS;
 }
