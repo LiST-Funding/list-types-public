@@ -19,8 +19,8 @@ export enum PCC_STEPS {
     waitingForNewCred = 'waitingForNewCred',
     newCredApplied = 'newCredApplied',
     loginSuccess = 'loginSuccess',
-    waitingForFacilityAndPatient = 'waitingForFacilityAndPatient',
-    facilityDataSent = 'facilityDataSent',
+    // waitingForFacilityAndPatient = 'waitingForFacilityAndPatient',
+    // facilityDataSent = 'facilityDataSent',
     selectFacility = 'selectFacility',
     selectFacilityFailed = 'selectFacilityFailed',
     selectFacilitySuccess = 'selectFacilitySuccess',
@@ -79,7 +79,7 @@ export const PCC_WAITING_STATES: PCC_STEPS[] = [
     PCC_STEPS.hold,
     PCC_STEPS.waitingForLogin,
     PCC_STEPS.waitingForNewCred,
-    PCC_STEPS.waitingForFacilityAndPatient,
+    // PCC_STEPS.waitingForFacilityAndPatient,
 ];
 type StepType = 'clientAction' | 'serverAction' | 'serviceAction' | 'done';
 
@@ -97,8 +97,8 @@ export const PCC_STEP_TYPES: PCCLevelsMap = {
     [PCC_STEPS.loginSuccess]: 'serviceAction',
     [PCC_STEPS.waitingForNewCred]: 'clientAction',
     [PCC_STEPS.newCredApplied]: 'serviceAction',
-    [PCC_STEPS.waitingForFacilityAndPatient]: 'clientAction',
-    [PCC_STEPS.facilityDataSent]: 'serviceAction',
+    // [PCC_STEPS.waitingForFacilityAndPatient]: 'clientAction',
+    // [PCC_STEPS.facilityDataSent]: 'serviceAction',
     [PCC_STEPS.selectFacility]: 'serviceAction',
     [PCC_STEPS.selectFacilityFailed]: 'clientAction',
     [PCC_STEPS.selectFacilitySuccess]: 'serviceAction',
