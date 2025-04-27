@@ -159,7 +159,7 @@ interface ManagerOptions {
 export interface PCCCallbackEvent {
     resetPassword: () => void;
     selectPatient: (patients: string[]) => void;
-    updateStep: (step: PCC_STEPS) => void;
+    updateStep: (step: PCC_STEPS, message: any) => void;
     success: () => void;
     error: () => void;
 }
