@@ -179,6 +179,7 @@ export interface PCC_TASK_STEP {
 }
 
 export enum PCC_TASK_SUB_TYPE {
+    checkCredential = 'checkCredential',
     push = 'push',
     login = 'login',
     selectFacility = 'selectFacility',
