@@ -28,10 +28,31 @@ export interface SnfPatientDetails {
 
   readStatus?: ReadStatus
   facilitiesNames?: { name: any; status: any; }[];
+  secondApprovalId?: string;
+  secondApproval?: ISecondApprovalPatient;
 }
 
 
 export enum ReadStatus {
-    NEVER_READ = "NEVER_READ", READ_BEFORE_UPDATES = "READ_BEFORE_UPDATES", READ = "READ"
-  }
-  
+  NEVER_READ = "NEVER_READ", READ_BEFORE_UPDATES = "READ_BEFORE_UPDATES", READ = "READ"
+}
+
+export interface ISecondApprovalPatient {
+  firstName: string;
+  lastName: string;
+  dob: Date;
+  lastFacility: string;
+  dischargedTo: string;
+  otherDischargedTo: string;
+  dischargedDate: string;
+  ssn: string,
+  reason: string;
+  otherReason: string;
+  addedBy: string;
+  otherFields?: Map<string, string>;
+  createdAt?: Date;
+  updatedAt?: Date;
+  notes?: string,
+  ssn_id: string,
+  dob_name_id: string
+}
