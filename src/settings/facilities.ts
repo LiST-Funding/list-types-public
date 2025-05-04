@@ -127,17 +127,19 @@ export class FacilitiesService implements FacilitiySettings {
   sitedIds: { [key in string]: string } = {};
 
   constructor(json: { EHR: EHR, facilities: Facilities, statuses: Statuses }) {
-    this.EHR = json.EHR;
-    this.facilities = json.facilities;
-    this.statuses = json.statuses;
+    this.EHR = json?.EHR || {};
+    this.facilities = json?.facilities || {};
+    this.statuses = json?.statuses;
 
     this.sites = this.facilities.names;
-    Object.keys(this.EHR.names).forEach(ehrName => {
-      this.mapEhrFacilityNamesToPccNames[ehrName] = swapKeysAndValues(this.facilities.namesPerEhr[ehrName]);
-    })
+    if(this.EHR?.names) {
+      Object.keys(this.EHR.names).forEach(ehrName => {
+        this.mapEhrFacilityNamesToPccNames[ehrName] = swapKeysAndValues(this.facilities.namesPerEhr[ehrName]);
+      })
+      this.mapEhrDisplayNameToNames = swapKeysAndValues(this.EHR.names);
+      Object.keys(this.sites).forEach(item => this.sitedIds[this.sites[item]] = item);  
+    }
 
-    this.mapEhrDisplayNameToNames = swapKeysAndValues(this.EHR.names);
-    Object.keys(this.sites).forEach(item => this.sitedIds[this.sites[item]] = item);
   }
 
 
