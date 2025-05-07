@@ -123,3 +123,4 @@ private/
 .env.qa
 local/
 output/
+.qodo

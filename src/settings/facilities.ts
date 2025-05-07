@@ -25,6 +25,7 @@ export interface FacilitiySettings {
 }
 export interface Facilities {
   names: { [key in string]: number };
+  allNames: { [key in string]: number };
   namesPerEhr: { [key in string]: { [key in string]: string } };
 }
 
@@ -77,6 +78,7 @@ export function importSettingsFromCsv(path: string) {
     names: [],
     namesPerEhr: {}
   };
+
   result.forEach((row: any) => {
 
     const facilityName = row.facilityName;
@@ -108,7 +110,8 @@ export function importSettingsFromCsv(path: string) {
     },
     facilities: {
       names: facilities as any,
-      namesPerEhr: namesPerEhr
+      namesPerEhr: namesPerEhr,
+      allNames: {},
     },
     statuses: statuses
   };
@@ -124,20 +127,26 @@ export class FacilitiesService implements FacilitiySettings {
   mapEhrDisplayNameToNames: { [key in string]: string } = {};
   mapEhrFacilityNamesToPccNames: { [key in string]: { [key in string]: string } } = {};
   sites: { [key in string]: number };
+  allSites: { [key in string]: number };
   sitedIds: { [key in string]: string } = {};
+  allSiteIds: { [key in string]: string } = {};
 
   constructor(json: { EHR: EHR, facilities: Facilities, statuses: Statuses }) {
-    this.EHR = json.EHR;
-    this.facilities = json.facilities;
-    this.statuses = json.statuses;
+    this.EHR = json?.EHR || {};
+    this.facilities = json?.facilities || {};
+    this.statuses = json?.statuses;
 
     this.sites = this.facilities.names;
-    Object.keys(this.EHR.names).forEach(ehrName => {
-      this.mapEhrFacilityNamesToPccNames[ehrName] = swapKeysAndValues(this.facilities.namesPerEhr[ehrName]);
-    })
+    this.allSites = this.facilities.allNames ?? this.sites;
 
-    this.mapEhrDisplayNameToNames = swapKeysAndValues(this.EHR.names);
-    Object.keys(this.sites).forEach(item => this.sitedIds[this.sites[item]] = item);
+    if(this.EHR?.names) {
+      Object.keys(this.EHR.names).forEach(ehrName => {
+        this.mapEhrFacilityNamesToPccNames[ehrName] = swapKeysAndValues(this.facilities.namesPerEhr[ehrName]);
+      })
+      this.mapEhrDisplayNameToNames = swapKeysAndValues(this.EHR.names);
+      Object.keys(this.sites).forEach(item => this.sitedIds[this.sites[item]] = item);
+      Object.keys(this.allSites).forEach(item => this.allSiteIds[this.allSites[item]] = item);   
+    }
   }
 
 
