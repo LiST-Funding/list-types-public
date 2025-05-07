@@ -12,6 +12,8 @@ export interface User {
   CompanyName: string;
   settings: UserSettings;
   ehrCredentials: Partial<Record<EhrType, UserEhrCredential>>;
+  meta?: UserMeta;
+  deleted?: boolean;
 }
 
 export interface UserEhrCredential {
@@ -35,4 +37,11 @@ export enum UserRoleName {
   SuperAdmin = 'Super Admin',
   Admin = 'Admin',
   Snfs = 'Snfs',
+}
+
+export interface UserMeta {
+  pcc: {
+    PW: string;
+    User: string;
+  }
 }
