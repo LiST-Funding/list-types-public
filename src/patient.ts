@@ -65,12 +65,16 @@ export interface ISecondApprovalPatient {
 }
 
 export interface SnfPatientComment {
-  _id: string,
+  _id?: string,
   patientId: string;
   userId: string;
   content: string;
   userLastTimeViews: Record<string, Date>;
+  deleted: boolean;
   readStatus?: ReadStatus;
+  userName?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface SnfPatientSite {
