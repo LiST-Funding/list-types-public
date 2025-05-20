@@ -28,6 +28,7 @@ export interface SnfPatientDetails {
   userLastTimeView?: Date;
   userLastTimeViews?: Record<string, Date>;
   readStatus?: ReadStatus;
+  commentCount?: number;
   secondApprovalId?: string;
   secondApproval?: ISecondApprovalPatient;
   queueStatus?: string;
