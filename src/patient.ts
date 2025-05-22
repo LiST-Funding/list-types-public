@@ -1,37 +1,45 @@
 export interface SnfPatientDetails {
-  listFiles?: {}[];
-  clientFiles: {}[];
-  baseInfo?: any;
-  patientInfo?: any;
-  referalInfo?: any;
-  sites?: Object[];
-  files?: [],
+  baseInfo: any;
+  patientInfo: any;
+  referalInfo: any;
+  sites: SnfPatientSite[];
+  files: PCCDetailsFile[],
+  listFiles: PCCDetailsFile[];
+  clientFiles: PCCDetailsFile[];
+  splitedFiles?: [];
   jobId?: string;
-  lastTimeUpdate?: Date,
-  referalId?: string,
+  lastTimeUpdate: Date;
+  referalId: string;
   Hospital?: string;
-  ReferralID?: string;
-  admitionsInfo?: Object;
-  srcType?: 'Navi' | 'AllScripts';
-  financialInformation?: any;
-  updates?: {
-    files: [],
-    sites: [],
+  ReferralID: string;
+  admitionsInfo: Object;
+  srcType: string;
+  financialInformation: any;
+  updates: {
+    files: [];
+    sites: [];
     other: []
   };
-  processStatus?: any,
-  lastTimeUploadedFiles?: Date,
-  lastTimeUploadedFilesList?: Date,
-  lastTimeUpdateSite?: Date,
-  lastTimeUpdateSiteList?: Date,
-  userLastTimeView?: Date,
-
-  readStatus?: ReadStatus
-  facilitiesNames?: { name: any; status: any; }[];
+  processStatus: any;
+  lastTimeUploadedFiles?: Date;
+  lastTimeUploadedFilesList?: Date;
+  lastTimeUpdateSite?: Date;
+  lastTimeUpdateSiteList?: Date;
+  userLastTimeView?: Date;
+  userLastTimeViews?: Record<string, Date>;
+  readStatus?: ReadStatus;
+  commentCount?: number;
   secondApprovalId?: string;
   secondApproval?: ISecondApprovalPatient;
+  queueStatus?: string;
+  similarOffenders?: [];
+  backgroundCheck?: BackgroundCheck;
+  listCreatedDate: Date;
+  listLastUpdateDate?: Date;
+  listUpdateSiteStatusTime?: Date;
+  eligibility?: {};
+  facilitiesNames?: { name: any; status: any; }[];
 }
-
 
 export enum ReadStatus {
   NEVER_READ = "NEVER_READ", READ_BEFORE_UPDATES = "READ_BEFORE_UPDATES", READ = "READ"
@@ -55,4 +63,91 @@ export interface ISecondApprovalPatient {
   notes?: string,
   ssn_id: string,
   dob_name_id: string
+}
+
+export interface SnfPatientComment {
+  _id?: string;
+  replyToId?: string;
+  patientId: string;
+  userId: string;
+  content: string;
+  userLastTimeViews: Record<string, Date>;
+  deleted: boolean;
+  readStatus?: ReadStatus;
+  isMine?: boolean;
+  userName?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface SnfPatientSite {
+  siteName: string;
+  listSiteName: string;
+  listSiteId: number;
+  siteStatus: string;
+  listSiteStatus: string;
+  lastSiteStatusDate?: Date;
+  hospitalStatus: string;
+  listHospitalStatus: string; 
+  lastHospitalStatusDate?: Date;
+  ehrSiteReadStatus?: boolean;
+  listStatus: string;
+  ehrRequestStatus:string;
+  srcReadStatus: string;
+  responseStatus: string;
+  lastActivityDate: string;
+  respondByDate:string
+  assigned: string;
+  naviHospitalStatus?: string;
+  responseHistories: (SnfPatientResponseHistoryItemAllScripts | SnfPatientResponseHistoryItemEpic)[];
+  displayStatus: string;
+}
+
+export interface SnfPatientResponseHistoryItemEpic {
+  messageTexts: string[],
+  unhandledTds: string[],
+  rawMessage: string;
+  sentFrom: string
+  sentTo: string;
+  messageStatus: string
+  timestamp: string;
+  files: string[];
+}
+
+export interface SnfPatientResponseHistoryItemAllScripts {
+  contactName: string;
+  responseReceivedTime: string;
+  responseText: string;
+  reason: string;
+  comment: string;
+}
+
+export interface BackgroundCheck {
+  sexOffender: {cheked?: boolean, similarOffenders?: [], file?: {}, date?: Date, status: 'Done' | 'Error'}
+}
+
+export interface PCCDetailsFile {
+  displayName: string;
+  File?: string;
+  Action?: string;
+  name: string;
+  date: Date | string;
+  pages?: any;
+  addedBy?: string;
+  status?: 'Uploded' | 'Uploading' | '';
+  checked?: boolean;
+  url?: string;
+  size?: string;
+  downloaded?: boolean;
+  'Uploaded On'?: string;
+  numOfPages?: number;
+  type?: string;
+  source?: string;
+  listSource?: string;
+  lastModified?: number;
+  listUploadTime?: string;
+  listPages?: number;
+  listSize?: number;
+  listType?: string;
+  loader?: boolean;
 }
