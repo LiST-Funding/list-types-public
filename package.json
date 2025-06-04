@@ -27,6 +27,7 @@
     "csv-stringify": "^6.5.2",
     "fast-csv": "^5.0.2",
     "json2csv": "^6.0.0-alpha.2",
-    "papaparse": "^5.5.2"
+    "papaparse": "^5.5.2",
+    "pdf-lib": "^1.17.1"
   }
 }
