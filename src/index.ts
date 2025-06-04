@@ -2,7 +2,7 @@ export * from './patient';
 export * from './settings/facilities';
 export * from './types/le'
 export * from './utils/csv/ListCSV';
-export * from './utils/pdf/pdf';
+export * as pdfUtils from './utils/pdf/pdf';
 export * from './pcc/index';
 export * from './tasks/index';
 export * as ListStatus from './listStatus/index';
