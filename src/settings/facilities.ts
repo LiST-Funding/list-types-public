@@ -1,6 +1,7 @@
 import { ReadStatus, SnfPatientDetails } from "../patient";
 import * as fs from 'fs';
 import { parse } from 'csv-parse/sync';
+import { PCCField } from "../pcc";
 // import csv2json from 'csv2json';
 
 function swapKeysAndValues(obj: { [s: string]: unknown; } | ArrayLike<unknown>) {
@@ -21,7 +22,7 @@ export interface FacilitiySettings {
   EHR: EHR;
   facilities: Facilities;
   statuses: Statuses;
-
+  selectFields?: PCCField[];
 }
 export interface Facilities {
   names: { [key in string]: number };
