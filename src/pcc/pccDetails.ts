@@ -53,5 +53,6 @@ export class PCCDetails {
     medicareEligibilityType?: string;
     admissionType?: string;
     marital?: string;
+    religion?: string;
 }
 //# sourceMappingURL=pccDetails.d.ts.map
