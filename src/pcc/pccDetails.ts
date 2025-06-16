@@ -54,5 +54,6 @@ export class PCCDetails {
     admissionType?: string;
     marital?: string;
     religion?: string;
+    medicalRecord?: string;
 }
 //# sourceMappingURL=pccDetails.d.ts.map
