@@ -39,6 +39,7 @@ export interface SnfPatientDetails {
   listUpdateSiteStatusTime?: Date;
   eligibility?: {};
   facilitiesNames?: { name: any; status: any; }[];
+  pccValues?: Record<string, string>;
 }
 
 export enum ReadStatus {
