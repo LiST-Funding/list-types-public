@@ -144,6 +144,12 @@ export async function splitPdfsFromFsPaths(
         const pathParts = path.split('/');
         const fileName = pathParts?.[pathParts.length - 1];
         const content = await readFile(paths[i]);
+        // check if the file is a valid pdf
+        const doc = await PDFDocument.load(content);
+        if (doc.getPageCount() === 0) {
+          console.log(`${fileName} - not a valid pdf`);
+          continue;
+        }
         const outputFiles = await splitPdf(content, maxSizeMb - 0.5, fileName, 'pdf');
 
         let savePath = outputDirPath ?? pathParts.slice(0, -1).join('/');
