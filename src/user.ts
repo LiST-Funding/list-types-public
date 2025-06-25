@@ -9,6 +9,8 @@ export interface User {
   role: UserRoleName;
   roleNumber: number;
   privateName: string;
+  firstName?: string;
+  lastName?: string;
   CompanyName: string;
   settings: UserSettings;
   ehrCredentials: Partial<Record<EhrType, UserEhrCredential>>;
