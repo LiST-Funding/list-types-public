@@ -1,6 +1,5 @@
-import { readdir, readFile, stat, writeFile } from 'fs/promises';
+import { readFile, stat, writeFile } from 'fs/promises';
 import { PDFDocument } from "pdf-lib";
-import { compress } from 'compress-pdf';
 
 function isPdf(file: File | PDFDocument): boolean {
   return file instanceof PDFDocument || file.type.includes('pdf');
@@ -192,7 +191,3 @@ export async function splitPdfsFromFsPaths(
   return result;
 }
 
-// requires the `ghostscript` package to be installed on the OS
-export async function compressPdf(uncompressedPdf: ArrayBuffer): Promise<Buffer> {
-  return compress(Buffer.from(uncompressedPdf));
-}
