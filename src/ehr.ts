@@ -6,4 +6,5 @@ export enum EhrType {
   EpicHealthEConnection = 'Epic HealthEConnection',
   Efax = 'eFax',
   Manual = 'Manual Referral',
+  Aidin = 'Aidin',
 }
