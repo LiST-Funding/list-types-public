@@ -66,6 +66,18 @@ export interface ISecondApprovalPatient {
   dob_name_id: string
 }
 
+export enum ListPatientStatus {
+  Accepted = 'accepted',
+  Received = 'received',
+  Interested = 'interested',
+  Declined = 'declined',
+  Selected = 'selected',
+  NotSelected = 'not-selected',
+  Cancelled = 'cancelled',
+  New = 'new',
+  Admitted = 'admitted',
+  ReAdmitted = 're-admitted',
+}
 export interface SnfPatientComment {
   _id?: string;
   replyToId?: string;
