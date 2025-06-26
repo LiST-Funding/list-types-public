@@ -11,6 +11,7 @@ export interface User {
   privateName: string;
   firstName?: string;
   lastName?: string;
+  phoneNumber?: string;
   CompanyName: string;
   settings: UserSettings;
   ehrCredentials: Partial<Record<EhrType, UserEhrCredential>>;
