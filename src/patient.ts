@@ -1,4 +1,5 @@
 export interface SnfPatientDetails {
+  _id?: string;
   baseInfo: any;
   patientInfo: any;
   referalInfo: any;
