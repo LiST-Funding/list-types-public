@@ -41,6 +41,7 @@ export interface SnfPatientDetails {
   eligibility?: {};
   facilitiesNames?: { name: any; status: any; }[];
   pccValues?: Record<string, string>;
+  listPayerType?: PayerType;
 }
 
 export enum ReadStatus {
@@ -164,4 +165,10 @@ export interface PCCDetailsFile {
   listSize?: number;
   listType?: string;
   loader?: boolean;
+}
+
+export enum PayerType {
+  Medicare = 'MCR',
+  Hmo = 'HMO',
+  Other = 'Other',
 }
