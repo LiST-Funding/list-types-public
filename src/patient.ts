@@ -38,10 +38,10 @@ export interface SnfPatientDetails {
   listCreatedDate: Date;
   listLastUpdateDate?: Date;
   listUpdateSiteStatusTime?: Date;
-  eligibility?: {};
   facilitiesNames?: { name: any; status: any; }[];
   pccValues?: Record<string, string>;
   listPayerType?: PayerType;
+  listEligibility?:Record<string, any>;
 }
 
 export enum ReadStatus {
