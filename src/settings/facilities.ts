@@ -124,6 +124,7 @@ export class FacilitiesService implements FacilitiySettings {
   EHR: EHR;
   facilities: Facilities;
   statuses: Statuses;
+  facilitySettingsActive?: boolean;
 
   mapEhrDisplayNameToNames: { [key in string]: string } = {};
   mapEhrFacilityNamesToPccNames: { [key in string]: { [key in string]: string } } = {};
@@ -132,10 +133,11 @@ export class FacilitiesService implements FacilitiySettings {
   sitedIds: { [key in string]: string } = {};
   allSiteIds: { [key in string]: string } = {};
 
-  constructor(json: { EHR: EHR, facilities: Facilities, statuses: Statuses }) {
+  constructor(json: { EHR: EHR, facilities: Facilities, statuses: Statuses, facilitySettingsActive?: boolean }) {
     this.EHR = json?.EHR || {};
     this.facilities = json?.facilities || {};
     this.statuses = json?.statuses;
+    this.facilitySettingsActive = json.facilitySettingsActive;
 
     this.sites = this.facilities.names;
     this.allSites = this.facilities.allNames ?? this.sites;
