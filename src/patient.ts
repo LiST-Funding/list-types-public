@@ -119,6 +119,8 @@ export interface SnfPatientSite {
 }
 
 export interface SnfPatientResponseHistoryItemEpic {
+  fromHospital: boolean;
+  fromSite: boolean;
   messageTexts: string[],
   unhandledTds: string[],
   rawMessage: string;
@@ -126,7 +128,9 @@ export interface SnfPatientResponseHistoryItemEpic {
   sentTo: string;
   messageStatus: string
   timestamp: string;
+  timestampDate: string;
   files: string[];
+  listStatus: ListPatientStatus;
 }
 
 export interface SnfPatientResponseHistoryItemAllScripts {
