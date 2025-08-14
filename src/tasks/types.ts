@@ -45,6 +45,7 @@ export interface Task <STEP_STATUS extends string = string, STEP_TYPE extends ob
     taskStartTime?: Date;
     taskEndTime?: Date | string;
     status?: string;
+    statusCode?: string;
     currentStep?: string;
     steps?: STEP_TYPE[];
     stepStatus?: STEP_STATUS;
