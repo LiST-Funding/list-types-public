@@ -116,6 +116,7 @@ export interface SnfPatientSite {
   naviHospitalStatus?: string;
   responseHistories: (SnfPatientResponseHistoryItemAllScripts | SnfPatientResponseHistoryItemEpic)[];
   displayStatus: string;
+  firstPostingDate: Date;
 }
 
 export interface SnfPatientResponseHistoryItemEpic {
