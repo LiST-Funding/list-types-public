@@ -28,6 +28,7 @@ export interface Facilities {
   names: { [key in string]: number };
   allNames: { [key in string]: number };
   namesPerEhr: { [key in string]: { [key in string]: string } };
+  displayNames: { [key in number]: string };
 }
 
 export interface Statuses {
@@ -113,6 +114,7 @@ export function importSettingsFromCsv(path: string) {
       names: facilities as any,
       namesPerEhr: namesPerEhr,
       allNames: {},
+      displayNames: {},
     },
     statuses: statuses
   };
@@ -132,6 +134,7 @@ export class FacilitiesService implements FacilitiySettings {
   allSites: { [key in string]: number };
   sitedIds: { [key in string]: string } = {};
   allSiteIds: { [key in string]: string } = {};
+  displayNames: Record<number, string> = {};
 
   constructor(json: { EHR: EHR, facilities: Facilities, statuses: Statuses, facilitySettingsActive?: boolean }) {
     this.EHR = json?.EHR || {};
@@ -141,6 +144,7 @@ export class FacilitiesService implements FacilitiySettings {
 
     this.sites = this.facilities.names;
     this.allSites = this.facilities.allNames ?? this.sites;
+    this.displayNames = this.facilities.displayNames ?? {};
 
     if(this.EHR?.names) {
       Object.keys(this.EHR.names).forEach(ehrName => {
@@ -225,6 +229,10 @@ export class FacilitiesService implements FacilitiySettings {
       }
     }
 
+  }
+
+  getDisplayName(idOrName: string | number) {
+    return this.displayNames[idOrName as number] || this.allSites[idOrName as string] || idOrName;
   }
 
 }
