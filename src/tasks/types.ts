@@ -56,7 +56,6 @@ export interface Task <STEP_STATUS extends string = string, STEP_TYPE extends ob
     callbackData?: any;
     duration?: number;
     messages?: TaskMessage[];
-
     timeId?: string;
     subType?: SUB_TYPE; 
 }
