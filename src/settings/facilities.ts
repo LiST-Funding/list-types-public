@@ -232,7 +232,11 @@ export class FacilitiesService implements FacilitiySettings {
   }
 
   getDisplayName(idOrName: string | number) {
-    return this.displayNames[idOrName as number] || this.allSites[idOrName as string] || idOrName;
+    if (this.displayNames[idOrName as number]) {
+      return this.displayNames[idOrName as number];
+    }
+    const idFound = this.allSites[idOrName as string];
+    return this.displayNames[idFound] || idOrName;
   }
 
 }
