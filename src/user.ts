@@ -17,6 +17,7 @@ export interface User {
   ehrCredentials: Partial<Record<EhrType, UserEhrCredential>>;
   meta?: UserMeta;
   deleted?: boolean;
+  regionId?: number;
 }
 
 export interface UserEhrCredential {
