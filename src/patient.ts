@@ -117,6 +117,7 @@ export interface SnfPatientSite {
   responseHistories: (SnfPatientResponseHistoryItemAllScripts | SnfPatientResponseHistoryItemEpic)[];
   displayStatus: string;
   firstPostingDate: Date;
+  isArchived?: boolean;
 }
 
 export interface SnfPatientResponseHistoryItemEpic {
