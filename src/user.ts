@@ -17,6 +17,7 @@ export interface User {
   ehrCredentials: Partial<Record<EhrType, UserEhrCredential>>;
   meta?: UserMeta;
   deleted?: boolean;
+  regionId?: number;
 }
 
 export interface UserEhrCredential {
@@ -30,6 +31,7 @@ export interface UserSettings {
   receiveDoNotAcceptNotification: boolean;
   facilities: number[];
   patientsFilters: UserPatientFilters;
+  regionId?: number;
 }
 
 export interface UserPatientFilters {
