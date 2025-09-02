@@ -99,7 +99,7 @@ export interface SnfPatientSite {
   siteName: string;
   listSiteName: string;
   listSiteId: number;
-  regionId: number;
+  regionId?: number;
   siteStatus: string;
   listSiteStatus: string;
   lastSiteStatusDate?: Date;
