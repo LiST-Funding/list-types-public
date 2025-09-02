@@ -31,7 +31,7 @@ export interface UserSettings {
   receiveDoNotAcceptNotification: boolean;
   facilities: number[];
   patientsFilters: UserPatientFilters;
-  regionId?: number; 
+  regionId?: number;
 }
 
 export interface UserPatientFilters {
