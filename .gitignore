@@ -124,3 +124,5 @@ private/
 local/
 output/
 .qodo
+.DS_Store
+src/.DS_Store
