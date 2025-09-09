@@ -28,6 +28,7 @@ export interface Facilities {
   names: { [key in string]: number };
   allNames: { [key in string]: number };
   namesPerEhr: { [key in string]: { [key in string]: string } };
+  displayNames: { [key in number]: string };
 }
 
 export interface Statuses {
@@ -113,6 +114,7 @@ export function importSettingsFromCsv(path: string) {
       names: facilities as any,
       namesPerEhr: namesPerEhr,
       allNames: {},
+      displayNames: {},
     },
     statuses: statuses
   };
@@ -124,6 +126,7 @@ export class FacilitiesService implements FacilitiySettings {
   EHR: EHR;
   facilities: Facilities;
   statuses: Statuses;
+  facilitySettingsActive?: boolean;
 
   mapEhrDisplayNameToNames: { [key in string]: string } = {};
   mapEhrFacilityNamesToPccNames: { [key in string]: { [key in string]: string } } = {};
@@ -131,14 +134,17 @@ export class FacilitiesService implements FacilitiySettings {
   allSites: { [key in string]: number };
   sitedIds: { [key in string]: string } = {};
   allSiteIds: { [key in string]: string } = {};
+  displayNames: Record<number, string> = {};
 
-  constructor(json: { EHR: EHR, facilities: Facilities, statuses: Statuses }) {
+  constructor(json: { EHR: EHR, facilities: Facilities, statuses: Statuses, facilitySettingsActive?: boolean }) {
     this.EHR = json?.EHR || {};
     this.facilities = json?.facilities || {};
     this.statuses = json?.statuses;
+    this.facilitySettingsActive = json.facilitySettingsActive;
 
     this.sites = this.facilities.names;
     this.allSites = this.facilities.allNames ?? this.sites;
+    this.displayNames = this.facilities.displayNames ?? {};
 
     if(this.EHR?.names) {
       Object.keys(this.EHR.names).forEach(ehrName => {
@@ -223,6 +229,14 @@ export class FacilitiesService implements FacilitiySettings {
       }
     }
 
+  }
+
+  getDisplayName(idOrName: string | number) {
+    if (this.displayNames[idOrName as number]) {
+      return this.displayNames[idOrName as number];
+    }
+    const idFound = this.allSites[idOrName as string];
+    return this.displayNames[idFound] || idOrName;
   }
 
 }

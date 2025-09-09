@@ -38,10 +38,10 @@ export interface SnfPatientDetails {
   listCreatedDate: Date;
   listLastUpdateDate?: Date;
   listUpdateSiteStatusTime?: Date;
-  eligibility?: {};
   facilitiesNames?: { name: any; status: any; }[];
   pccValues?: Record<string, string>;
   listPayerType?: PayerType;
+  listEligibility?:Record<string, any>;
 }
 
 export enum ReadStatus {
@@ -99,6 +99,7 @@ export interface SnfPatientSite {
   siteName: string;
   listSiteName: string;
   listSiteId: number;
+  regionId?: number;
   siteStatus: string;
   listSiteStatus: string;
   lastSiteStatusDate?: Date;
@@ -116,9 +117,14 @@ export interface SnfPatientSite {
   naviHospitalStatus?: string;
   responseHistories: (SnfPatientResponseHistoryItemAllScripts | SnfPatientResponseHistoryItemEpic)[];
   displayStatus: string;
+  firstPostingDate: Date;
+  isArchived?: boolean;
+  lastSeenOnEhrDate?: Date;
 }
 
 export interface SnfPatientResponseHistoryItemEpic {
+  fromHospital: boolean;
+  fromSite: boolean;
   messageTexts: string[],
   unhandledTds: string[],
   rawMessage: string;
@@ -126,7 +132,9 @@ export interface SnfPatientResponseHistoryItemEpic {
   sentTo: string;
   messageStatus: string
   timestamp: string;
+  timestampDate: string;
   files: string[];
+  listStatus: ListPatientStatus;
 }
 
 export interface SnfPatientResponseHistoryItemAllScripts {
