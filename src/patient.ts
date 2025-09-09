@@ -96,6 +96,7 @@ export interface SnfPatientComment {
 }
 
 export interface SnfPatientSite {
+  _id?: string;
   siteName: string;
   listSiteName: string;
   listSiteId: number;
@@ -119,6 +120,11 @@ export interface SnfPatientSite {
   displayStatus: string;
   firstPostingDate: Date;
   isArchived?: boolean;
+  isArchivedByUser?: {
+    isArchived: true,
+    userId: string;
+    date: Date;
+  };
   lastSeenOnEhrDate?: Date;
 }
 
