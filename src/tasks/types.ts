@@ -57,5 +57,6 @@ export interface Task <STEP_STATUS extends string = string, STEP_TYPE extends ob
     duration?: number;
     messages?: TaskMessage[];
     timeId?: string;
-    subType?: SUB_TYPE; 
+    subType?: SUB_TYPE;
+    regionId?: number;
 }
