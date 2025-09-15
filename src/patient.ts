@@ -123,6 +123,7 @@ export interface SnfPatientSite {
   isArchivedByUser?: {
     isArchived: true,
     userId: string;
+    userName: string;
     date: Date;
   };
   lastSeenOnEhrDate?: Date;
