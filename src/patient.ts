@@ -120,6 +120,7 @@ export interface SnfPatientSite {
   displayStatus: string;
   firstPostingDate: Date;
   isArchived?: boolean;
+  isArchivedOnDate?: Date;
   isArchivedByUser?: {
     isArchived: true,
     userId: string;
