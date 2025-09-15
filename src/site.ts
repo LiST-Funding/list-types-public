@@ -12,32 +12,30 @@ export enum ListPatientStatus {
 }
 
 export interface SnfPatientResponseHistoryItemAllScripts {
-    contactName: string;
-    responseReceivedTime: string;
-    responseText: string;
-    reason: string;
-    comment: string;
-  }
+  contactName: string;
+  responseReceivedTime: string;
+  responseText: string;
+  reason: string;
+  comment: string;
+}
 
-  export interface SnfPatientResponseHistoryItemEpic {
-    fromHospital: boolean;
-    fromSite: boolean;
-    messageTexts: string[],
-    unhandledTds: string[],
-    rawMessage: string;
-    sentFrom: string
-    sentTo: string;
-    messageStatus: string
-    timestamp: string;
-    timestampDate: string;
-    files: string[];
-    listStatus: ListPatientStatus;
-  }
+export interface SnfPatientResponseHistoryItemEpic {
+  fromHospital: boolean;
+  fromSite: boolean;
+  messageTexts: string[],
+  unhandledTds: string[],
+  rawMessage: string;
+  sentFrom: string
+  sentTo: string;
+  messageStatus: string
+  timestamp: string;
+  timestampDate: string;
+  files: string[];
+  listStatus: ListPatientStatus;
+}
   
-
-
-
 export interface SnfPatientSite {
+  _id?: string;
   siteName: string;
   listSiteName: string;
   listSiteId: number;
@@ -62,8 +60,13 @@ export interface SnfPatientSite {
   firstPostingDate: Date;
   isArchived?: boolean;
   isArchivedOnDate?: Date;
+  isArchivedByUser?: {
+    isArchived: true,
+    userId: string;
+    userName: string;
+    date: Date;
+  };
   lastSeenOnEhrDate?: Date;
-
 
   //Aidin Fields
   isClosed?: boolean;
