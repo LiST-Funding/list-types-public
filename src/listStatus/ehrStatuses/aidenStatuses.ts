@@ -20,7 +20,7 @@ import { ListStatus } from "../listStatus"
 
 
 export   const AIDIN_EHR_STATUS = {
-    [ListStatus.Accepted]: ["available","chosen",'handed_to_provider'],
+    [ListStatus.Accepted]: ["available","chosen"],
     [ListStatus.Received]: ['viewed'],
     [ListStatus.Interested]: ['under_review'],
     [ListStatus.Declined]: ["unavailable"],
@@ -28,8 +28,8 @@ export   const AIDIN_EHR_STATUS = {
   }
 
 export   const AIDIN_HOSPITAL_STATUS = {
-    [ListStatus.Selected]: ["provider_chosen","handed_to_provider"],
-    [ListStatus.NotSelected]: [],
+    [ListStatus.Selected]: [],// in aidin the selected status is defined by wheter the site status is chosen or not. 
+    [ListStatus.NotSelected]: ["provider_chosen","handed_to_provider"],
     [ListStatus.Cancelled]: [],
     [ListStatus.Closed]: ['closed'],  
     [ListStatus.New]: ['awaiting_provider_responses'],
