@@ -10,7 +10,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "dev:link:localProject": "npm i && npm link" 
   },
   "author": "",
   "license": "ISC",
