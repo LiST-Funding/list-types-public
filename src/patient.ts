@@ -87,11 +87,6 @@ export interface SnfPatientComment {
   updatedAt?: string;
 }
 
-
-
-
-
-
 export interface BackgroundCheck {
   sexOffender: {cheked?: boolean, similarOffenders?: [], file?: {}, date?: Date, status: 'Done' | 'Error'}
 }
