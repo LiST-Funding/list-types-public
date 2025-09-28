@@ -59,4 +59,8 @@ export interface Task <STEP_STATUS extends string = string, STEP_TYPE extends ob
     timeId?: string;
     subType?: SUB_TYPE;
     regionId?: number;
+    recreatedBy?: string;
+    recreatedByUserName?: string;
+    reHoldAt?: Date;
+
 }
