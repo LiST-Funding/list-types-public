@@ -57,6 +57,20 @@ export interface SnfPatientSite {
   naviHospitalStatus?: string;
   responseHistories: (SnfPatientResponseHistoryItemAllScripts | SnfPatientResponseHistoryItemEpic)[];
   displayStatus: string;
+  
+  userStatus: string;
+  userStatusDate: Date;
+  userStatusBy: string;
+  userStatusByUsername: string;
+
+  userStatusHistory: {
+    fromStatus: string;
+    fromUserStatus: string;
+    status: string;
+    byUserStatus: string;
+    byUserStatusUsername: string;
+    date: Date;
+  }[];
   firstPostingDate: Date;
   isArchived?: boolean;
   isArchivedOnDate?: Date;
