@@ -1,6 +1,6 @@
 {
   "name": "list-types-public",
-  "version": "1.1.37",
+  "version": "1.1.38",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,7 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "prepare": "npm run build",
-    "dev:link:localProject": "npm i && npm link" 
+    "dev:link:localProject": "npm i && npm link"
   },
   "author": "",
   "license": "ISC",
