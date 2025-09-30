@@ -67,8 +67,8 @@ export interface SnfPatientSite {
     fromStatus: string;
     fromUserStatus: string;
     status: string;
-    byUserStatus: string;
-    byUserStatusUsername: string;
+    byUser: string;
+    byUsername: string;
     date: Date;
   }[];
   firstPostingDate: Date;
