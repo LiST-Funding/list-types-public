@@ -45,6 +45,7 @@ export interface SnfPatientDetails {
   pccValues?: Record<string, string>;
   listPayerType?: PayerType;
   listEligibility?:Record<string, any>;
+  isArchived?: boolean;
 }
 
 export enum ReadStatus {
