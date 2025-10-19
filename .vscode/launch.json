@@ -29,6 +29,7 @@
               "${workspaceFolder}/**",
               "!**/node_modules/**"
             ],
+            "runtimeExecutable": "/Users/izikalgrisi/.nvm/versions/node/v24.2.0/bin/node",
             "skipFiles": [
               "<node_internals>/**",
               "${workspaceFolder}/node_modules/**/*.js",
