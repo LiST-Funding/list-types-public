@@ -23,7 +23,7 @@ export function docFromTable(table: ListTable, title: string) {
         }
         return row;
     });
-    addHeaders(sheet, Object.keys(table.headers).map(header => ({ key: header, value: table.headers[header].label, width: table.headers[header].width, bgColor: 'blue' })));
+    addHeaders(sheet, Object.keys(table.headers).map(header => ({ key: header, value: table.headers[header].label, width: table.headers[header].width, bgColor: 'blue', color: 'white' })));
     addRows(sheet, table.rows.map(row => Object.keys(row).map(cell => row[cell] as ListCellParams)));
     Object.keys(table.headers).forEach((header, index) => {
         if(table.headers[header].width) {
