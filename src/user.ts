@@ -41,7 +41,17 @@ export interface UserPatientFilters {
 export enum UserRoleName {
   SuperAdmin = 'Super Admin',
   Admin = 'Admin',
+  
+  /**
+   * Snfs role represent a user that manages SNF patients and interactions within the system.
+   */
   Snfs = 'Snfs',
+  
+  /**
+   * User with Worker role represent a user used as a tool to perform tasks or general actions in the system.
+   * that has regular user permissions but is not associated with a human operator.
+   */
+  Worker = 'Worker',
 }
 
 export interface UserMeta {
