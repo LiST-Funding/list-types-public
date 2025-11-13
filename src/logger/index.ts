@@ -1,3 +1,10 @@
+export interface DbLogComment{
+    userId?: string;
+    userDisplayName?: string;
+    date?: Date;
+    comment?: string;
+    handlingStatus?: string;
+}
 export interface DbLog {
     service?: string;
     srcType?:string;
@@ -12,7 +19,9 @@ export interface DbLog {
     referralId?: string;
     data?: Object
     stack ?: string[];
-    [key: string]: any;  
+    handlingStatus?: string;
+    comments?:DbLogComment[];
+    // [key: string]: any;  
 }
 
 export const dbLogSchema = {
@@ -29,4 +38,12 @@ export const dbLogSchema = {
     status: { type: String, enum: ['success', 'fail', 'pending'] },
     referralId: { type: String},
     data: { type: Object },
+    handlingStatus: { type: String, default: 'new' },
+    comments: [{
+        userId: { type: String },
+        userDisplayName: { type: String },
+        date: { type: Date },
+        comment: { type: String },
+        handlingStatus: { type: String }
+    }]
 }
