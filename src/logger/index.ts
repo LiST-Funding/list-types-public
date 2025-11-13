@@ -21,7 +21,7 @@ export interface DbLog {
     stack ?: string[];
     handlingStatus?: string;
     comments?:DbLogComment[];
-    [key: string]: any;  
+    // [key: string]: any;  
 }
 
 export const dbLogSchema = {
@@ -39,5 +39,11 @@ export const dbLogSchema = {
     referralId: { type: String},
     data: { type: Object },
     handlingStatus: { type: String, default: 'new' },
-    comments:{ type: Array },
+    comments: [{
+        userId: { type: String },
+        userDisplayName: { type: String },
+        date: { type: Date },
+        comment: { type: String },
+        handlingStatus: { type: String }
+    }]
 }
