@@ -49,8 +49,30 @@ const naviResponseOptions: NaviResponseConfigs = {
         statusCode: "ACCEPT",
         displayValue: "Accept",
         transitionedFrom:[
-            NAVI_RESPONSES.accept
-        ]
+            NAVI_RESPONSES.accept,
+            NAVI_RESPONSES.decisionPendingAuthorization,
+            NAVI_RESPONSES.decisionPendingBedAvailability,
+            NAVI_RESPONSES.decisionPendingReview,
+            NAVI_RESPONSES.requestMoreInformation
+        ],
+        responseReasonOptions: [
+          {
+              displayValue: "Medicare",
+              value: "MEDICARE"}, 
+          {
+              displayValue: "Medicaid",
+              value: "MEDICAID"
+          }, 
+          {displayValue: "Commercial",
+              value: "COMMERCIAL"
+          }, 
+          {displayValue: "Private",
+              value: "PRIVATE"
+          }, 
+          { displayValue: "Unknown",
+              value: "UNKNOWN"
+          }
+      ]
     },
     "Decision Pending Authorization": {
         commentPrefix: "Status changed to Decision Pending Authorization. \r\n",
