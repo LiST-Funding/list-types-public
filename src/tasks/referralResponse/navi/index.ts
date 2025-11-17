@@ -44,6 +44,12 @@ type ResponseOption = {
 type NaviResponseConfigs = { [key:string]:ResponseOption };
 
 const naviResponseOptions: NaviResponseConfigs = {
+    Message: {
+      commentPrefix:"",
+          statusCode: "Message",
+          displayValue: "Message",
+          transitionedFrom:[]
+        },
     Accept:{
         commentPrefix: "Status changed to Accept. \r\n", // + comment
         statusCode: "ACCEPT",
@@ -373,14 +379,14 @@ const naviResponseOptions: NaviResponseConfigs = {
         ]
       },
       //only frome decineed
-      "Re-open Referral": {
-        commentPrefix: "Status changed to Reopen Referral. \r\n",
-        statusCode: "REOPEN",
-        displayValue: "Re-open Referral",
-        transitionedFrom: [
-            NAVI_RESPONSES.decline
-        ]
-      }
+      // "Re-open Referral": {
+      //   commentPrefix: "Status changed to Reopen Referral. \r\n",
+      //   statusCode: "REOPEN",
+      //   displayValue: "Re-open Referral",
+      //   transitionedFrom: [
+      //       NAVI_RESPONSES.decline
+      //   ]
+      // }
 
 }
 
