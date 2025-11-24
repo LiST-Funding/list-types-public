@@ -1,13 +1,15 @@
 import { FOUR_NEXT_EHR_STATUS } from "./ehrStatuses/4NextStatuses";
 import { AIDIN_EHR_STATUS } from "./ehrStatuses/aidenStatuses";
 import { GENERAL_EHR_STATUS } from "./ehrStatuses/generalStatuses";
+import { MEDITECH_EHR_STATUS } from "./ehrStatuses/meditechStatuses";
 import { ListStatus, ListStatusType } from "./listStatus";
 
 function getEhrStatusValues(ListStatusKey:ListStatusType){
     return [
         ...GENERAL_EHR_STATUS[ListStatusKey],
         ...AIDIN_EHR_STATUS[ListStatusKey],
-        ...FOUR_NEXT_EHR_STATUS[ListStatusKey]
+        ...FOUR_NEXT_EHR_STATUS[ListStatusKey],
+        ...MEDITECH_EHR_STATUS[ListStatusKey]
     ]
 }
 

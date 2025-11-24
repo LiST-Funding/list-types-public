@@ -1,13 +1,15 @@
 import { FOUR_NEXT_HOSPITAL_STATUS } from "./ehrStatuses/4NextStatuses";
 import {  AIDIN_HOSPITAL_STATUS } from "./ehrStatuses/aidenStatuses";
 import { GENERAL_HOSPITAL_STATUS} from "./ehrStatuses/generalStatuses";
+import { MEDITECH_HOSPITAL_STATUS } from "./ehrStatuses/meditechStatuses";
 import { ListStatus, ListStatusType } from "./listStatus";
 
 function getHospitalStatusValues(ListStatusKey:ListStatusType){
     return [
         ...GENERAL_HOSPITAL_STATUS[ListStatusKey],
         ...AIDIN_HOSPITAL_STATUS[ListStatusKey],
-        ...FOUR_NEXT_HOSPITAL_STATUS[ListStatusKey]
+        ...FOUR_NEXT_HOSPITAL_STATUS[ListStatusKey],
+        ...MEDITECH_HOSPITAL_STATUS[ListStatusKey]
     ]
 }
 
