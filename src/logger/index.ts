@@ -12,6 +12,7 @@ export interface DbLog {
     referralId?: string;
     data?: Object
     stack ?: string[];
+    status?: "open" | "closed" | "acknowledged" | string;
     [key: string]: any;  
 }
 
@@ -26,7 +27,7 @@ export const dbLogSchema = {
     type: { type: String },
     date: { type: Date },
     message: { type: String },
-    status: { type: String, enum: ['success', 'fail', 'pending'] },
+    status: { type: String },
     referralId: { type: String},
     data: { type: Object },
 }
