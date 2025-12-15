@@ -8,5 +8,6 @@ export enum EhrType {
   Manual = 'Manual Referral',
   Aidin = 'Aidin',
   EpicUMMS = 'Epic UMMS',
-  EpicTrinityHealth = 'Epic Trinity-Health'
+  EpicTrinityHealth = 'Epic Trinity-Health',
+  Aida = "Aida"
 }
