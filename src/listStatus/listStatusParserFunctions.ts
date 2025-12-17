@@ -1,4 +1,4 @@
-import { ListStatus, STATUS_ORDER} from "./listStatus";
+import { ListStatus, ListStatusType, STATUS_ORDER} from "./listStatus";
 import {EHR_STATUS} from "./ehrStatus";
 import {HOSPITAL_STATUS} from "./hospitalStatus";
 
@@ -34,7 +34,7 @@ export function parseStatusToListStatus(status:string) {
  * @param {string} status2 - A string value of one of the values of ListStatus.
  * @returns {boolean} - True if status1 has higher priority than status2, otherwise false.
  */
-export function isHigherPriorityListStatus(status1:string, status2:string):boolean {
+export function isHigherPriorityListStatus(status1:ListStatusType, status2:ListStatusType):boolean {
     const order1 = STATUS_ORDER[status1];
     const order2 = STATUS_ORDER[status2];
     if(order1 === undefined && order2 === undefined) {
