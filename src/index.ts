@@ -10,3 +10,4 @@ export * from './tasks/index';
 export * as ListStatus from './listStatus/index';
 export * from './excel/index';
 export * as logs from './logger/index';
+export * as remoteEnv from './settings/remoteEnv';
