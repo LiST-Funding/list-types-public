@@ -6,10 +6,10 @@ import { ListStatus, ListStatusType } from "./listStatus";
 
 function getHospitalStatusValues(ListStatusKey:ListStatusType){
     return [
-        ...GENERAL_HOSPITAL_STATUS[ListStatusKey],
-        ...AIDIN_HOSPITAL_STATUS[ListStatusKey],
-        ...FOUR_NEXT_HOSPITAL_STATUS[ListStatusKey],
-        ...MEDITECH_HOSPITAL_STATUS[ListStatusKey]
+        ...(GENERAL_HOSPITAL_STATUS[ListStatusKey] || []),
+        ...(AIDIN_HOSPITAL_STATUS[ListStatusKey] || []),
+        ...(FOUR_NEXT_HOSPITAL_STATUS[ListStatusKey] || []),
+        ...(MEDITECH_HOSPITAL_STATUS[ListStatusKey]|| [])
     ]
 }
 

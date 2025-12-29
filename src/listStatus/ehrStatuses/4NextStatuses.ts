@@ -1,8 +1,7 @@
 
-import { ListStatus } from "../listStatus"
+import { ListStatus, StatusesMap } from "../listStatus"
 
-
-export   const FOUR_NEXT_EHR_STATUS = {
+export   const FOUR_NEXT_EHR_STATUS:StatusesMap = {
     [ListStatus.Accepted]: ["Offered","Accept Pending"],
     [ListStatus.Received]: ["Received"],
     [ListStatus.Interested]: [],
@@ -10,10 +9,11 @@ export   const FOUR_NEXT_EHR_STATUS = {
     [ListStatus.New]: [],
   }
 
-export   const FOUR_NEXT_HOSPITAL_STATUS = {
+export   const FOUR_NEXT_HOSPITAL_STATUS:StatusesMap = {
     [ListStatus.Selected]: ["Accept Offer", "Finalized"],
     [ListStatus.NotSelected]: ["Retracted"],
     [ListStatus.Cancelled]: [],
     [ListStatus.Closed]: [],  
     [ListStatus.New]: ["New"],
   }
+

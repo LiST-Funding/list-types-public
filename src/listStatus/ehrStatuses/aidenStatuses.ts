@@ -16,10 +16,9 @@
 //     "handed_to_provider" selected
 // ]
 
-import { ListStatus } from "../listStatus"
+import { ListStatus, StatusesMap } from "../listStatus"
 
-
-export   const AIDIN_EHR_STATUS = {
+export   const AIDIN_EHR_STATUS: StatusesMap = {
     [ListStatus.Accepted]: ["available","chosen"],
     [ListStatus.Received]: ['viewed'],
     [ListStatus.Interested]: ['under_review'],
@@ -27,7 +26,7 @@ export   const AIDIN_EHR_STATUS = {
     [ListStatus.New]: ['pending'],
   }
 
-export   const AIDIN_HOSPITAL_STATUS = {
+export   const AIDIN_HOSPITAL_STATUS: StatusesMap = {
     [ListStatus.Selected]: [],// in aidin the selected status is defined by wheter the site status is chosen or not. 
     [ListStatus.NotSelected]: ["provider_chosen","handed_to_provider"],
     [ListStatus.Cancelled]: [],
