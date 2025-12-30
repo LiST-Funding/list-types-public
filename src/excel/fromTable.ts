@@ -23,8 +23,14 @@ export function docFromTable(table: ListTable, title: string) {
         }
         return row;
     });
-    addHeaders(sheet, Object.keys(table.headers).map(header => ({ index: table.headers[header].index, key: header, value: table.headers[header].label, width: table.headers[header].width, bgColor: 'blue', color: 'white' })));
-    addRows(sheet, table.rows.map(row => Object.keys(row).map(cell => row[cell] as ListCellParams)));
+    const sortedHeaders = addHeaders(sheet, Object.keys(table.headers).map(header => ({ index: table.headers[header].index, key: header, value: table.headers[header].label, width: table.headers[header].width, bgColor: 'blue', color: 'white' })));
+    // create rows in the order of the headers
+    const orderedRows = table.rows.map(row => sortedHeaders.map(header => row[header.key] as ListCellParams))
+
+
+
+
+    addRows(sheet, orderedRows);
     Object.keys(table.headers).forEach((header, index) => {
         if(table.headers[header].width) {
             sheet.getColumn(index + 1).width = pxToExcelWidth(table.headers[header].width ?? 150);
@@ -44,8 +50,8 @@ export function autoFitColumns(column: Column, text: string, minimalWidth = 10) 
  }
   
   
-function addHeaders(sheet: Worksheet, headers: ExcelFileHeaderParams[]): void {
-  const { headersData, headerIndexes } = buildHeaderData(headers);
+function addHeaders(sheet: Worksheet, headers: ExcelFileHeaderParams[]): ExcelFileHeaderParams[]{
+  const { headersData, headerIndexes, sortedHeaders } = buildHeaderData(headers);
   sheet.columns = headersData;
   const headerRow = sheet.getRow(1);
   let lastParams = headers[0];
@@ -59,6 +65,7 @@ function addHeaders(sheet: Worksheet, headers: ExcelFileHeaderParams[]): void {
     lastParams = params;
   });
   headerRow.height = DEFAULTS.ROW.HEIGHT;
+  return sortedHeaders;
 }
 
 function addRows(sheet: Worksheet, rows: ListCellParams[][]): void {

@@ -91,7 +91,7 @@ export function buildHeaderData(headers: ExcelFileHeaderParams[]) {
       }
     }
   });
-  return { headersData, headerIndexes };
+  return { headersData, headerIndexes, sortedHeaders: headers };
 }
 
 function orderArray<T extends object>(arr: T[]): T[] {
