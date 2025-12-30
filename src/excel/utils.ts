@@ -75,6 +75,7 @@ export function applyCellStyles(cell: Cell, {
 }
 
 export function buildHeaderData(headers: ExcelFileHeaderParams[]) {
+  headers = orderArray(headers);
   const headersData: { header: string; key: string; width?: number; }[] = [];
   const headerIndexes: Record<number, number> = {};
   let actualIndex = 0;
@@ -92,3 +93,62 @@ export function buildHeaderData(headers: ExcelFileHeaderParams[]) {
   });
   return { headersData, headerIndexes };
 }
+
+function orderArray<T extends object>(arr: T[]): T[] {
+  // Split array into items with 'index' and without
+  const withIndex: { original: T; index: number }[] = [];
+  const withoutIndex: T[] = [];
+
+  for (const item of arr) {
+    if ("index" in item && typeof (item as any).index === "number") {
+      withIndex.push({ original: item, index: (item as any).index });
+    } else {
+      withoutIndex.push(item);
+    }
+  }
+
+  // Sort the indexed items by their index value
+  withIndex.sort((a, b) => a.index - b.index);
+
+  // Build the final array
+  const result: T[] = [];
+  let wIndex = 0, woIndex = 0;
+  let currentIndex = 0;
+
+  // Place items without index at the "first available gaps" in index order
+  while (wIndex < withIndex.length || woIndex < withoutIndex.length) {
+    // If there's a without-index item and either
+    // - we've run out of withIndex, or
+    // - its index is greater than the position
+    if (
+      woIndex < withoutIndex.length &&
+      (
+        wIndex >= withIndex.length ||
+        withIndex[wIndex].index > currentIndex
+      )
+    ) {
+      result.push(withoutIndex[woIndex++]);
+      currentIndex++;
+    } else if (wIndex < withIndex.length && withIndex[wIndex].index === currentIndex) {
+      result.push(withIndex[wIndex++].original);
+      currentIndex++;
+    } else if (wIndex < withIndex.length && withIndex[wIndex].index < currentIndex) {
+      // Should not happen, but just in case of duplicate or out-of-order indices
+      result.push(withIndex[wIndex++].original);
+    } else {
+      // If index skips, fill gap with withoutIndex item if any
+      if (woIndex < withoutIndex.length) {
+        result.push(withoutIndex[woIndex++]);
+        currentIndex++;
+      } else if (wIndex < withIndex.length) {
+        // Otherwise fill with whatever indexed record is next
+        result.push(withIndex[wIndex++].original);
+        currentIndex++;
+      } else {
+        break;
+      }
+    }
+  }
+  return result;
+}
+
