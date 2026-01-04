@@ -29,6 +29,7 @@ export interface ExcelFileParams {
     borderColor?: string;
     borderStyle?: 'thin' | 'medium' | 'thick' | 'double' | 'dotted' | 'dashed';
     width?: number;
+    numFmt?: string;
   }
   
   export enum ExcelFileAlign {

@@ -73,6 +73,9 @@ function addRows(sheet: Worksheet, rows: ListCellParams[][]): void {
     const rowData = cells.map(({ value }) => value);
     const row = sheet.addRow(rowData);
     row.eachCell((cell, colIndex) => {
+      if(cells[colIndex - 1]?.numFmt) {
+        cell.numFmt = cells[colIndex - 1]?.numFmt || '';
+      }
       const params = cells[colIndex - 1];
       if (!params) {
         return;
