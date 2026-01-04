@@ -46,6 +46,7 @@ export interface SnfPatientDetails {
   listPayerType?: PayerType;
   listEligibility?:Record<string, any>;
   isArchived?: boolean;
+  snfAccountId?: number;
 }
 
 export enum ReadStatus {
