@@ -6,10 +6,10 @@ import { ListStatus, ListStatusType } from "./listStatus";
 
 function getEhrStatusValues(ListStatusKey:ListStatusType){
     return [
-        ...GENERAL_EHR_STATUS[ListStatusKey],
-        ...AIDIN_EHR_STATUS[ListStatusKey],
-        ...FOUR_NEXT_EHR_STATUS[ListStatusKey],
-        ...MEDITECH_EHR_STATUS[ListStatusKey]
+        ...(GENERAL_EHR_STATUS[ListStatusKey] || []),
+        ...(AIDIN_EHR_STATUS[ListStatusKey] || []),
+        ...(FOUR_NEXT_EHR_STATUS[ListStatusKey] || []),
+        ...(MEDITECH_EHR_STATUS[ListStatusKey] || [])
     ]
 }
 

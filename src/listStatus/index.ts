@@ -3,6 +3,8 @@ import {EHR_STATUS} from "./ehrStatus";
 import {HOSPITAL_STATUS} from "./hospitalStatus";
 
 export { ListStatus, STATUS_ORDER, EHR_STATUS, HOSPITAL_STATUS };
+
+export * as systemParser from "./systemsParserFunctions";
 export * from "./listStatusParserFunctions";
 
 

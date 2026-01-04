@@ -1,5 +1,5 @@
 
-export const ListStatus ={
+export const ListStatus =Object.freeze( {
     Accepted: 'accepted',
     Received: 'received',
     Interested: 'interested',
@@ -12,10 +12,11 @@ export const ListStatus ={
     New: 'new',
     Admitted: 'admitted',
     ReAdmitted: 're-admitted',
-  }
+  })
+  export type ListStatusType = typeof ListStatus[keyof typeof ListStatus];
+  export type StatusesMap = Partial<Record<ListStatusType,string[]>>
 
-
-  export   const STATUS_ORDER = {
+  export   const STATUS_ORDER:Record<ListStatusType,number> = {
     [ListStatus.Admitted]: -2,
     [ListStatus.ReAdmitted]: -1,
     [ListStatus.Selected]: 1,
@@ -27,8 +28,6 @@ export const ListStatus ={
     [ListStatus.Interested]: 5,
     [ListStatus.Received]: 6,
     [ListStatus.New]: 7,
+    [ListStatus.NoResponse]: 8,
   }
-
-  
-  export type ListStatusType = typeof ListStatus[keyof typeof ListStatus];
 
