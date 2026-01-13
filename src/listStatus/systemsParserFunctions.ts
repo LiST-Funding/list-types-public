@@ -4,6 +4,7 @@ import { AIDA_EHR_STATUS, AIDA_HOSPITAL_STATUS } from "./ehrStatuses/aidaStatuse
 import { AIDIN_EHR_STATUS, AIDIN_HOSPITAL_STATUS } from "./ehrStatuses/aidenStatuses";
 import { GENERAL_EHR_STATUS, GENERAL_HOSPITAL_STATUS } from "./ehrStatuses/generalStatuses";
 import { MEDITECH_EHR_STATUS, MEDITECH_HOSPITAL_STATUS } from "./ehrStatuses/meditechStatuses";
+import { REPISODIC_EHR_STATUS, REPISODIC_HOSPITAL_STATUS } from "./ehrStatuses/repisodicStatuses";
 
 export const meditech = new SystemSpecificStatusParser(
     MEDITECH_EHR_STATUS,
@@ -30,3 +31,7 @@ export const aida = new SystemSpecificStatusParser(
     AIDA_EHR_STATUS,
     AIDA_HOSPITAL_STATUS
 )
+export const repisodic = new SystemSpecificStatusParser(
+  REPISODIC_EHR_STATUS,
+  REPISODIC_HOSPITAL_STATUS
+);
