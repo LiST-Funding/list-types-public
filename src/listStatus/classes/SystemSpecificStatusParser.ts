@@ -39,4 +39,10 @@ export class SystemSpecificStatusParser{
             return this.parseEhrStatusToListStatus(status) || this.parseHospitalStatusToListStatus(status) || status;
         }
     
+    getAllStatuses(){
+        return Array.from(new Set([
+            ...Object.values(this.#ehrStatuses).flat(),
+            ...Object.values(this.#hospitalStatuses).flat()
+        ]));
+    }
 }
