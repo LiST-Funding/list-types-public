@@ -84,4 +84,6 @@ export interface SnfPatientSite {
 
   //Aidin Fields
   isClosed?: boolean;
+
+  puppeteerAlerts?:any[];
 }
