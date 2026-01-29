@@ -1,8 +1,8 @@
-import { ListStatus, STATUS_ORDER} from "./listStatus";
+import { ListStatus, STATUS_ORDER, ListSiteStatuses, ListHospitalStatuses} from "./listStatus";
 import {EHR_STATUS} from "./ehrStatus";
 import {HOSPITAL_STATUS} from "./hospitalStatus";
 
-export { ListStatus, STATUS_ORDER, EHR_STATUS, HOSPITAL_STATUS };
+export { ListStatus, STATUS_ORDER, EHR_STATUS, HOSPITAL_STATUS,ListSiteStatuses, ListHospitalStatuses };
 
 export * as systemParser from "./systemsParserFunctions";
 export * from "./listStatusParserFunctions";
