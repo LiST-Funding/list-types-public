@@ -1,9 +1,11 @@
 import  {SnfPatientSite,ListPatientStatus, SnfPatientResponseHistoryItemAllScripts,SnfPatientResponseHistoryItemEpic}  from "./site";
+import * as BaseInfo from "./patient/baseInfo";
 export {SnfPatientSite,ListPatientStatus, SnfPatientResponseHistoryItemAllScripts,SnfPatientResponseHistoryItemEpic}
 
+export {BaseInfo}
 export interface SnfPatientDetails {
   _id?: string;
-  baseInfo: any;
+  baseInfo: BaseInfo.EHRBaseInfo;
   patientInfo: any;
   referalInfo: any;
   sites: SnfPatientSite[];
