@@ -17,7 +17,7 @@ export interface SnfPatientDetails {
   lastTimeUpdate: Date;
   referalId: string;
   Hospital?: string;
-  HosptialFacility?: string;
+  HospitalFacility?: string;
   ReferralID: string;
   admitionsInfo: Object;
   srcType: string;
