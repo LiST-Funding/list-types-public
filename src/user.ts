@@ -1,6 +1,7 @@
 import { EhrType } from "./ehr";
 import { ListPatientStatus } from "./patient";
 
+
 export interface User {
   _id?: string;
   email: string;
@@ -18,6 +19,7 @@ export interface User {
   meta?: UserMeta;
   deleted?: boolean;
   regionId?: number;
+
 }
 
 export interface UserEhrCredential {
