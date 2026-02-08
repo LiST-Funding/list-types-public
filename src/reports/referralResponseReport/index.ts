@@ -68,15 +68,18 @@ export interface AdmissionData {
     admittedAtSiteName:string,
 }
 
-export interface ReferralResponseReportItemDoc {
+export type ReferralResponseReportJsonItem = {
+    patient: PatientData;
+    response: ResponsesDataObject;
+    admission: AdmissionData;
+}
+
+export interface ReferralResponseReportItemDoc extends ReferralResponseReportJsonItem {
     _id?:string;
     referalId: string;
     listSiteId: number;
     regionId: number;
     srcType: string;
-    patient: PatientData;
-    response: ResponsesDataObject;
-    admission: AdmissionData;
     createdAt: Date;
     updatedAt: Date;
 }
