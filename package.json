@@ -7,9 +7,104 @@
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./excel": {
+      "types": "./dist/excel/index.d.ts",
+      "default": "./dist/excel/index.js"
+    },
+    "./listStatus": {
+      "types": "./dist/listStatus/index.d.ts",
+      "default": "./dist/listStatus/index.js"
+    },
+    "./logger": {
+      "types": "./dist/logger/index.d.ts",
+      "default": "./dist/logger/index.js"
+    },
+    "./patient/baseInfo": {
+      "types": "./dist/patient/baseInfo/index.d.ts",
+      "default": "./dist/patient/baseInfo/index.js"
+    },
+    "./pcc": {
+      "types": "./dist/pcc/index.d.ts",
+      "default": "./dist/pcc/index.js"
+    },
+    "./reports": {
+      "types": "./dist/reports/index.d.ts",
+      "default": "./dist/reports/index.js"
+    },
+    "./reports/referralResponseReport": {
+      "types": "./dist/reports/referralResponseReport/index.d.ts",
+      "default": "./dist/reports/referralResponseReport/index.js"
+    },
+    "./tasks": {
+      "types": "./dist/tasks/index.d.ts",
+      "default": "./dist/tasks/index.js"
+    },
+    "./tasks/referralResponse": {
+      "types": "./dist/tasks/referralResponse/index.d.ts",
+      "default": "./dist/tasks/referralResponse/index.js"
+    },
+    "./tasks/referralResponse/navi": {
+      "types": "./dist/tasks/referralResponse/navi/index.d.ts",
+      "default": "./dist/tasks/referralResponse/navi/index.js"
+    },
+    "./types/le": {
+      "types": "./dist/types/le/index.d.ts",
+      "default": "./dist/types/le/index.js"
+    },
+    "./user": {
+      "types": "./dist/user/index.d.ts",
+      "default": "./dist/user/index.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "excel": [
+        "./dist/excel/index.d.ts"
+      ],
+      "listStatus": [
+        "./dist/listStatus/index.d.ts"
+      ],
+      "logger": [
+        "./dist/logger/index.d.ts"
+      ],
+      "patient/baseInfo": [
+        "./dist/patient/baseInfo/index.d.ts"
+      ],
+      "pcc": [
+        "./dist/pcc/index.d.ts"
+      ],
+      "reports": [
+        "./dist/reports/index.d.ts"
+      ],
+      "reports/referralResponseReport": [
+        "./dist/reports/referralResponseReport/index.d.ts"
+      ],
+      "tasks": [
+        "./dist/tasks/index.d.ts"
+      ],
+      "tasks/referralResponse": [
+        "./dist/tasks/referralResponse/index.d.ts"
+      ],
+      "tasks/referralResponse/navi": [
+        "./dist/tasks/referralResponse/navi/index.d.ts"
+      ],
+      "types/le": [
+        "./dist/types/le/index.d.ts"
+      ],
+      "user": [
+        "./dist/user/index.d.ts"
+      ]
+    }
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
+    "generate-exports": "node scripts/generate-exports.mjs",
+    "build": "npm run generate-exports && tsc",
     "prepare": "npm run build",
     "dev:link:localProject": "npm i && npm link"
   },
