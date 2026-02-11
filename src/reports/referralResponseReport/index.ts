@@ -12,6 +12,8 @@ export interface ParsedResponse {
     ResponseStatus: string,
     responseListStatus:ListPatientStatus | null,
     ResponseBy: string,
+    EhrResponseBy?: string,
+    ListResponseBy?: string,
     ResponseReason?: string,
 };
 
