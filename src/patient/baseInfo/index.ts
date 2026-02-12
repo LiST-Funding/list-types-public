@@ -1,13 +1,13 @@
 export type BaseInfo = {
-  ReferralID: number;
-  LastActivityDate: string;
-  Hospital: string;
-  PatientName: string;
+  ReferralID ?: number;
+  LastActivityDate?: string;
+  Hospital?: string;
+  PatientName?: string;
   /**
    * @description The date and time the patient was first posted to the system.
    * @example "2026-01-01T00:00:00.000Z"
    */
-  FirstPostingDate: string;
+  FirstPostingDate?: string;
   /**
    * @description Date object of the FirstPostingDate.
    */
@@ -28,11 +28,11 @@ export interface EpicBaseInfo extends BaseInfo {
     /**
      * @description The source of the request from the patient as it is displayed in the ehr Requset From column
      */
-    srcRequestFrom: string;
+    srcRequestFrom?: string;
 }
 
 export interface NaviBaseInfo extends Omit<BaseInfo, 'FirstPostingDate'> {
-    FirstPostingDate: number;
+    FirstPostingDate?: number;
 }
 
 export type EHRBaseInfo = EpicBaseInfo | NaviBaseInfo | BaseInfo;
