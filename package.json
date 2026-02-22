@@ -106,7 +106,7 @@
     "generate-exports": "node scripts/generate-exports.mjs",
     "build": "npm run generate-exports && tsc",
     "prepare": "npm run build",
-    "dev:link:localProject": "npm i && npm link"
+    "dev:link:localProject": "npm i && npm run build && npm link"
   },
   "author": "",
   "license": "ISC",
