@@ -58,6 +58,10 @@ export interface ServiceLastTime {
      */
     processData?: any;
 
+    /**
+     * @description ISO string of the date when the service was archived
+     */
+    lastArchiveDate?: string;
 
     [key: string]: any;
 }

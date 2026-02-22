@@ -12,6 +12,10 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./dashboard": {
+      "types": "./dist/dashboard/index.d.ts",
+      "default": "./dist/dashboard/index.js"
+    },
     "./excel": {
       "types": "./dist/excel/index.d.ts",
       "default": "./dist/excel/index.js"
@@ -63,6 +67,9 @@
   },
   "typesVersions": {
     "*": {
+      "dashboard": [
+        "./dist/dashboard/index.d.ts"
+      ],
       "excel": [
         "./dist/excel/index.d.ts"
       ],
