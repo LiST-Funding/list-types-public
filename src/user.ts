@@ -34,6 +34,11 @@ export interface UserSettings {
   facilities: number[];
   patientsFilters: UserPatientFilters;
   regionId?: number;
+  notificationPreferences: UserNotificationPreferences;
+}
+
+export interface UserNotificationPreferences {
+  notifyOnComment?: boolean;
 }
 
 export interface UserPatientFilters {
