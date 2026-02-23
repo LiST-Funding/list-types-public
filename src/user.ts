@@ -35,10 +35,20 @@ export interface UserSettings {
   patientsFilters: UserPatientFilters;
   regionId?: number;
   notificationPreferences: UserNotificationPreferences;
+  uiSettings: UiSettings;
 }
 
 export interface UserNotificationPreferences {
   notifyOnComment?: boolean;
+  
+}
+
+export interface UiSettings {
+    newVersionPages: NewVersionPages;
+}
+
+export interface NewVersionPages {
+    jobInfo: boolean;
 }
 
 export interface UserPatientFilters {
