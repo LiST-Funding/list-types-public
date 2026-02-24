@@ -1,45 +1,20 @@
-
-
-export type Coverage = {
+export interface MinimalCoverage  {
   financialClass?: string;
-  insuranceType?: string;
-  cobPriority?: number;
 
   payer?: {
     name?: string;
-    phone?: string;
-    code?: string;
   };
 
   plan?: {
     name?: string;
-    description?: string;
-    number?: string;
     planId?: string;
   };
 
   identifiers?: {
-    policyNumber?: string;
-    memberId?: string;
-    groupNumber?: string;
-    groupName?: string;
     groupId?: string;
-    subscriberId?: string;
+    groupName?: string;
     insuranceId?: string;
-    medicaidNumber?: string;
-    medicareImeNumber?: string;
-  };
-
-  effective?: {
-    date?: string;
-    from?: string;
-    to?: string;
-  };
-
-  authorization?: {
-    authNumber?: string;
-    precertNumber?: string;
-    certificationStatus?: string;
+    memberId?: string;
   };
 
   subscriber?: {
@@ -47,14 +22,26 @@ export type Coverage = {
     dob?: string;
     address?: { raw?: string };
     phone?: string;
-    relationshipToPatient?: string;
+    relationship?: string;
   };
 
-  insured?: {
-    name?: { first?: string; middle?: string; last?: string; full?: string };
-    dob?: string;
-    relationship?: string;
-    address?: { raw?: string };
+}
+
+export interface Coverage extends MinimalCoverage  {
+
+  cobPriority?: number;
+
+  authorization?: {
+    authNumber?: string;
+    precertNumber?: string;
+    certificationStatus?: string;
+  };
+
+
+  effective?: {
+    date?: string;
+    from?: string;
+    to?: string;
   };
 
   employer?: {
