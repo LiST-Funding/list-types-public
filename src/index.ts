@@ -1,7 +1,8 @@
 export * from './patient';
 export * from './user';
 export * from './ehr';
-export * from './settings/index';
+export * from './settings/facilities';
+export * from './settings/facility-registry';
 export * from './types/le'
 export * from './utils/csv/ListCSV';
 export * as pdfUtils from './utils/pdf/pdf';
