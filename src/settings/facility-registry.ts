@@ -137,4 +137,8 @@ export class FacilityRegistry {
     return entry?.pccName || ehrName;
   }
 
+  getSiteId(ehrName: string, ehrType: string): number {
+    const entry = this.findByEhrName(ehrType, ehrName);
+    return entry?.id || 0;
+  }
 }
