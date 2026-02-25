@@ -33,7 +33,7 @@ export interface FacilityEntry {
 
 // --- FacilityRegistry Class ---
 
-export class FacilityRegistry {
+export class RegionFacilityRegistry {
   private facilitiesById: Map<number, FacilityEntry> = new Map();
   private pccNameIndex: Map<string, FacilityEntry> = new Map(); // pccName → entry
   private ehrReverseIndex: Map<string, Map<string, FacilityEntry>> = new Map(); // ehrType → (ehrName → entry)
