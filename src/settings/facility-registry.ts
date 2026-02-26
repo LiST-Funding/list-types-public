@@ -52,6 +52,10 @@ export class RegionFacilityRegistry {
 
     const pccByFacId = new Map<number, FacilityPccImportInput>();
     for (const pcc of pccImports) {
+      if(pcc.regionId !== regionId) {
+        console.warn(`RegionFacilityRegistry [region ${regionId}]: skipping PCC import for facility ${pcc.fac_id} — wrong region (${pcc.regionId})`);
+        continue;
+      }
       pccByFacId.set(pcc.fac_id, pcc);
     }
 
@@ -59,7 +63,7 @@ export class RegionFacilityRegistry {
 
     for (const settings of facilitySettings) {
       if (settings.regionId !== regionId) {
-        console.error(
+        console.warn(
           `RegionFacilityRegistry [region ${regionId}]: skipping facility ${settings.facilityId} — wrong region (${settings.regionId})`
         );
         continue;
