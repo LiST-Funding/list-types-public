@@ -34,6 +34,7 @@ export interface FacilityEntry {
 // --- FacilityRegistry Class ---
 
 export class RegionFacilityRegistry {
+  public readonly regionId: number;
   private facilitiesById: Map<number, FacilityEntry> = new Map();
   private pccNameIndex: Map<string, FacilityEntry> = new Map(); // pccName → entry
   private ehrReverseIndex: Map<string, Map<string, FacilityEntry>> = new Map(); // ehrType → (ehrName → entry)
@@ -41,16 +42,33 @@ export class RegionFacilityRegistry {
 
   constructor(
     pccImports: FacilityPccImportInput[],
-    facilitySettings: FacilitySettingsInput[]
+    facilitySettings: FacilitySettingsInput[],
+    regionId: number
   ) {
+    if (regionId === null || regionId === undefined) {
+      throw new Error(`RegionFacilityRegistry: regionId is required (received ${regionId})`);
+    }
+    this.regionId = regionId;
+
     const pccByFacId = new Map<number, FacilityPccImportInput>();
     for (const pcc of pccImports) {
+      if(pcc.regionId !== regionId) {
+        console.warn(`RegionFacilityRegistry [region ${regionId}]: skipping PCC import for facility ${pcc.fac_id} — wrong region (${pcc.regionId})`);
+        continue;
+      }
       pccByFacId.set(pcc.fac_id, pcc);
     }
 
     const ehrTypesSet = new Set<string>();
 
     for (const settings of facilitySettings) {
+      if (settings.regionId !== regionId) {
+        console.warn(
+          `RegionFacilityRegistry [region ${regionId}]: skipping facility ${settings.facilityId} — wrong region (${settings.regionId})`
+        );
+        continue;
+      }
+
       const pcc = pccByFacId.get(settings.facilityId);
 
       const entry: FacilityEntry = {
