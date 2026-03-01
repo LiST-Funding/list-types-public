@@ -90,8 +90,20 @@ export interface SnfPatientComment {
   readStatus?: ReadStatus;
   isMine?: boolean;
   userName?: string;
+  followers: CommentFollower[];
   createdAt?: string;
   updatedAt?: string;
+}
+
+/**
+ * Follower in comment (with snapshot for DB inspection)
+ */
+export interface CommentFollower {
+  userId: string;
+  userSnapshot: {
+    name?: string;
+    email?: string;
+  };
 }
 
 export interface BackgroundCheck {
