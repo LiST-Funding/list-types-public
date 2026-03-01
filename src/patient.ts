@@ -1,5 +1,6 @@
 import  {SnfPatientSite,ListPatientStatus, SnfPatientResponseHistoryItemAllScripts,SnfPatientResponseHistoryItemEpic}  from "./site";
 import * as BaseInfo from "./patient/baseInfo";
+import { ListFinancialInformation } from "./patient/financialInformation";
 export {SnfPatientSite,ListPatientStatus, SnfPatientResponseHistoryItemAllScripts,SnfPatientResponseHistoryItemEpic}
 
 export {BaseInfo}
@@ -22,6 +23,7 @@ export interface SnfPatientDetails {
   admitionsInfo: Object;
   srcType: string;
   financialInformation: any;
+  listFinancialInformation:ListFinancialInformation
   updates: {
     files: [];
     sites: [];
