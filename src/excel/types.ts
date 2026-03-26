@@ -7,6 +7,11 @@ export type ListTable = {
     rows: Record<string, ListCellValue>[];
 }
 
+export interface ListWorkbookSheet {
+    title: string;
+    table: ListTable;
+}
+
 export interface ExcelFileParams {
     title: string;
     headers: ExcelFileHeaderParams[];

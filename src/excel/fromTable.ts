@@ -1,42 +1,19 @@
-import { Workbook, Worksheet, Buffer as ExcelBuffer, Column } from 'exceljs';
-import { ListCellParams, ExcelFileHeaderParams, ExcelFileParams, ExcelFileAlign } from './types';
+import { Workbook, Worksheet, Buffer as ExcelBuffer, Column, Cell } from 'exceljs';
+import { ListCellParams, ExcelFileHeaderParams, ExcelFileParams, ExcelFileAlign, ListCellValue, ListWorkbookSheet } from './types';
 // import { applyCellStyles, buildHeaderData } from './util';
 import { DEFAULTS } from './constants';
 import { ListTable } from './types';
 import { applyCellStyles, buildHeaderData } from './utils';
 
 export function docFromTable(table: ListTable, title: string) {
+    return docFromTables([{ title, table }]);
+}
+
+export function docFromTables(sheets: ListWorkbookSheet[]) {
     const workbook = new Workbook();
-    const sheet = workbook.addWorksheet(title);
-    table.rows.map(row => {
-        for (const cellKey in row) {
-            const cell = row[cellKey];
-            if (typeof cell === 'string') {
-                row[cellKey] = { value: cell } as ListCellParams;
-            }
-            if (typeof cell === 'number') {
-                row[cellKey] = { value: '' + cell, type: 'number' } as ListCellParams;
-            }
-            if (cell instanceof Date) {
-                row[cellKey] = { value: cell.toISOString(), type: 'date' } as ListCellParams;
-            }
-        }
-        return row;
-    });
-    const sortedHeaders = addHeaders(sheet, Object.keys(table.headers).map(header => ({ index: table.headers[header].index, key: header, value: table.headers[header].label, width: table.headers[header].width, bgColor: 'blue', color: 'white' })));
-    // create rows in the order of the headers
-    const orderedRows = table.rows.map(row => sortedHeaders.map(header => row[header.key] as ListCellParams))
-
-
-
-
-    addRows(sheet, orderedRows);
-    Object.keys(table.headers).forEach((header, index) => {
-        if(table.headers[header].width) {
-            sheet.getColumn(index + 1).width = pxToExcelWidth(table.headers[header].width ?? 150);
-        } else {
-            autoFitColumns(sheet.getColumn(index + 1), table.headers[header].label);
-        }
+    sheets.forEach(({ title, table }) => {
+        const sheet = workbook.addWorksheet(title);
+        populateSheetFromTable(sheet, table);
     });
     return workbook.xlsx.writeBuffer();
 }
@@ -55,7 +32,7 @@ function addHeaders(sheet: Worksheet, headers: ExcelFileHeaderParams[]): ExcelFi
   sheet.columns = headersData;
   const headerRow = sheet.getRow(1);
   let lastParams = headers[0];
-  headerRow.eachCell({ includeEmpty: true }, (cell, index) => {
+  headerRow.eachCell({ includeEmpty: true }, (cell: Cell, index: number) => {
     const colIndex = headerIndexes[index];
     const params = headers[colIndex] ?? lastParams;
     if (!params) {
@@ -72,7 +49,7 @@ function addRows(sheet: Worksheet, rows: ListCellParams[][]): void {
   rows.forEach(cells => {
     const rowData = cells.map(({ value }) => value);
     const row = sheet.addRow(rowData);
-    row.eachCell((cell, colIndex) => {
+    row.eachCell((cell: Cell, colIndex: number) => {
       if(cells[colIndex - 1]?.numFmt) {
         cell.numFmt = cells[colIndex - 1]?.numFmt || '';
       }
@@ -83,6 +60,47 @@ function addRows(sheet: Worksheet, rows: ListCellParams[][]): void {
       applyCellStyles(cell, params);
     });
     row.height = DEFAULTS.ROW.HEIGHT;
+  });
+}
+
+function normalizeCell(cell: ListCellValue): ListCellParams {
+  if (typeof cell === 'string') {
+    return { value: cell };
+  }
+  if (typeof cell === 'number') {
+    return { value: String(cell) };
+  }
+  if (cell instanceof Date) {
+    return { value: cell.toISOString() };
+  }
+  return cell;
+}
+
+function populateSheetFromTable(sheet: Worksheet, table: ListTable): void {
+  const sortedHeaders = addHeaders(
+    sheet,
+    Object.keys(table.headers).map(header => ({
+      index: table.headers[header].index,
+      key: header,
+      value: table.headers[header].label,
+      width: table.headers[header].width,
+      bgColor: 'blue',
+      color: 'white'
+    }))
+  );
+
+  const orderedRows = table.rows.map(row =>
+    sortedHeaders.map(header => normalizeCell(row[header.key]))
+  );
+
+  addRows(sheet, orderedRows);
+
+  Object.keys(table.headers).forEach((header, index) => {
+    if (table.headers[header].width) {
+      sheet.getColumn(index + 1).width = pxToExcelWidth(table.headers[header].width ?? 150);
+    } else {
+      autoFitColumns(sheet.getColumn(index + 1), table.headers[header].label);
+    }
   });
 }
 
