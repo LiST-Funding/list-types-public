@@ -48,6 +48,7 @@ export function applyCellStyles(cell: Cell, {
   textAlign,
   fontSize,
   color,
+  bold,
   borderColor,
 }: ListCellParams): void {
   if (bgColor) {
@@ -64,7 +65,8 @@ export function applyCellStyles(cell: Cell, {
   };
   cell.font = { 
     size: fontSize ?? DEFAULTS.FONT.SIZE, 
-    color: { argb: hexToArgb(color ?? DEFAULTS.FONT.COLOR) } 
+    color: { argb: hexToArgb(color ?? DEFAULTS.FONT.COLOR) },
+    bold: bold ?? false,
   };
   cell.border = {
     top: { style: 'thin', color: { argb: hexToArgb( borderColor ?? DEFAULTS.BORDER.COLOR ) } },
