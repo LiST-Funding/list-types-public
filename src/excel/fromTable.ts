@@ -28,6 +28,16 @@ function pxToExcelWidth(px: number): number {
 export function autoFitColumns(column: Column, text: string, minimalWidth = 10) {
     column.width = Math.max(text.length + 2, minimalWidth);
  }
+
+function getCellTextLength(value: string): number {
+  return value
+    .split('\n')
+    .reduce((maxLength, line) => Math.max(maxLength, line.length), 0);
+}
+
+function getAutoFitColumnWidth(maxTextLength: number, minimalWidth = 10, maximalWidth = 60): number {
+  return Math.min(Math.max(maxTextLength + 2, minimalWidth), maximalWidth);
+}
   
   
 function addHeaders(sheet: Worksheet, headers: ExcelFileHeaderParams[]): ExcelFileHeaderParams[]{
@@ -52,7 +62,7 @@ function addRows(sheet: Worksheet, rows: ListCellParams[][]): void {
   rows.forEach(cells => {
     const rowData = cells.map(({ value }) => value);
     const row = sheet.addRow(rowData);
-    row.eachCell({ includeEmpty: true }, (cell: Cell, colIndex: number) => {
+    row.eachCell((cell: Cell, colIndex: number) => {
       if (cells[colIndex - 1]?.numFmt) {
         cell.numFmt = cells[colIndex - 1]?.numFmt || '';
       }
@@ -133,17 +143,25 @@ function populateSheetFromTable(sheet: Worksheet, table: ListTable): void {
     }))
   );
 
+  const autoFitTextLengths = sortedHeaders.map(header => getCellTextLength(header.value));
   const orderedRows = table.rows.map((row, rowIndex) =>
-    sortedHeaders.map(header => applyZebraStriping(normalizeCell(row[header.key]), rowIndex))
+    sortedHeaders.map((header, columnIndex) => {
+      const cell = applyZebraStriping(normalizeCell(row[header.key]), rowIndex);
+      autoFitTextLengths[columnIndex] = Math.max(
+        autoFitTextLengths[columnIndex],
+        getCellTextLength(cell.value),
+      );
+      return cell;
+    })
   );
 
   addRows(sheet, orderedRows);
 
-  Object.keys(table.headers).forEach((header, index) => {
-    if (table.headers[header].width) {
-      sheet.getColumn(index + 1).width = pxToExcelWidth(table.headers[header].width ?? 150);
+  sortedHeaders.forEach((header, index) => {
+    if (header.width) {
+      sheet.getColumn(index + 1).width = pxToExcelWidth(header.width);
     } else {
-      autoFitColumns(sheet.getColumn(index + 1), table.headers[header].label);
+      sheet.getColumn(index + 1).width = getAutoFitColumnWidth(autoFitTextLengths[index]);
     }
   });
 }
