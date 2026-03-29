@@ -49,8 +49,8 @@ function addRows(sheet: Worksheet, rows: ListCellParams[][]): void {
   rows.forEach(cells => {
     const rowData = cells.map(({ value }) => value);
     const row = sheet.addRow(rowData);
-    row.eachCell((cell: Cell, colIndex: number) => {
-      if(cells[colIndex - 1]?.numFmt) {
+    row.eachCell({ includeEmpty: true }, (cell: Cell, colIndex: number) => {
+      if (cells[colIndex - 1]?.numFmt) {
         cell.numFmt = cells[colIndex - 1]?.numFmt || '';
       }
       const params = cells[colIndex - 1];
@@ -64,6 +64,9 @@ function addRows(sheet: Worksheet, rows: ListCellParams[][]): void {
 }
 
 function normalizeCell(cell: ListCellValue): ListCellParams {
+  if (cell === null || cell === undefined) {
+    return { value: '' };
+  }
   if (typeof cell === 'string') {
     return { value: cell };
   }
@@ -72,6 +75,13 @@ function normalizeCell(cell: ListCellValue): ListCellParams {
   }
   if (cell instanceof Date) {
     return { value: cell.toISOString() };
+  }
+  return cell;
+}
+
+function applyZebraStriping(cell: ListCellParams, rowIndex: number): ListCellParams {
+  if (rowIndex % 2 === 1 && !cell.bgColor) {
+    return { ...cell, bgColor: '#D9EEF7' };
   }
   return cell;
 }
@@ -85,12 +95,13 @@ function populateSheetFromTable(sheet: Worksheet, table: ListTable): void {
       value: table.headers[header].label,
       width: table.headers[header].width,
       bgColor: 'blue',
-      color: 'white'
+      color: 'black',
+      bold: true,
     }))
   );
 
-  const orderedRows = table.rows.map(row =>
-    sortedHeaders.map(header => normalizeCell(row[header.key]))
+  const orderedRows = table.rows.map((row, rowIndex) =>
+    sortedHeaders.map(header => applyZebraStriping(normalizeCell(row[header.key]), rowIndex))
   );
 
   addRows(sheet, orderedRows);

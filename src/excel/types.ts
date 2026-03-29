@@ -29,6 +29,7 @@ export interface ExcelFileParams {
     value: string;
     bgColor?: string;
     color?: string; 
+    bold?: boolean;
     textAlign?: ExcelFileAlign;
     fontSize?: number;
     borderColor?: string;
