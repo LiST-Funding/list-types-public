@@ -1,9 +1,9 @@
 import { Workbook, Worksheet, Buffer as ExcelBuffer, Column, Cell } from 'exceljs';
-import { ListCellParams, ExcelFileHeaderParams, ExcelFileParams, ExcelFileAlign, ListCellValue, ListWorkbookSheet } from './types';
+import { ListCellParams, ExcelFileHeaderParams, ExcelFileParams, ExcelFileAlign, ListCellValue, ListWorkbookSheet, RichTextHeaderPart } from './types';
 // import { applyCellStyles, buildHeaderData } from './util';
 import { DEFAULTS } from './constants';
 import { ListTable } from './types';
-import { applyCellStyles, buildHeaderData } from './utils';
+import { applyCellStyles, buildHeaderData, hexToArgb } from './utils';
 
 export function docFromTable(table: ListTable, title: string) {
     return docFromTables([{ title, table }]);
@@ -11,9 +11,12 @@ export function docFromTable(table: ListTable, title: string) {
 
 export function docFromTables(sheets: ListWorkbookSheet[]) {
     const workbook = new Workbook();
-    sheets.forEach(({ title, table }) => {
+    sheets.forEach(({ title, table, richTextHeaders }) => {
         const sheet = workbook.addWorksheet(title);
         populateSheetFromTable(sheet, table);
+        if (richTextHeaders?.length) {
+          addRichTextHeader(sheet, richTextHeaders, Object.keys(table.headers).length);
+        }
     });
     return workbook.xlsx.writeBuffer();
 }
@@ -84,6 +87,36 @@ function applyZebraStriping(cell: ListCellParams, rowIndex: number): ListCellPar
     return { ...cell, bgColor: '#D9EEF7' };
   }
   return cell;
+}
+
+function countRichTextHeaderLines(parts: RichTextHeaderPart[]): number {
+  const text = parts.map(part => part.text).join('');
+  return Math.max(text.split('\n').length, 1);
+}
+
+function addRichTextHeader(sheet: Worksheet, richTextHeaders: RichTextHeaderPart[], columnCount: number): void {
+  const safeColumnCount = Math.max(columnCount, 1);
+  sheet.spliceRows(1, 0, []);
+  sheet.mergeCells(1, 1, 1, safeColumnCount);
+
+  const cell = sheet.getCell(1, 1);
+  cell.value = {
+    richText: richTextHeaders.map(part => ({
+      text: part.text,
+      font: part.font
+        ? {
+            ...part.font,
+            color: part.font.color ? { argb: hexToArgb(part.font.color) } : undefined,
+          }
+        : undefined,
+    })),
+  };
+  cell.alignment = {
+    horizontal: 'left',
+    vertical: 'middle',
+    wrapText: true,
+  };
+  sheet.getRow(1).height = countRichTextHeaderLines(richTextHeaders) * 22;
 }
 
 function populateSheetFromTable(sheet: Worksheet, table: ListTable): void {

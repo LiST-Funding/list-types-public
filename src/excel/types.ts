@@ -7,9 +7,21 @@ export type ListTable = {
     rows: Record<string, ListCellValue>[];
 }
 
+export interface RichTextHeaderFont {
+    bold?: boolean;
+    size?: number;
+    color?: string;
+}
+
+export interface RichTextHeaderPart {
+    text: string;
+    font?: RichTextHeaderFont;
+}
+
 export interface ListWorkbookSheet {
     title: string;
     table: ListTable;
+    richTextHeaders?: RichTextHeaderPart[];
 }
 
 export interface ExcelFileParams {
