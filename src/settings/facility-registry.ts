@@ -15,6 +15,7 @@ export interface FacilitySettingsInput {
   reportsActive: boolean;
   assistedLiving: boolean;
   regionId: number;
+  approvedAdmissionFacilityId?: string;
 }
 
 // --- Output Interface ---
