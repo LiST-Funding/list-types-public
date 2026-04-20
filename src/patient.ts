@@ -50,6 +50,11 @@ export interface SnfPatientDetails {
   listEligibility?:Record<string, any>;
   isArchived?: boolean;
   snfAccountId?: number;
+  clinicalSnapshot?: {
+    stanza: Record<string, string | string[]>;
+    createdAt: Date;
+    version: number;
+  } | null;
 }
 
 export enum ReadStatus {
