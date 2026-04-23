@@ -38,6 +38,15 @@ export function docFromTable(table: ListTable, title: string) {
             autoFitColumns(sheet.getColumn(index + 1), table.headers[header].label);
         }
     });
+    // Enable Excel's native header-row filter dropdowns across all columns.
+    const headerCount = Object.keys(table.headers).length;
+    const lastRow = sheet.lastRow?.number ?? 1;
+    if (headerCount > 0 && lastRow >= 1) {
+        sheet.autoFilter = {
+            from: { row: 1, column: 1 },
+            to: { row: lastRow, column: headerCount },
+        };
+    }
     return workbook.xlsx.writeBuffer();
 }
 
