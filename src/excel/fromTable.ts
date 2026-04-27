@@ -5,9 +5,43 @@ import { DEFAULTS } from './constants';
 import { ListTable } from './types';
 import { applyCellStyles, buildHeaderData, hexToArgb } from './utils';
 
+/** @deprecated Legacy single-sheet helper. Use `docFromTables` instead. */
 export function docFromTable(table: ListTable, title: string) {
-    return docFromTables([{ title, table }]);
+    const workbook = new Workbook();
+    const sheet = workbook.addWorksheet(title);
+    table.rows.map(row => {
+        for (const cellKey in row) {
+            const cell = row[cellKey];
+            if (typeof cell === 'string') {
+                row[cellKey] = { value: cell } as ListCellParams;
+            }
+            if (typeof cell === 'number') {
+                row[cellKey] = { value: '' + cell, type: 'number' } as ListCellParams;
+            }
+            if (cell instanceof Date) {
+                row[cellKey] = { value: cell.toISOString(), type: 'date' } as ListCellParams;
+            }
+        }
+        return row;
+    });
+    const sortedHeaders = addHeaders(sheet, Object.keys(table.headers).map(header => ({ index: table.headers[header].index, key: header, value: table.headers[header].label, width: table.headers[header].width, bgColor: 'blue', color: 'white' })));
+    // create rows in the order of the headers
+    const orderedRows = table.rows.map(row => sortedHeaders.map(header => row[header.key] as ListCellParams))
+
+
+
+
+    addRows(sheet, orderedRows);
+    Object.keys(table.headers).forEach((header, index) => {
+        if(table.headers[header].width) {
+            sheet.getColumn(index + 1).width = pxToExcelWidth(table.headers[header].width ?? 150);
+        } else {
+            autoFitColumns(sheet.getColumn(index + 1), table.headers[header].label);
+        }
+    });
+    return workbook.xlsx.writeBuffer();
 }
+
 
 export function docFromTables(sheets: ListWorkbookSheet[]) {
     const workbook = new Workbook();
