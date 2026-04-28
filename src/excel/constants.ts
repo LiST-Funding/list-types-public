@@ -11,5 +11,8 @@ export const DEFAULTS = {
   },
   COL: {
     WIDTH: 15,
-  }
+  },
+  ZEBRA: {
+    BG_COLOR: '#D9EEF7',
+  },
 }
