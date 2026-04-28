@@ -12,7 +12,7 @@ export function docFromTable(table: ListTable, title: string, opts: { autoFilter
         for (const cellKey in row) {
             const cell = row[cellKey];
             if (typeof cell === 'string') {
-                row[cellKey] = { value: '' + cell, type: 'number' } as ListCellParams;
+              row[cellKey] = { value: cell } as ListCellParams;
             }
             if (typeof cell === 'number') {
               row[cellKey] = { value: '' + cell, type: 'number' } as ListCellParams;
