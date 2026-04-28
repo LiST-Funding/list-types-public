@@ -12,13 +12,13 @@ export function docFromTable(table: ListTable, title: string, opts: { autoFilter
         for (const cellKey in row) {
             const cell = row[cellKey];
             if (typeof cell === 'string') {
-                row[cellKey] = { value: cell } as ListCellParams;
+                row[cellKey] = { value: '' + cell, type: 'number' } as ListCellParams;
             }
             if (typeof cell === 'number') {
-              row[cellKey] = { value: cell } as ListCellParams;
+              row[cellKey] = { value: '' + cell, type: 'number' } as ListCellParams;
             }
             if (cell instanceof Date) {
-              row[cellKey] = { value: cell.toISOString() } as ListCellParams;
+              row[cellKey] = { value: cell.toISOString(), type: 'date' } as ListCellParams;
             }
         }
         return row;
