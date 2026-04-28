@@ -63,8 +63,8 @@ export function autoFitColumns(column: Column, text: string, minimalWidth = 10) 
     column.width = Math.max(text.length + 2, minimalWidth);
  }
 
-function getCellTextLength(value: string): number {
-  return value
+function getCellTextLength(value: string | number): number {
+  return String(value)
     .split('\n')
     .reduce((maxLength, line) => Math.max(maxLength, line.length), 0);
 }
@@ -114,11 +114,8 @@ function normalizeCell(cell: ListCellValue): ListCellParams {
   if (cell === null || cell === undefined) {
     return { value: '' };
   }
-  if (typeof cell === 'string') {
+  if (typeof cell === 'string' || typeof cell === 'number') {
     return { value: cell };
-  }
-  if (typeof cell === 'number') {
-    return { value: String(cell) };
   }
   if (cell instanceof Date) {
     return { value: cell.toISOString() };

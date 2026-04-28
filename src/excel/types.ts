@@ -31,6 +31,7 @@ export interface ExcelFileParams {
   }
   
   export interface ExcelFileHeaderParams extends ListCellParams {
+    value: string;
     key: string;
     width?: number;
     colspan?: number;
@@ -38,7 +39,7 @@ export interface ExcelFileParams {
   }
   
   export interface ListCellParams {
-    value: string;
+    value: string | number;
     bgColor?: string;
     color?: string; 
     bold?: boolean;
