@@ -5,7 +5,7 @@ import { DEFAULTS } from './constants';
 import { ListTable } from './types';
 import { applyCellStyles, buildHeaderData } from './utils';
 
-export function docFromTable(table: ListTable, title: string) {
+export function docFromTable(table: ListTable, title: string, opts: { autoFilter?: boolean } = {}) {
     const workbook = new Workbook();
     const sheet = workbook.addWorksheet(title);
     table.rows.map(row => {
@@ -38,6 +38,17 @@ export function docFromTable(table: ListTable, title: string) {
             autoFitColumns(sheet.getColumn(index + 1), table.headers[header].label);
         }
     });
+    // Opt-in: Excel's native header-row filter dropdowns across all columns.
+    if (opts.autoFilter) {
+        const headerCount = Object.keys(table.headers).length;
+        const lastRow = sheet.lastRow?.number ?? 1;
+        if (headerCount > 0 && lastRow >= 1) {
+            sheet.autoFilter = {
+                from: { row: 1, column: 1 },
+                to: { row: lastRow, column: headerCount },
+            };
+        }
+    }
     return workbook.xlsx.writeBuffer();
 }
 
