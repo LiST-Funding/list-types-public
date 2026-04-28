@@ -5,35 +5,46 @@ import { ListTable } from './types';
 import { applyCellStyles, buildHeaderData, hexToArgb } from './utils';
 
 /** @deprecated Legacy single-sheet helper. Use `docFromTables` instead. */
-export function docFromTable(table: ListTable, title: string) {
-  const workbook = new Workbook();
-  const sheet = workbook.addWorksheet(title);
-  table.rows.map(row => {
-    for (const cellKey in row) {
-      const cell = row[cellKey];
-      if (typeof cell === 'string') {
-        row[cellKey] = { value: cell } as ListCellParams;
-      }
-      if (typeof cell === 'number') {
-        row[cellKey] = { value: cell } as ListCellParams;
-      }
-      if (cell instanceof Date) {
-        row[cellKey] = { value: cell.toISOString() } as ListCellParams;
-      }
-    }
-    return row;
-  });
-  const sortedHeaders = addHeaders(sheet, Object.keys(table.headers).map(header => ({ index: table.headers[header].index, key: header, value: table.headers[header].label, width: table.headers[header].width, bgColor: 'blue', color: 'white' })));
-  const orderedRows = table.rows.map(row => sortedHeaders.map(header => row[header.key] as ListCellParams));
-  addRows(sheet, orderedRows);
-  Object.keys(table.headers).forEach((header, index) => {
+export function docFromTable(table: ListTable, title: string, opts: { autoFilter?: boolean } = {}) {
+    const workbook = new Workbook();
+    const sheet = workbook.addWorksheet(title);
+    table.rows.map(row => {
+        for (const cellKey in row) {
+            const cell = row[cellKey];
+            if (typeof cell === 'string') {
+                row[cellKey] = { value: cell } as ListCellParams;
+            }
+            if (typeof cell === 'number') {
+              row[cellKey] = { value: cell } as ListCellParams;
+            }
+            if (cell instanceof Date) {
+              row[cellKey] = { value: cell.toISOString() } as ListCellParams;
+            }
+        }
+        return row;
+    });
+    const sortedHeaders = addHeaders(sheet, Object.keys(table.headers).map(header => ({ index: table.headers[header].index, key: header, value: table.headers[header].label, width: table.headers[header].width, bgColor: 'blue', color: 'white' })));
+    const orderedRows = table.rows.map(row => sortedHeaders.map(header => row[header.key] as ListCellParams));
+    addRows(sheet, orderedRows);
+    Object.keys(table.headers).forEach((header, index) => {
     if (table.headers[header].width) {
-      sheet.getColumn(index + 1).width = pxToExcelWidth(table.headers[header].width ?? 150);
-    } else {
-      autoFitColumns(sheet.getColumn(index + 1), table.headers[header].label);
+          sheet.getColumn(index + 1).width = pxToExcelWidth(table.headers[header].width ?? 150);
+      } else {
+          autoFitColumns(sheet.getColumn(index + 1), table.headers[header].label);
+      }
+    });
+    // Opt-in: Excel's native header-row filter dropdowns across all columns.
+    if (opts.autoFilter) {
+        const headerCount = Object.keys(table.headers).length;
+        const lastRow = sheet.lastRow?.number ?? 1;
+        if (headerCount > 0 && lastRow >= 1) {
+            sheet.autoFilter = {
+                from: { row: 1, column: 1 },
+                to: { row: lastRow, column: headerCount },
+            };
+        }
     }
-  });
-  return workbook.xlsx.writeBuffer();
+    return workbook.xlsx.writeBuffer();
 }
 
 export function docFromTables(sheets: ListWorkbookSheet[]) {

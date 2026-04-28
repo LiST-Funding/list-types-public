@@ -2,6 +2,9 @@
 
 export interface ServiceLastTime {
 
+    /**
+     * a mistake that was used in some processes and should be convert to lastTime
+     */
     lastTimeSendAlarm?: Date;
  
     /**
