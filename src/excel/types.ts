@@ -7,6 +7,23 @@ export type ListTable = {
     rows: Record<string, ListCellValue>[];
 }
 
+export interface RichTextHeaderFont {
+    bold?: boolean;
+    size?: number;
+    color?: string;
+}
+
+export interface RichTextHeaderPart {
+    text: string;
+    font?: RichTextHeaderFont;
+}
+
+export interface ListWorkbookSheet {
+    title: string;
+    table: ListTable;
+    richTextHeaders?: RichTextHeaderPart[];
+}
+
 export interface ExcelFileParams {
     title: string;
     headers: ExcelFileHeaderParams[];
@@ -14,6 +31,7 @@ export interface ExcelFileParams {
   }
   
   export interface ExcelFileHeaderParams extends ListCellParams {
+    value: string;
     key: string;
     width?: number;
     colspan?: number;
@@ -21,9 +39,10 @@ export interface ExcelFileParams {
   }
   
   export interface ListCellParams {
-    value: string;
+    value: string | number;
     bgColor?: string;
     color?: string; 
+    bold?: boolean;
     textAlign?: ExcelFileAlign;
     fontSize?: number;
     borderColor?: string;
