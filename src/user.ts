@@ -69,6 +69,8 @@ export enum UserRoleName {
    * that has regular user permissions but is not associated with a human operator.
    */
   Worker = 'Worker',
+  GatewAI = 'GatewAI',
+
 }
 
 export interface UserMeta {
