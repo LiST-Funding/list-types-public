@@ -18,7 +18,7 @@ export type PatientFilterType = PredicateType;
 export const FILTER_OPERATORS = ['and', 'or'] as const;
 export type FilterOperator = typeof FILTER_OPERATORS[number];
 
-export const MONITORING_CHECK_TYPES = ['order', 'carePlan', 'assessment', 'assessmentResponse', 'pdpm', 'payer'] as const;
+export const MONITORING_CHECK_TYPES = ['order', 'carePlan', 'assessment', 'assessmentResponse', 'pdpm', 'payer', 'diagnosis'] as const;
 export type MonitoringCheckType = typeof MONITORING_CHECK_TYPES[number];
 
 export const PAYER_RANKS = ['primary', 'secondary'] as const;
@@ -156,10 +156,16 @@ export interface PayerMonitoringCheck extends MonitoringCheckBase, PayerPredicat
   mode: PayerCheckMode;
 }
 
+export interface DiagnosisMonitoringCheck extends MonitoringCheckBase {
+  type: 'diagnosis';
+  icdCodes: string[];
+}
+
 export type MonitoringCheck =
   | OrderMonitoringCheck
   | CarePlanMonitoringCheck
   | AssessmentMonitoringCheck
   | AssessmentResponseMonitoringCheck
   | PdpmMonitoringCheck
-  | PayerMonitoringCheck;
+  | PayerMonitoringCheck
+  | DiagnosisMonitoringCheck;
