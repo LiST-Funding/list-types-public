@@ -40,6 +40,10 @@
       "types": "./dist/reports/index.d.ts",
       "default": "./dist/reports/index.js"
     },
+    "./reports/customAssessmentReport": {
+      "types": "./dist/reports/customAssessmentReport/index.d.ts",
+      "default": "./dist/reports/customAssessmentReport/index.js"
+    },
     "./reports/referralResponseReport": {
       "types": "./dist/reports/referralResponseReport/index.d.ts",
       "default": "./dist/reports/referralResponseReport/index.js"
@@ -91,6 +95,9 @@
       ],
       "reports": [
         "./dist/reports/index.d.ts"
+      ],
+      "reports/customAssessmentReport": [
+        "./dist/reports/customAssessmentReport/index.d.ts"
       ],
       "reports/referralResponseReport": [
         "./dist/reports/referralResponseReport/index.d.ts"
