@@ -1,7 +1,6 @@
 import { Workbook, Worksheet, Buffer as ExcelBuffer, Column, Cell } from 'exceljs';
-import { ListCellParams, ExcelFileHeaderParams, ExcelFileParams, ExcelFileAlign, ListCellValue, ListWorkbookSheet, RichTextHeaderPart } from './types';
+import { ListCellParams, ExcelFileHeaderParams, ExcelFileParams, ExcelFileAlign, ListCellValue, ListWorkbookSheet, RichTextHeaderPart, ListTable } from './types';
 import { DEFAULTS } from './constants';
-import { ListTable } from './types';
 import { applyCellStyles, buildHeaderData, hexToArgb } from './utils';
 
 /** @deprecated Legacy single-sheet helper. Use `docFromTables` instead. */
@@ -47,12 +46,12 @@ export function docFromTable(table: ListTable, title: string, opts: { autoFilter
     return workbook.xlsx.writeBuffer();
 }
 
-export function docFromTables(sheets: ListWorkbookSheet[]) {
+export function docFromTables(sheets: ListWorkbookSheet[]): Promise<ExcelBuffer> {
   if (!sheets.length) throw new Error('docFromTables requires at least one sheet');
   const workbook = new Workbook();
-  sheets.forEach(({ title, table, richTextHeaders }) => {
+  sheets.forEach(({ title, table, richTextHeaders, styled }) => {
     const sheet = workbook.addWorksheet(title);
-    populateSheetFromTable(sheet, table);
+    populateSheetFromTable(sheet, table, styled ?? true);
     if (richTextHeaders?.length) {
       addRichTextHeader(sheet, richTextHeaders, Object.keys(table.headers).length);
     }
@@ -96,6 +95,15 @@ function addHeaders(sheet: Worksheet, headers: ExcelFileHeaderParams[]): ExcelFi
   return sortedHeaders;
 }
 
+function addLeanHeaders(sheet: Worksheet, headers: ExcelFileHeaderParams[]): ExcelFileHeaderParams[] {
+  const { headersData, sortedHeaders } = buildHeaderData(headers);
+  sheet.columns = headersData;
+  const headerRow = sheet.getRow(1);
+  headerRow.font = { bold: true };
+  headerRow.height = DEFAULTS.ROW.HEIGHT;
+  return sortedHeaders;
+}
+
 function addRows(sheet: Worksheet, rows: ListCellParams[][]): void {
   rows.forEach(cells => {
     const rowData = cells.map(({ value }) => value);
@@ -111,6 +119,20 @@ function addRows(sheet: Worksheet, rows: ListCellParams[][]): void {
       applyCellStyles(cell, params);
     });
     row.height = DEFAULTS.ROW.HEIGHT;
+  });
+}
+
+function addLeanRows(sheet: Worksheet, rows: ListCellParams[][]): void {
+  rows.forEach(cells => {
+    const rowData = cells.map(({ value }) => value);
+    const row = sheet.addRow(rowData);
+    const hasNumFmt = cells.some(c => c.numFmt);
+    if (hasNumFmt) {
+      row.eachCell((cell: Cell, colIndex: number) => {
+        const fmt = cells[colIndex - 1]?.numFmt;
+        if (fmt) cell.numFmt = fmt;
+      });
+    }
   });
 }
 
@@ -164,33 +186,33 @@ function addRichTextHeader(sheet: Worksheet, richTextHeaders: RichTextHeaderPart
   sheet.getRow(1).height = countRichTextHeaderLines(richTextHeaders) * 22;
 }
 
-function populateSheetFromTable(sheet: Worksheet, table: ListTable): void {
-  const sortedHeaders = addHeaders(
-    sheet,
-    Object.keys(table.headers).map(header => ({
-      index: table.headers[header].index,
-      key: header,
-      value: table.headers[header].label,
-      width: table.headers[header].width,
-      bgColor: 'blue',
-      color: 'black',
-      bold: true,
-    }))
-  );
+function populateSheetFromTable(sheet: Worksheet, table: ListTable, styled: boolean): void {
+  const headerParams = Object.keys(table.headers).map(header => ({
+    index: table.headers[header].index,
+    key: header,
+    value: table.headers[header].label,
+    width: table.headers[header].width,
+    ...(styled ? { bgColor: 'blue', color: 'white', bold: true } : {}),
+  }));
+
+  const sortedHeaders = styled
+    ? addHeaders(sheet, headerParams)
+    : addLeanHeaders(sheet, headerParams);
 
   const autoFitTextLengths = sortedHeaders.map(header => getCellTextLength(header.value));
   const orderedRows = table.rows.map((row, rowIndex) =>
     sortedHeaders.map((header, columnIndex) => {
-      const cell = applyZebraStriping(normalizeCell(row[header.key]), rowIndex);
+      const cell = normalizeCell(row[header.key]);
+      
       autoFitTextLengths[columnIndex] = Math.max(
         autoFitTextLengths[columnIndex],
         getCellTextLength(cell.value),
       );
-      return cell;
+      return styled ? applyZebraStriping(cell, rowIndex) : cell;
     })
   );
 
-  addRows(sheet, orderedRows);
+  styled ? addRows(sheet, orderedRows) : addLeanRows(sheet, orderedRows);
 
   sortedHeaders.forEach((header, index) => {
     if (header.width) {
