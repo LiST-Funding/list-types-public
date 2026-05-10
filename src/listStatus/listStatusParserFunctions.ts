@@ -24,7 +24,7 @@ export function parseStatusToListStatus(status:string) {
     if(!status) {
         return ListStatus.New;
     }
-    return parseEhrStatusToListStatus(status) || parseHospitalStatusToListStatus(status) || status;
+    return parseEhrStatusToListStatus(status) || parseHospitalStatusToListStatus(status) || ListStatus.UnMappedStatus;
 }
 
 /**
