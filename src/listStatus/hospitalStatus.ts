@@ -12,7 +12,7 @@ function getHospitalStatusValues(ListStatusKey:ListStatusType){
         ...(MEDITECH_HOSPITAL_STATUS[ListStatusKey]|| [])
     ]
 }
-
+/**@deprecated */
 export   const HOSPITAL_STATUS = {
     [ListStatus.Selected]: getHospitalStatusValues(ListStatus.Selected),
     [ListStatus.NotSelected]: getHospitalStatusValues(ListStatus.NotSelected),

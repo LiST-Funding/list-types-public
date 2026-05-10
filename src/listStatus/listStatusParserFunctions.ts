@@ -2,7 +2,7 @@ import { ListStatus, ListStatusType, STATUS_ORDER} from "./listStatus";
 import {EHR_STATUS} from "./ehrStatus";
 import {HOSPITAL_STATUS} from "./hospitalStatus";
 
-
+/**@deprecated */
 export function parseEhrStatusToListStatus(status:string) {
 for(const [listStatus, values] of Object.entries(EHR_STATUS)) {
     if(values.includes(status)) {
@@ -10,7 +10,7 @@ for(const [listStatus, values] of Object.entries(EHR_STATUS)) {
     }
 }
 }
-
+/**@deprecated */
 export function parseHospitalStatusToListStatus(status:string) {
 for(const [listStatus, values] of Object.entries(HOSPITAL_STATUS)) {
     if(values.includes(status)) {
@@ -19,7 +19,7 @@ for(const [listStatus, values] of Object.entries(HOSPITAL_STATUS)) {
 }
 }
 
-
+/**@deprecated */
 export function parseStatusToListStatus(status:string) {
     if(!status) {
         return ListStatus.New;

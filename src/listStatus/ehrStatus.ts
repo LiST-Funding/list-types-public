@@ -13,7 +13,7 @@ function getEhrStatusValues(ListStatusKey:ListStatusType){
     ]
 }
 
-
+/**@deprecated */
 export   const EHR_STATUS = {
     [ListStatus.Accepted]: getEhrStatusValues(ListStatus.Accepted),
     [ListStatus.Received]: getEhrStatusValues(ListStatus.Received),
