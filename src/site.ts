@@ -1,3 +1,8 @@
+import { ListStatusType } from "./listStatus/listStatus";
+
+/**
+ * @deprecated aim to use ListStatus from /listStatus.ts instead of ListPatientStatus
+ */
 export enum ListPatientStatus {
   Accepted = 'accepted',
   Received = 'received',
@@ -31,7 +36,7 @@ export interface SnfPatientResponseHistoryItemEpic {
   timestamp: string;
   timestampDate: string;
   files: string[];
-  listStatus: ListPatientStatus;
+  listStatus: ListStatusType;
 }
   
 export interface SnfPatientSite {
@@ -41,13 +46,13 @@ export interface SnfPatientSite {
   listSiteId: number;
   regionId?: number;
   siteStatus: string;
-  listSiteStatus: string;
+  listSiteStatus: ListStatusType;
   lastSiteStatusDate?: Date;
   hospitalStatus: string;
-  listHospitalStatus: string; 
+  listHospitalStatus: ListStatusType; 
   lastHospitalStatusDate?: Date;
   ehrSiteReadStatus?: boolean;
-  listStatus: string;
+  listStatus: ListStatusType;
   ehrRequestStatus:string;
   srcReadStatus: string;
   responseStatus: string;
