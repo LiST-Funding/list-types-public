@@ -18,7 +18,7 @@ export type PatientFilterType = PredicateType;
 export const FILTER_OPERATORS = ['and', 'or'] as const;
 export type FilterOperator = typeof FILTER_OPERATORS[number];
 
-export const MONITORING_CHECK_TYPES = ['order', 'carePlan', 'assessment', 'assessmentResponse', 'pdpm', 'payer'] as const;
+export const MONITORING_CHECK_TYPES = ['order', 'carePlan', 'assessment', 'assessmentResponse', 'pdpm', 'payer', 'diagnosis'] as const;
 export type MonitoringCheckType = typeof MONITORING_CHECK_TYPES[number];
 
 export const PAYER_RANKS = ['primary', 'secondary'] as const;
@@ -58,6 +58,10 @@ export interface OrderPredicate {
   descriptions: string[];
 }
 
+export interface DiagnosisPredicateAtom {
+  icdCodes: string[];
+}
+
 export interface PdpmPredicate {
   // Optional on the atom because the pdpm monitoring check allows display-only
   // (no category set => uncoloured cell). The filter side validates it at runtime.
@@ -85,9 +89,8 @@ export interface MedicationCategoryPredicate {
   type: 'medicationCategory';
   categories: string[];
 }
-export interface DiagnosisPredicate {
+export interface DiagnosisPredicate extends DiagnosisPredicateAtom {
   type: 'diagnosis';
-  icdCodes: string[];
 }
 export interface OrderFilterPredicate extends OrderPredicate { type: 'order'; }
 export interface PayerFilterPredicate extends PayerPredicate { type: 'payer'; }
@@ -156,10 +159,15 @@ export interface PayerMonitoringCheck extends MonitoringCheckBase, PayerPredicat
   mode: PayerCheckMode;
 }
 
+export interface DiagnosisMonitoringCheck extends MonitoringCheckBase, DiagnosisPredicateAtom {
+  type: 'diagnosis';
+}
+
 export type MonitoringCheck =
   | OrderMonitoringCheck
   | CarePlanMonitoringCheck
   | AssessmentMonitoringCheck
   | AssessmentResponseMonitoringCheck
   | PdpmMonitoringCheck
-  | PayerMonitoringCheck;
+  | PayerMonitoringCheck
+  | DiagnosisMonitoringCheck;
