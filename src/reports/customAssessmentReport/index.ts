@@ -58,6 +58,10 @@ export interface OrderPredicate {
   descriptions: string[];
 }
 
+export interface DiagnosisPredicateAtom {
+  icdCodes: string[];
+}
+
 export interface PdpmPredicate {
   // Optional on the atom because the pdpm monitoring check allows display-only
   // (no category set => uncoloured cell). The filter side validates it at runtime.
@@ -85,9 +89,8 @@ export interface MedicationCategoryPredicate {
   type: 'medicationCategory';
   categories: string[];
 }
-export interface DiagnosisPredicate {
+export interface DiagnosisPredicate extends DiagnosisPredicateAtom {
   type: 'diagnosis';
-  icdCodes: string[];
 }
 export interface OrderFilterPredicate extends OrderPredicate { type: 'order'; }
 export interface PayerFilterPredicate extends PayerPredicate { type: 'payer'; }
@@ -156,9 +159,8 @@ export interface PayerMonitoringCheck extends MonitoringCheckBase, PayerPredicat
   mode: PayerCheckMode;
 }
 
-export interface DiagnosisMonitoringCheck extends MonitoringCheckBase {
+export interface DiagnosisMonitoringCheck extends MonitoringCheckBase, DiagnosisPredicateAtom {
   type: 'diagnosis';
-  icdCodes: string[];
 }
 
 export type MonitoringCheck =
