@@ -22,6 +22,8 @@ export interface ListWorkbookSheet {
     title: string;
     table: ListTable;
     richTextHeaders?: RichTextHeaderPart[];
+    /** Apply full cell styling (borders, header colours, font). Defaults to true. Pass false for lean (no borders/colours). */
+    styled?: boolean;
 }
 
 export interface ExcelFileParams {
