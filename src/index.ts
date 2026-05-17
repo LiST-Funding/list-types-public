@@ -1,5 +1,6 @@
 export * from './patient';
 export * from './user';
+export * from './user/roles.helper';
 export * from './ehr';
 export * from './settings/facilities';
 export * from './settings/facility-registry';
