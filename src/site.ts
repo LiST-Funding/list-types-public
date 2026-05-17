@@ -36,7 +36,7 @@ export interface SnfPatientResponseHistoryItemEpic {
   timestamp: string;
   timestampDate: string;
   files: string[];
-  listStatus: ListStatusType;
+  listStatus: ListPatientStatus; //ListStatusType;;
 }
   
 export interface SnfPatientSite {
@@ -46,13 +46,13 @@ export interface SnfPatientSite {
   listSiteId: number;
   regionId?: number;
   siteStatus: string;
-  listSiteStatus: ListStatusType;
+  listSiteStatus: string; //ListStatusType;;
   lastSiteStatusDate?: Date;
   hospitalStatus: string;
-  listHospitalStatus: ListStatusType; 
+  listHospitalStatus: string; //ListStatusType;; 
   lastHospitalStatusDate?: Date;
   ehrSiteReadStatus?: boolean;
-  listStatus: ListStatusType;
+  listStatus: string; //ListStatusType;;
   ehrRequestStatus:string;
   srcReadStatus: string;
   responseStatus: string;
