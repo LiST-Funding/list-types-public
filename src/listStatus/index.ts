@@ -10,7 +10,11 @@ export * from "./listStatusParserFunctions";
 
 
 /**legacy exports to support moshe's code */
+/**@deprecated */
 export const ListPatientStatus = ListStatus;
+/**@deprecated */
 export const PATIENT_STATUS_PRIORITY = STATUS_ORDER;
+/**@deprecated */
 export const PATIENT_HOSPITAL_STATUS = HOSPITAL_STATUS;
+/**@deprecated */
 export const PATIENT_EHR_STATUS = EHR_STATUS;

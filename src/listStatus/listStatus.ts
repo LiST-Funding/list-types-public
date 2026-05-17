@@ -12,6 +12,8 @@ export const ListStatus =Object.freeze( {
     New: 'new',
     Admitted: 'admitted',
     ReAdmitted: 're-admitted',
+    /**this is the fallback default for cases we encountered a status that wasn't mapped yet */
+    UnMappedStatus: 'unmapped-status',
   })
   
   export const ListSiteStatuses = Object.freeze( [
@@ -48,5 +50,5 @@ export const ListStatus =Object.freeze( {
     [ListStatus.Received]: 6,
     [ListStatus.New]: 7,
     [ListStatus.NoResponse]: 8,
-  }
-
+    [ListStatus.UnMappedStatus]: 9,
+}

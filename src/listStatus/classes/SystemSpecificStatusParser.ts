@@ -36,7 +36,7 @@ export class SystemSpecificStatusParser{
             if(!status) {
                 return ListStatus.New;
             }
-            return this.parseEhrStatusToListStatus(status) || this.parseHospitalStatusToListStatus(status) || status;
+            return this.parseEhrStatusToListStatus(status) || this.parseHospitalStatusToListStatus(status) || ListStatus.UnMappedStatus;
         }
     
     getAllStatuses(){
