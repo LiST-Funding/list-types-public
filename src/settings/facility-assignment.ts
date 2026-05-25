@@ -1,3 +1,21 @@
+/** A snapshot of a FacilityAssignment's state captured before an update is applied. */
+export interface FacilityAssignmentData {
+  /** The EHR system type (e.g. "Navi", "Epic", "AllScripts"). Identifies which EHR integration produced this facility name. */
+  srcType: string;
+
+  /** The facility name as it appears in the EHR system. This is the EHR's truth for what the facility is called. */
+  siteName: string;
+
+  /** Reference to the `facility_settings` document. Links this EHR facility name to our internal facility configuration. */
+  facility_settings_id: string;
+
+  /** ObjectId of the user who last updated this assignment. Populatable. */
+  updatedBy?: string;
+
+  /** the date of the doc update */
+  updatedAt?: Date;
+}
+
 /**
  * Represents a mapping between an EHR facility name and an internal facility configuration.
  *
@@ -15,15 +33,9 @@
  * this support different sites in different EHRs to be mapped to the same facility_settings,
  * as well as when the same facility_settings is represented with more than 1 name in a specific EHR
  */
-export interface FacilityAssignment {
+export interface FacilityAssignment extends FacilityAssignmentData {
   _id?: string;
 
-  /** The EHR system type (e.g. "Navi", "Epic", "AllScripts"). Identifies which EHR integration produced this facility name. */
-  srcType: string;
-
-  /** The facility name as it appears in the EHR system. This is the EHR's truth for what the facility is called. */
-  siteName: string;
-
-  /** Reference to the `facility_settings` document. Links this EHR facility name to our internal facility configuration. */
-  facility_settings_id: string;
+  /** Audit trail of previous states. Each entry captures the document's values before an update was applied. */
+  audit?: FacilityAssignmentData[];
 }
