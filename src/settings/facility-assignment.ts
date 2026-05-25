@@ -10,7 +10,10 @@
  * inside each facility_settings document as `ehrNames[srcType] = siteName`.
  *
  * each  [srcType X siteName] can be attached to only one facility_settings,
- * but each facility_settings can have multiple [srcType X siteName] entries
+ * but each facility_settings can have multiple [srcType X siteName] entries.
+ *
+ * this support different sites in different EHRs to be mapped to the same facility_settings,
+ * as well as when the same facility_settings is represented with more than 1 name in a specific EHR
  */
 export interface FacilityAssignment {
   _id?: string;

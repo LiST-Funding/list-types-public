@@ -3,6 +3,7 @@ export * from './user';
 export * from './user/roles.helper';
 export * from './ehr';
 export * from './settings/facilities';
+export * from './settings/facility-assignment';
 export * from './settings/facility-registry';
 export * as settings from './settings';
 export * from './types/le'
