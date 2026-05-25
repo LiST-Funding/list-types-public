@@ -129,7 +129,9 @@ export interface OrderMonitoringCheck extends MonitoringCheckBase, OrderPredicat
 
 export interface CarePlanMonitoringCheck extends MonitoringCheckBase {
   type: 'carePlan';
-  description: string;
+  // TEMP: `description` is legacy; the server auto-migrates it to `descriptions` on read.
+  description?: string;
+  descriptions?: string[];
 }
 
 export interface AssessmentMonitoringCheck extends MonitoringCheckBase {
