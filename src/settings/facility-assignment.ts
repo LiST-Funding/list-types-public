@@ -17,7 +17,7 @@ export interface FacilityAssignmentData {
 }
 
 /**
- * Represents a mapping between an EHR facility name and an internal facility configuration.
+ * Represents a  mapping between an EHR facility name and an internal facility configuration.
  *
  * Each patient arrives from an EHR system (identified by `srcType`) and carries a facility name
  * (`siteName`) as it appears in that EHR. This document links that EHR-side name to the
