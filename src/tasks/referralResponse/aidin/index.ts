@@ -1,9 +1,11 @@
 import { Task, TaskTypes } from "../../types";
-
+export * as constants from "./constants";
 export interface FacilityResponse {
     facilityName: string;
     response: string;
+    responseStatusCode: string;
     responseReason?: string;
+    responseReasonCode?: string;
     comment?: string;
 }
 
@@ -30,3 +32,5 @@ export type AidinResponseTask = Task & {
     data: AidinReferralResponseData;
 };
 
+
+export * as ResponseOptionsBuilder from "./responseOptionsBuilder";
