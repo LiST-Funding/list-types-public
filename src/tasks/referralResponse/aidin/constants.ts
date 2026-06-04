@@ -6,7 +6,7 @@ const AIDIN_RESPONSES = Object.freeze({
 
 type AidinResponseOption = typeof AIDIN_RESPONSES[keyof typeof AIDIN_RESPONSES];
 
-const AIDIN_RESPONSES_STATUS_CODE = Object.freeze({
+const AIDIN_RESPONSES_VALUE = Object.freeze({
   [AIDIN_RESPONSES.accept]: "available",
   [AIDIN_RESPONSES.decline]: "unavailable",
   [AIDIN_RESPONSES.underReview]: "under_review",
@@ -22,5 +22,5 @@ const DECLINE_REASON_GROUPS = Object.freeze({
     other: "Other",
 });
 
-export {AIDIN_RESPONSES, AIDIN_RESPONSES_STATUS_CODE, DECLINE_REASON_GROUPS}
+export {AIDIN_RESPONSES, AIDIN_RESPONSES_VALUE  , DECLINE_REASON_GROUPS}
 export type  { AidinResponseOption};

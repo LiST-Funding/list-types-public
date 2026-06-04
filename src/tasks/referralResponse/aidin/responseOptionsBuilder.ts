@@ -1,4 +1,4 @@
-import {AIDIN_RESPONSES, AIDIN_RESPONSES_STATUS_CODE, DECLINE_REASON_GROUPS, AidinResponseOption} from "./constants";
+import {AIDIN_RESPONSES, AIDIN_RESPONSES_VALUE, DECLINE_REASON_GROUPS, AidinResponseOption} from "./constants";
 type ResponseReasonOption = {
     displayValue: string;
    
@@ -14,7 +14,7 @@ type ResponseReasonOption = {
 
 
 type ResponseOption = {
-    statusCode: string;
+  value: string;
     responseReasonOptions?: ResponseReasonOption[];
     displayValue: string;
 }
@@ -24,7 +24,7 @@ type AidinResponseConfigs = { [key:string]:ResponseOption };
 
 function getResponseOptionStatusCodeAndDisplayValue(response: AidinResponseOption){
   return {
-    statusCode: AIDIN_RESPONSES_STATUS_CODE[response],
+    value: AIDIN_RESPONSES_VALUE[response],
     displayValue: response
   }
 

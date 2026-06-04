@@ -60,6 +60,10 @@
       "types": "./dist/tasks/referralResponse/index.d.ts",
       "default": "./dist/tasks/referralResponse/index.js"
     },
+    "./tasks/referralResponse/aidin": {
+      "types": "./dist/tasks/referralResponse/aidin/index.d.ts",
+      "default": "./dist/tasks/referralResponse/aidin/index.js"
+    },
     "./tasks/referralResponse/navi": {
       "types": "./dist/tasks/referralResponse/navi/index.d.ts",
       "default": "./dist/tasks/referralResponse/navi/index.js"
@@ -110,6 +114,9 @@
       ],
       "tasks/referralResponse": [
         "./dist/tasks/referralResponse/index.d.ts"
+      ],
+      "tasks/referralResponse/aidin": [
+        "./dist/tasks/referralResponse/aidin/index.d.ts"
       ],
       "tasks/referralResponse/navi": [
         "./dist/tasks/referralResponse/navi/index.d.ts"
