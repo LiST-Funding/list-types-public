@@ -134,6 +134,7 @@
     "generate-exports": "node scripts/generate-exports.mjs",
     "build": "npm run generate-exports && tsc",
     "prepare": "npm run build",
+    "dev": "tsc --watch",
     "dev:link:localProject": "npm i && npm run build && npm link"
   },
   "author": "",
