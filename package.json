@@ -60,6 +60,10 @@
       "types": "./dist/tasks/referralResponse/index.d.ts",
       "default": "./dist/tasks/referralResponse/index.js"
     },
+    "./tasks/referralResponse/aidin": {
+      "types": "./dist/tasks/referralResponse/aidin/index.d.ts",
+      "default": "./dist/tasks/referralResponse/aidin/index.js"
+    },
     "./tasks/referralResponse/navi": {
       "types": "./dist/tasks/referralResponse/navi/index.d.ts",
       "default": "./dist/tasks/referralResponse/navi/index.js"
@@ -111,6 +115,9 @@
       "tasks/referralResponse": [
         "./dist/tasks/referralResponse/index.d.ts"
       ],
+      "tasks/referralResponse/aidin": [
+        "./dist/tasks/referralResponse/aidin/index.d.ts"
+      ],
       "tasks/referralResponse/navi": [
         "./dist/tasks/referralResponse/navi/index.d.ts"
       ],
@@ -127,6 +134,7 @@
     "generate-exports": "node scripts/generate-exports.mjs",
     "build": "npm run generate-exports && tsc",
     "prepare": "npm run build",
+    "dev": "tsc --watch",
     "dev:link:localProject": "npm i && npm run build && npm link"
   },
   "author": "",
