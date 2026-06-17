@@ -16,6 +16,10 @@
       "types": "./dist/dashboard/index.d.ts",
       "default": "./dist/dashboard/index.js"
     },
+    "./errors": {
+      "types": "./dist/errors/index.d.ts",
+      "default": "./dist/errors/index.js"
+    },
     "./excel": {
       "types": "./dist/excel/index.d.ts",
       "default": "./dist/excel/index.js"
@@ -23,10 +27,6 @@
     "./listStatus": {
       "types": "./dist/listStatus/index.d.ts",
       "default": "./dist/listStatus/index.js"
-    },
-    "./errors": {
-      "types": "./dist/errors/index.d.ts",
-      "default": "./dist/errors/index.js"
     },
     "./logger": {
       "types": "./dist/logger/index.d.ts",
@@ -85,6 +85,9 @@
     "*": {
       "dashboard": [
         "./dist/dashboard/index.d.ts"
+      ],
+      "errors": [
+        "./dist/errors/index.d.ts"
       ],
       "excel": [
         "./dist/excel/index.d.ts"
