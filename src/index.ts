@@ -17,3 +17,4 @@ export * as logs from './logger/index';
 export * as user from './user/index';
 export * as reports from './reports/index';
 export * as dashboard from './dashboard/index';
+export * as errors from './errors/index';
