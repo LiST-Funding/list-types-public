@@ -27,6 +27,7 @@ export function isReportsAdmin(roleNumber?: number | null): boolean {
     isSuperAdmin(roleNumber) ||
     roleNumber === ROLE_NUMBER_SNF_ADMIN ||
     roleNumber === ROLE_NUMBER_CI_MANAGER ||
+    roleNumber === ROLE_NUMBER_ADMINISTRATOR ||
     roleNumber === ROLE_NUMBER_CLINICAL_MANAGER
   );
 }
