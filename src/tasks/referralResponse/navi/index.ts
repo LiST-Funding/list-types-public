@@ -4,7 +4,7 @@ type NaviReferralResponseTaskData = {
     facilityName:string;
     response:string;
     responseReason:string;
-
+    listSiteId:number;
 }
 
 type ResponseReasonOption = {
