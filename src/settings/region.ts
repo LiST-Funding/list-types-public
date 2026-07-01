@@ -36,4 +36,7 @@ export interface RegionUiSettings {
 
   /** Defines the external accounts that are enabled to be stored in secret manager */
   externalAccounts?: RegionExternalAccounts;
+
+  /** Whether SMS is available for this region (drives client SMS UI visibility). Absent/false ⇒ unavailable. */
+  smsEnabled?: boolean;
 }
