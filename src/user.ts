@@ -38,9 +38,13 @@ export interface UserSettings {
   uiSettings: UiSettings;
 }
 
+export interface NotifyOnCommentPreference {
+  enabled: boolean;
+  delivery: string[];
+}
+
 export interface UserNotificationPreferences {
-  notifyOnComment?: boolean;
-  
+  notifyOnComment?: NotifyOnCommentPreference;
 }
 
 export interface UiSettings {
