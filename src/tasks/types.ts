@@ -7,6 +7,8 @@ export enum TaskTypes {
     llm = 'llm',
     nlpProcess = 'nlpProcess',
     referralResponse = 'referralResponse',
+    extractEfaxData = "extractEfaxData",
+
 }
 
 export enum TaskMessageType {
