@@ -42,3 +42,11 @@ export function canManageUserCredentials(roleNumber?: number | null): boolean {
   if (roleNumber == null) return false;
   return roleNumber >= ROLE_NUMBER_SNF_ADMIN;
 }
+
+// Who may manage integration API keys / secrets (e.g. the Approved Admissions
+// eligibility key, SNF-383). Same SNF-admin tier (177+) as credential management,
+// but a distinct capability so the two can diverge later without coupling.
+export function canManageIntegrationApiKey(roleNumber?: number | null): boolean {
+  if (roleNumber == null) return false;
+  return roleNumber >= ROLE_NUMBER_SNF_ADMIN;
+}
