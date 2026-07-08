@@ -6,6 +6,7 @@ export interface FacilityResponse {
     responseStatusCode: string;
     responseReason?: string;
     responseReasonCode?: string;
+    responseReasonCategory?: string;
     comment?: string;
 }
 
