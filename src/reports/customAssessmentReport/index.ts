@@ -146,21 +146,27 @@ export interface CarePlanMonitoringCheck extends MonitoringCheckBase {
 // Assessment
 // ---------------------------------------------------------------------------
 
-export const PERIOD_RESOLUTIONS = ['month', 'quarter'] as const;
+export const PERIOD_RESOLUTIONS = ['week', 'month', 'quarter', 'year'] as const;
 export type PeriodResolution = typeof PERIOD_RESOLUTIONS[number];
+
+// Yearly is not a "last N periods" resolution; it is one of two fixed windows.
+// Only meaningful when resolution === 'year'; ignored otherwise.
+export const YEAR_MODES = ['trailing12', 'ytd'] as const;
+export type YearMode = typeof YEAR_MODES[number];
 
 export interface AssessmentMonitoringCheck extends MonitoringCheckBase {
   type: 'assessment';
   descriptions: string[];
   resolution: PeriodResolution;
   periodCount: number;
+  yearMode?: YearMode;
 }
 
 // ---------------------------------------------------------------------------
 // Assessment response
 // ---------------------------------------------------------------------------
 
-export const VALIDITY_PERIODS = ['week', 'month'] as const;
+export const VALIDITY_PERIODS = ['week', 'month', 'quarter', 'year'] as const;
 export type ValidityPeriod = typeof VALIDITY_PERIODS[number];
 
 export const ASSESSMENT_RESPONSE_OPERATORS = ['and', 'or'] as const;
@@ -182,6 +188,7 @@ export interface AssessmentResponseMonitoringCheck extends MonitoringCheckBase {
   operator: AssessmentResponseOperator;
   resolution: PeriodResolution;
   periodCount: number;
+  yearMode?: YearMode;
   validityPeriod?: ValidityPeriod;
 }
 
