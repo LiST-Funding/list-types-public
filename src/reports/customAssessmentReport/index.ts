@@ -149,8 +149,8 @@ export interface CarePlanMonitoringCheck extends MonitoringCheckBase {
 export const PERIOD_RESOLUTIONS = ['week', 'month', 'quarter', 'year'] as const;
 export type PeriodResolution = typeof PERIOD_RESOLUTIONS[number];
 
-// Yearly is not a "last N periods" resolution; it is one of two fixed windows.
-// Only meaningful when resolution === 'year'; ignored otherwise.
+// Only used when resolution === 'year' (periodCount is ignored for year). Two fixed windows:
+// 'ytd' = start of calendar year to now; 'trailing12' (the default when absent) = rolling last 12 months.
 export const YEAR_MODES = ['trailing12', 'ytd'] as const;
 export type YearMode = typeof YEAR_MODES[number];
 
