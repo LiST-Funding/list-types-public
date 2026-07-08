@@ -1,7 +1,7 @@
 const AIDIN_RESPONSES = Object.freeze({
     accept: "Pre-approve",
     decline: "Decline",
-    underReview: "Mark as Under Review",
+    underReview: "Under Review",
 });
 
 type AidinResponseOption = typeof AIDIN_RESPONSES[keyof typeof AIDIN_RESPONSES];
