@@ -13,6 +13,9 @@ export interface User {
   firstName?: string;
   lastName?: string;
   phoneNumber?: string;
+  /** True once the user has verified `phoneNumber` via an OTP code. Reset to
+   *  false whenever `phoneNumber` changes. Gates SMS notification delivery. */
+  phoneVerified?: boolean;
   CompanyName: string;
   settings: UserSettings;
   ehrCredentials: Partial<Record<EhrType, UserEhrCredential>>;
