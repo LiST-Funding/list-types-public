@@ -44,6 +44,10 @@
       "types": "./dist/reports/customAssessmentReport/index.d.ts",
       "default": "./dist/reports/customAssessmentReport/index.js"
     },
+    "./reports/eventReport": {
+      "types": "./dist/reports/eventReport/index.d.ts",
+      "default": "./dist/reports/eventReport/index.js"
+    },
     "./reports/referralResponseReport": {
       "types": "./dist/reports/referralResponseReport/index.d.ts",
       "default": "./dist/reports/referralResponseReport/index.js"
@@ -102,6 +106,9 @@
       ],
       "reports/customAssessmentReport": [
         "./dist/reports/customAssessmentReport/index.d.ts"
+      ],
+      "reports/eventReport": [
+        "./dist/reports/eventReport/index.d.ts"
       ],
       "reports/referralResponseReport": [
         "./dist/reports/referralResponseReport/index.d.ts"
