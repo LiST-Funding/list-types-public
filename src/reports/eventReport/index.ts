@@ -28,6 +28,7 @@ export const PERIOD_UNITS = ['week', 'month', 'quarter', 'year'] as const;
 export type PeriodUnit = typeof PERIOD_UNITS[number];
 
 export interface RollingWindow {
+  // Positive whole number of `unit`. Bounds (>0, integer, max span) enforced server-side.
   amount: number;
   unit: RollingUnit;
 }
@@ -70,7 +71,10 @@ export interface EventTrigger {
 }
 
 // ---------------------------------------------------------------------------
-// Additional conditions (all AND-combined)
+// Additional conditions.
+// previousEvent and admissionSource: repeatable, all AND-combined.
+// payer and destinationHospital: at-most-one each (the engine applies only the
+// first; enforced by the server validator).
 // ---------------------------------------------------------------------------
 
 export const CONDITION_TYPES = ['previousEvent', 'payer', 'destinationHospital', 'admissionSource'] as const;
@@ -96,6 +100,7 @@ interface ConditionBase {
 interface PreviousEventConditionCommon extends ConditionBase {
   type: 'previousEvent';
   actionCodeIds: number[];
+  // Positive whole number of `unit` (amountMax > amount for 'between'). Enforced server-side.
   amount: number;
   unit: GapUnit;
 }
@@ -163,5 +168,6 @@ export interface EventOutputColumn {
   key: EventColumnKey;
   label?: string;
   hidden: boolean;
+  // Authoritative over array position (the engine sorts by it); unique per report.
   order: number;
 }
