@@ -17,12 +17,13 @@ type ResponseOption = {
   value: string;
     responseReasonOptions?: ResponseReasonOption[];
     displayValue: string;
+    requireComment?: boolean;
 }
 
 
 type AidinResponseConfigs = { [key:string]:ResponseOption };
 
-function getResponseOptionStatusCodeAndDisplayValue(response: AidinResponseOption){
+function getResponseOptionStatusCodeAndDisplayValue(response: keyof typeof AIDIN_RESPONSES_VALUE){
   return {
     value: AIDIN_RESPONSES_VALUE[response],
     displayValue: response
@@ -163,7 +164,13 @@ const aidinResponseOptions: AidinResponseConfigs = {
             }
           ]
       },
-
+      // Message sends a chat message to the provider site — it has no sent_referral
+      // status, so it is deliberately absent from AIDIN_RESPONSES_VALUE.
+      [AIDIN_RESPONSES.message]: {
+        value: "message",
+        displayValue: AIDIN_RESPONSES.message,
+        requireComment: true,
+      },
 }
 
 function getAidinResponseOptionsConfigs() {
