@@ -12,6 +12,12 @@ export function isSuperAdmin(roleNumber?: number | null): boolean {
   return roleNumber >= ROLE_NUMBER_SUPER_ADMIN_MIN && roleNumber <= ROLE_NUMBER_SUPER_ADMIN_MAX;
 }
 
+// Exactly the SNF-admin tier (177) — not super-admin, not the lower manager roles.
+export function isSnfAdmin(roleNumber?: number | null): boolean {
+  if (roleNumber == null) return false;
+  return roleNumber === ROLE_NUMBER_SNF_ADMIN;
+}
+
 export function isAdmin(roleNumber?: number | null): boolean {
   if (roleNumber == null) return false;
   return (
