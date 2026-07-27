@@ -39,4 +39,7 @@ export interface RegionUiSettings {
 
   /** Whether SMS is available for this region (drives client SMS UI visibility). Absent/false ⇒ unavailable. */
   smsEnabled?: boolean;
+
+  /** Whether the AI decision logic UI is shown for this region. Display gate only — the AI pipeline runs regardless. Absent ⇒ disabled. */
+  aiDecisionLogicEnabled?: boolean;
 }
