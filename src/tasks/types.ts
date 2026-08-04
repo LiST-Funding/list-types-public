@@ -63,6 +63,14 @@ export interface AvailableSite {
  * narrow to this when reading the selectPatient result.
  */
 export interface SelectPatientCallbackData {
+    /** Can the provider still submit a status response for this referral? */
+    isRespondEnabled?: boolean;
+    /** Is free-text messaging available (often true even when responding is closed)? */
+    isMessageEnabled?: boolean;
+    /** Human-readable reason when responding is disabled. */
+    displayMsg?: string;
+    /** Typed reason code (scraper statusCodes, e.g. response_deadline_passed). */
+    statusCode?: string;
     availableSites?: AvailableSite[];
 }
 
