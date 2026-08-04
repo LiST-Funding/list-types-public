@@ -54,6 +54,11 @@ export interface SnfPatientSite {
   ehrSiteReadStatus?: boolean;
   listStatus: string; //ListStatusType;;
   ehrRequestStatus:string;
+  /** the identifier the EHR uses to identify and respond to this site's referral/request.
+   * this is not the EHR Site ID! its the id taht asociate the enry/row/item of this patient to that site.
+   * ensocare calls it "referralId" (which is per a site referral, multiple sites for the same referral will have different referral IDs,
+   * allscripts calls it "connectionId*/
+  ehrReferralIdOfSite?: string;
   srcReadStatus: string;
   responseStatus: string;
   lastActivityDate: string;
