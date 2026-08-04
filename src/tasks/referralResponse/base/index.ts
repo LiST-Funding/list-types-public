@@ -1,6 +1,8 @@
 import { Task, TaskTypes, SelectPatientCallbackData } from "../../types";
 import { TASK_SUB_TYPE } from "../constants";
 
+export * from "./responseOptions";
+
 /**
  * Re-exported for discoverability alongside the rest of the base referralResponse
  * contract. Defined in `tasks/types.ts` (not moved, to avoid relocating an existing
