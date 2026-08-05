@@ -16,7 +16,9 @@ export interface EnsocareFacilityResponse extends Base.FacilityResponse {
 export interface EnsocareReferralResponseData extends Base.ReferralResponseData<EnsocareFacilityResponse> {}
 
 /** Ensocare's `selectPatient` sub-task payload. */
-export interface EnsocareSelectPatientData extends Base.SelectPatientData {}
+export interface EnsocareSelectPatientData extends Base.SelectPatientData {
+    mrn:string
+}
 
 export type EnsocareResponseTask = Base.ResponseTask<"Ensocare", EnsocareReferralResponseData>;
 
