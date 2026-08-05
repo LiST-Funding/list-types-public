@@ -19,3 +19,12 @@ export const ENSOCARE_RESPONSES_CODE: Record<EnsocareResponseOption, number> = O
     [ENSOCARE_RESPONSES.considering]: 3,
 });
 
+/**
+ * Display labels for options that submit as a canonical response via
+ * `ResponseOption.response` (base mapping contract: `response ?? displayValue`) rather
+ * than their own display value. No magic strings — the builder references this.
+ */
+export const ENSOCARE_MESSAGE_RESPONSES = Object.freeze({
+    messageBookedReferral: "Message Booked Referral",
+});
+

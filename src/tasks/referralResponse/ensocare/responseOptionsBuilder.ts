@@ -1,5 +1,5 @@
 import { ResponseOption, ResponseReasonOption } from "../base/responseOptions";
-import { ENSOCARE_RESPONSES, ENSOCARE_RESPONSES_CODE, EnsocareResponseOption } from "./constants";
+import { ENSOCARE_RESPONSES, ENSOCARE_RESPONSES_CODE, ENSOCARE_MESSAGE_RESPONSES, EnsocareResponseOption } from "./constants";
 
 /** Ensocare reason option — value is the numeric catalog entry id. */
 export interface EnsocareReasonOption extends ResponseReasonOption {
@@ -270,10 +270,15 @@ function reasonOptionsForAction(actionId: number): EnsocareReasonOption[] {
     }));
 }
 
-/** displayValue/value pair of one action — mirrors aidin's helper. */
+/**
+ * displayValue/value pair of one action — mirrors aidin's helper. `response` is set
+ * explicitly even though it equals displayValue for the canonical actions: every
+ * option states what it submits, so the Front never depends on the fallback half of
+ * the `response ?? displayValue` contract.
+ */
 function buildOption(displayValue: EnsocareResponseOption): EnsocareOption {
     const value = ENSOCARE_RESPONSES_CODE[displayValue];
-    return { displayValue, value, responseReasonOptions: reasonOptionsForAction(value) };
+    return { displayValue, response: displayValue, value, responseReasonOptions: reasonOptionsForAction(value) };
 }
 
 const ensocareResponseOptions: EnsocareResponseConfigs = {
@@ -283,10 +288,25 @@ const ensocareResponseOptions: EnsocareResponseConfigs = {
     // the user is never asked to pick it.
     [ENSOCARE_RESPONSES.accept]: {
         displayValue: ENSOCARE_RESPONSES.accept,
+        response: ENSOCARE_RESPONSES.accept,
         value: ENSOCARE_RESPONSES_CODE[ENSOCARE_RESPONSES.accept],
     },
     [ENSOCARE_RESPONSES.decline]: buildOption(ENSOCARE_RESPONSES.decline),
     [ENSOCARE_RESPONSES.considering]: buildOption(ENSOCARE_RESPONSES.considering),
+    // Message on a Booked referral — displays differently but IS a Yes on the wire: the
+    // base mapping contract (`response ?? displayValue`) means the Front sends
+    // response: "Yes" / statusCode 1 when this option is picked, so the scraper's
+    // accept path (including the automation-side accept-reason enrichment) applies
+    // unchanged — no scraper code needed for this option. Literal (not buildOption) so
+    // it exposes NO reason options, like accept: the single Yes catalog reason (id 32)
+    // is appended by the automation side. Offered by the Front only when the
+    // selectPatient callback set isMessageEnabled (Booked referrals only).
+    [ENSOCARE_MESSAGE_RESPONSES.messageBookedReferral]: {
+        displayValue: ENSOCARE_MESSAGE_RESPONSES.messageBookedReferral,
+        response: ENSOCARE_RESPONSES.accept,
+        value: ENSOCARE_RESPONSES_CODE[ENSOCARE_RESPONSES.accept],
+        requireComment: true,
+    },
 };
 
 export function getEnsocareResponseOptionsConfigs() {

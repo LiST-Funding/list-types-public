@@ -20,11 +20,21 @@ export interface ResponseReasonOption {
  * One top-level response option (the action the provider takes).
  * Mapping contract (what the Front writes onto the task's {@link FacilityResponse}
  * when the user picks this option):
- * - `displayValue` → `FacilityResponse.response`
+ * - `displayValue` → `FacilityResponse.response` (unless `response` overrides — see below)
  * - `value`        → `FacilityResponse.responseStatusCode`
+ * - `response ?? displayValue` → `FacilityResponse.response` — the actual rule the Front
+ *   applies. Lets an option DISPLAY one label while SENDING a different, canonical
+ *   response value (e.g. a "Message Booked Referral" option that submits as a "Yes").
+ *   Options that omit `response` behave exactly as before — full backward compatibility.
  */
 export interface ResponseOption {
     displayValue: string;
+     /**
+     * Canonical response value to send instead of `displayValue`, when the option's
+     * display label and its wire value need to differ. See the mapping contract above.
+     */
+    response?: string;
+    /**the responseCode value */
     value: string | number;
     responseReasonOptions?: ResponseReasonOption[];
     requireComment?: boolean;
