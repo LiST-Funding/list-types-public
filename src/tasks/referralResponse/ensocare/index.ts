@@ -1,6 +1,7 @@
 import * as Base from "../base";
 import { EnsocareResponseOption } from "./constants";
 
+export * as constants from "./constants";
 export * as ResponseOptionsBuilder from "./responseOptionsBuilder";
 
 /** Ensocare's facility response — the per-facility referral row id rides in `ehrReferralIdOfSite`. */
