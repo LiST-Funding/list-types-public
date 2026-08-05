@@ -55,6 +55,10 @@ export interface AvailableSite {
     responseStatus?: string;
     respondByDate?: string;
     lastActivityDate?: string;
+    /** Can the provider still submit a status response for THIS site? Task-level {@link SelectPatientCallbackData.isRespondEnabled} aggregates these (any-enabled). */
+    isRespondEnabled?: boolean;
+    /** Is free-text messaging available for THIS site? Ensocare: true only for Booked referrals (message-only state). */
+    isMessageEnabled?: boolean;
 }
 
 /**
