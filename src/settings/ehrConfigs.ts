@@ -1,3 +1,5 @@
+import { EXECUTING_ACCOUNT_MODE, type ExecutingAccountMode } from "../tasks/referralResponse/constants";
+
 export interface AutoReLoginConfig {
   autoReLoginEnabled?: boolean;
   autoReLoginTime?: number;
@@ -48,3 +50,16 @@ export interface EnsocareEhrConfig extends BaseEhrConfig {
 }
 
 export type EhrConfigDocument = BaseEhrConfig | EpicEhrConfig | EnsocareEhrConfig;
+
+/**
+ * ehrConfig document of a referral-response process (e.g. "aidinResponse", "ensocareResponse").
+ * Extends the srcType's own config document — a response config carries all the fields of its
+ * srcType (e.g. `ensocareProviderId` for Ensocare) plus the response-specific fields.
+ */
+export type ResponseEhrConfigDocument = EhrConfigDocument & {
+    /** How the response process pulls tasks and which account executes them. */
+    executingAccountMode: ExecutingAccountMode;
+};
+
+export { EXECUTING_ACCOUNT_MODE };
+export type { ExecutingAccountMode };
