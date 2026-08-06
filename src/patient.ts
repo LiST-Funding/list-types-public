@@ -1,6 +1,6 @@
-import  {SnfPatientSite,ListPatientStatus, SnfPatientResponseHistoryItemAllScripts,SnfPatientResponseHistoryItemEpic}  from "./site";
+import  {SnfPatientSite,ListPatientStatus, SnfPatientResponseHistoryItemAllScripts,SnfPatientResponseHistoryItemEpic,SnfPatientResponseHistoryItemBase,SnfPatientResponseHistoryItemEnsocare}  from "./site";
 import * as BaseInfo from "./patient/baseInfo";
-export {SnfPatientSite,ListPatientStatus, SnfPatientResponseHistoryItemAllScripts,SnfPatientResponseHistoryItemEpic}
+export {SnfPatientSite,ListPatientStatus, SnfPatientResponseHistoryItemAllScripts,SnfPatientResponseHistoryItemEpic,SnfPatientResponseHistoryItemBase,SnfPatientResponseHistoryItemEnsocare}
 
 export {BaseInfo}
 export interface SnfPatientDetails {
