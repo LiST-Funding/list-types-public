@@ -1,36 +1,21 @@
-import { Task, TaskTypes } from "../../types";
+import * as Base from "../base";
 export * as constants from "./constants";
-export interface FacilityResponse {
-    facilityName: string;
-    response: string;
+
+/** Aidin's facility response — unchanged shape, plus the new optional `ehrReferralIdOfSite`. */
+export interface FacilityResponse extends Base.FacilityResponse {
     responseStatusCode: string;
-    responseReason?: string;
     responseReasonCode?: string;
-    comment?: string;
 }
 
-export interface AidinReferralResponseData {
-    referralId: string;
-    responses: { [facilityName: string]: FacilityResponse };
-}
+/** Aidin's `response` sub-task payload. */
+export interface AidinReferralResponseData extends Base.ReferralResponseData<FacilityResponse> {}
 
-export interface AidinSelectPatientData {
-    referralId: string;
-}
+/** Aidin's `selectPatient` sub-task payload. */
+export interface AidinSelectPatientData extends Base.SelectPatientData {}
 
-export type AidinSelectPatientTask = Task & {
-    srcType: "Aidin";
-    type: TaskTypes.referralResponse;
-    subType: "selectPatient";
-    data: AidinSelectPatientData;
-};
+export type AidinSelectPatientTask = Base.SelectPatientTask<"Aidin", AidinSelectPatientData>;
 
-export type AidinResponseTask = Task & {
-    srcType: "Aidin";
-    type: TaskTypes.referralResponse;
-    subType: "response";
-    data: AidinReferralResponseData;
-};
+export type AidinResponseTask = Base.ResponseTask<"Aidin", AidinReferralResponseData>;
 
 
 export * as ResponseOptionsBuilder from "./responseOptionsBuilder";

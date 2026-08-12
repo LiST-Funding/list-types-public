@@ -55,6 +55,10 @@ export interface AvailableSite {
     responseStatus?: string;
     respondByDate?: string;
     lastActivityDate?: string;
+    /** Can the provider still submit a status response for THIS site? Task-level {@link SelectPatientCallbackData.isRespondEnabled} aggregates these (any-enabled). */
+    isRespondEnabled?: boolean;
+    /** Is free-text messaging available for THIS site? Ensocare: true only for Booked referrals (message-only state). */
+    isMessageEnabled?: boolean;
 }
 
 /**
@@ -63,6 +67,14 @@ export interface AvailableSite {
  * narrow to this when reading the selectPatient result.
  */
 export interface SelectPatientCallbackData {
+    /** Can the provider still submit a status response for this referral? */
+    isRespondEnabled?: boolean;
+    /** Is free-text messaging available (often true even when responding is closed)? */
+    isMessageEnabled?: boolean;
+    /** Human-readable reason when responding is disabled. */
+    displayMsg?: string;
+    /** Typed reason code (scraper statusCodes, e.g. response_deadline_passed). */
+    statusCode?: string;
     availableSites?: AvailableSite[];
 }
 

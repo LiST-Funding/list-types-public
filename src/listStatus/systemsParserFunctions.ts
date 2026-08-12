@@ -2,6 +2,7 @@ import { SystemSpecificStatusParser } from "./classes/SystemSpecificStatusParser
 import { FOUR_NEXT_EHR_STATUS, FOUR_NEXT_HOSPITAL_STATUS } from "./ehrStatuses/4NextStatuses";
 import { AIDA_EHR_STATUS, AIDA_HOSPITAL_STATUS } from "./ehrStatuses/aidaStatuses";
 import { AIDIN_EHR_STATUS, AIDIN_HOSPITAL_STATUS } from "./ehrStatuses/aidenStatuses";
+import { ENSOCARE_EHR_STATUS, ENSOCARE_HOSPITAL_STATUS } from "./ehrStatuses/ensocareStatuses";
 import { EPIC_EHR_STATUS, EPIC_HOSPITAL_STATUS } from "./ehrStatuses/epicStatuses";
 import { GENERAL_EHR_STATUS, GENERAL_HOSPITAL_STATUS } from "./ehrStatuses/generalStatuses";
 import { MEDITECH_EHR_STATUS, MEDITECH_HOSPITAL_STATUS } from "./ehrStatuses/meditechStatuses";
@@ -41,4 +42,9 @@ export const repisodic = new SystemSpecificStatusParser(
 export const epic = new SystemSpecificStatusParser(
   EPIC_EHR_STATUS,
   EPIC_HOSPITAL_STATUS
+);
+
+export const ensocare = new SystemSpecificStatusParser(
+  ENSOCARE_EHR_STATUS,
+  ENSOCARE_HOSPITAL_STATUS
 );
