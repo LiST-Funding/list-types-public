@@ -15,7 +15,7 @@
 export const FILTER_OPERATORS = ['and', 'or'] as const;
 export type FilterOperator = typeof FILTER_OPERATORS[number];
 
-export const FILTER_TYPES = ['census', 'medicationCategory', 'order', 'diagnosis', 'payer', 'pdpm'] as const;
+export const FILTER_TYPES = ['census', 'medicationCategory', 'order', 'diagnosis', 'payer', 'pdpm', 'assessmentResponse'] as const;
 export type FilterType = typeof FILTER_TYPES[number];
 
 export const MONITORING_CHECK_TYPES = ['order', 'diagnosis', 'payer', 'pdpm', 'carePlan', 'assessment', 'assessmentResponse'] as const;
@@ -192,6 +192,45 @@ export interface AssessmentResponseMonitoringCheck extends MonitoringCheckBase {
   validityPeriod?: ValidityPeriod;
 }
 
+export const RESPONSE_CONDITION_OPERATORS = [
+  'eq', 'neq',                    // pick list / checkbox
+  'lt', 'lte', 'gt', 'gte',       // numeric
+  'contains', 'notContains',      // free text, and multi-select token match
+] as const;
+export type ResponseConditionOperator = typeof RESPONSE_CONDITION_OPERATORS[number];
+
+export const RESPONSE_AGGREGATE_FUNCTIONS = ['sum'] as const;
+export type ResponseAggregateFunction = typeof RESPONSE_AGGREGATE_FUNCTIONS[number];
+
+export interface AssessmentResponseCondition {
+  questionKey: string;
+  questionNo: string;
+  controlType: string;
+  displayText?: string;
+  /** Required in per-question mode; unused when the filter's aggregate is set. */
+  operator?: ResponseConditionOperator;
+  value?: string;
+}
+
+export interface ResponseAggregate {
+  fn: ResponseAggregateFunction;
+  operator: ResponseConditionOperator;
+  value: number;
+}
+
+export interface AssessmentResponseFilter extends PatientFilterBase {
+  type: 'assessmentResponse';
+  /** Assessment templates to match, by description (versions ship as new descriptions). */
+  descriptions: string[];
+  conditions: AssessmentResponseCondition[];
+  /** Combination across conditions. Ignored when aggregate is set. */
+  operator: AssessmentResponseOperator;
+  /** Sum mode: conditions carry only questions; the comparison happens on the total. */
+  aggregate?: ResponseAggregate;
+  /** Restrict to assessments whose status is Complete. Default off. */
+  completedOnly?: boolean;
+}
+
 // ---------------------------------------------------------------------------
 // Unions and container
 // ---------------------------------------------------------------------------
@@ -202,7 +241,8 @@ export type PatientFilter =
   | OrderFilter
   | DiagnosisFilter
   | PayerFilter
-  | PdpmFilter;
+  | PdpmFilter
+  | AssessmentResponseFilter;
 
 export type MonitoringCheck =
   | OrderMonitoringCheck
