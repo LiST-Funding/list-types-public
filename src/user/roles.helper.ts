@@ -1,4 +1,5 @@
 export const ROLE_NUMBER_CI = 141; // CI/Liason (Full Access)
+export const ROLE_NUMBER_CLINICAL_CI = 142; // Clinical + Admissions (Clinical and CI merged)
 export const ROLE_NUMBER_CLINICAL = 144; // Clinical
 export const ROLE_NUMBER_CLINICAL_MANAGER = 145; // Clinical Manager (Manage Users)
 export const ROLE_NUMBER_ADMINISTRATOR = 151; // Administrator (Reports Only)
