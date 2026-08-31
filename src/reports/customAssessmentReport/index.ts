@@ -199,6 +199,10 @@ export const RESPONSE_CONDITION_OPERATORS = [
 ] as const;
 export type ResponseConditionOperator = typeof RESPONSE_CONDITION_OPERATORS[number];
 
+// The aggregate compares a numeric total, so the text operators never apply.
+export const RESPONSE_AGGREGATE_OPERATORS = ['eq', 'neq', 'lt', 'lte', 'gt', 'gte'] as const;
+export type ResponseAggregateOperator = typeof RESPONSE_AGGREGATE_OPERATORS[number];
+
 export const RESPONSE_AGGREGATE_FUNCTIONS = ['sum'] as const;
 export type ResponseAggregateFunction = typeof RESPONSE_AGGREGATE_FUNCTIONS[number];
 
@@ -214,7 +218,7 @@ export interface AssessmentResponseCondition {
 
 export interface ResponseAggregate {
   fn: ResponseAggregateFunction;
-  operator: ResponseConditionOperator;
+  operator: ResponseAggregateOperator;
   value: number;
 }
 
