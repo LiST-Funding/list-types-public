@@ -9,5 +9,7 @@ export enum EhrType {
   Aidin = 'Aidin',
   EpicUMMS = 'Epic UMMS',
   EpicTrinityHealth = 'Epic Trinity-Health',
-  Aida = "Aida"
+  Aida = "Aida",
+  Ensocare = "EnsoCare",
+  EnsocareVA = "EnsoCare VA"
 }

@@ -1,6 +1,6 @@
 {
   "name": "list-types-public",
-  "version": "1.1.116",
+  "version": "1.1.122",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -68,6 +68,14 @@
       "types": "./dist/tasks/referralResponse/aidin/index.d.ts",
       "default": "./dist/tasks/referralResponse/aidin/index.js"
     },
+    "./tasks/referralResponse/base": {
+      "types": "./dist/tasks/referralResponse/base/index.d.ts",
+      "default": "./dist/tasks/referralResponse/base/index.js"
+    },
+    "./tasks/referralResponse/ensocare": {
+      "types": "./dist/tasks/referralResponse/ensocare/index.d.ts",
+      "default": "./dist/tasks/referralResponse/ensocare/index.js"
+    },
     "./tasks/referralResponse/navi": {
       "types": "./dist/tasks/referralResponse/navi/index.d.ts",
       "default": "./dist/tasks/referralResponse/navi/index.js"
@@ -124,6 +132,12 @@
       ],
       "tasks/referralResponse/aidin": [
         "./dist/tasks/referralResponse/aidin/index.d.ts"
+      ],
+      "tasks/referralResponse/base": [
+        "./dist/tasks/referralResponse/base/index.d.ts"
+      ],
+      "tasks/referralResponse/ensocare": [
+        "./dist/tasks/referralResponse/ensocare/index.d.ts"
       ],
       "tasks/referralResponse/navi": [
         "./dist/tasks/referralResponse/navi/index.d.ts"

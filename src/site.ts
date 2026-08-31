@@ -24,19 +24,43 @@ export interface SnfPatientResponseHistoryItemAllScripts {
   comment: string;
 }
 
-export interface SnfPatientResponseHistoryItemEpic {
-  fromHospital: boolean;
-  fromSite: boolean;
-  messageTexts: string[],
+export interface SnfPatientResponseHistoryItemBase {
+    fromHospital?: boolean;
+  fromSite?: boolean;
+
+  /**sender name */
+  sentFrom: string
+  /**rciver name if provided */
+  sentTo: string;
+  /** the original status value */
+  messageStatus: string
+  /**original timestamp as displayed in the EHR */
+  timestamp: string;
+  /** ISO UTC Date */
+  timestampDate: string;
+  /**file names if attached to the message */
+  files?: string[];
+  listStatus?: ListPatientStatus; //ListStatusType;;
+  /** the message text */
+  comment:string;
+}
+
+export interface SnfPatientResponseHistoryItemEpic  extends SnfPatientResponseHistoryItemBase {
+
+
+  //*Epic specific fields */
+    messageTexts: string[],
   unhandledTds: string[],
   rawMessage: string;
-  sentFrom: string
-  sentTo: string;
-  messageStatus: string
-  timestamp: string;
-  timestampDate: string;
-  files: string[];
-  listStatus: ListPatientStatus; //ListStatusType;;
+}
+
+export interface SnfPatientResponseHistoryItemEnsocare extends SnfPatientResponseHistoryItemBase {
+
+  //*Ensocare specific fields */
+  /** responseReasons descriptions of an inquiry response (e.g. "No bed available") */
+  reasons?: string[];
+  /** the EHR id of the source item (inquiryResponse id / clinicalDocument id), stringified */
+  ehrMessageId?: string;
 }
   
 export interface SnfPatientSite {
@@ -54,13 +78,18 @@ export interface SnfPatientSite {
   ehrSiteReadStatus?: boolean;
   listStatus: string; //ListStatusType;;
   ehrRequestStatus:string;
+  /** the identifier the EHR uses to identify and respond to this site's referral/request.
+   * this is not the EHR Site ID! its the id taht asociate the enry/row/item of this patient to that site.
+   * ensocare calls it "referralId" (which is per a site referral, multiple sites for the same referral will have different referral IDs,
+   * allscripts calls it "connectionId*/
+  ehrReferralIdOfSite?: string;
   srcReadStatus: string;
   responseStatus: string;
   lastActivityDate: string;
   respondByDate:string
   assigned: string;
   naviHospitalStatus?: string;
-  responseHistories: (SnfPatientResponseHistoryItemAllScripts | SnfPatientResponseHistoryItemEpic)[];
+  responseHistories: (SnfPatientResponseHistoryItemAllScripts | SnfPatientResponseHistoryItemEpic | SnfPatientResponseHistoryItemEnsocare)[];
   displayStatus: string;
   
   userStatus: string;
