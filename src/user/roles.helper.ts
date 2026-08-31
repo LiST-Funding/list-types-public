@@ -5,6 +5,7 @@ export const ROLE_NUMBER_CLINICAL_MANAGER = 145; // Clinical Manager (Manage Use
 export const ROLE_NUMBER_ADMINISTRATOR = 151; // Administrator (Reports Only)
 export const ROLE_NUMBER_CI_MANAGER = 152; // Manager (Admin Access + Second Approval + Extra Reports)
 export const ROLE_NUMBER_SNF_ADMIN = 177;
+export const ROLE_NUMBER_GLOBAL_ADMIN = 190; // Global Admin (cross-region portal; region-admin page set)
 export const ROLE_NUMBER_SUPER_ADMIN_MIN = 701;
 export const ROLE_NUMBER_SUPER_ADMIN_MAX = 900;
 
@@ -17,6 +18,13 @@ export function isSuperAdmin(roleNumber?: number | null): boolean {
 export function isSnfAdmin(roleNumber?: number | null): boolean {
   if (roleNumber == null) return false;
   return roleNumber === ROLE_NUMBER_SNF_ADMIN;
+}
+
+// Exactly the Global Admin tier (190). Not part of `isAdmin`: it gets the
+// region-admin page set, not the full admin one.
+export function isGlobalAdmin(roleNumber?: number | null): boolean {
+  if (roleNumber == null) return false;
+  return roleNumber === ROLE_NUMBER_GLOBAL_ADMIN;
 }
 
 export function isAdmin(roleNumber?: number | null): boolean {
