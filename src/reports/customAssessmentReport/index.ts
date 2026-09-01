@@ -203,6 +203,11 @@ export type ResponseConditionOperator = typeof RESPONSE_CONDITION_OPERATORS[numb
 export const RESPONSE_AGGREGATE_OPERATORS = ['eq', 'neq', 'lt', 'lte', 'gt', 'gte'] as const;
 export type ResponseAggregateOperator = typeof RESPONSE_AGGREGATE_OPERATORS[number];
 
+// How far back an assessment may be and still answer a condition. Absent means
+// no limit, which in practice is the mirror's own 12-month window.
+export const RESPONSE_LOOKBACK_MONTHS = [3, 6, 12] as const;
+export type ResponseLookbackMonths = typeof RESPONSE_LOOKBACK_MONTHS[number];
+
 export const RESPONSE_AGGREGATE_FUNCTIONS = ['sum'] as const;
 export type ResponseAggregateFunction = typeof RESPONSE_AGGREGATE_FUNCTIONS[number];
 
@@ -233,6 +238,8 @@ export interface AssessmentResponseFilter extends PatientFilterBase {
   aggregate?: ResponseAggregate;
   /** Restrict to assessments whose status is Complete. Default off. */
   completedOnly?: boolean;
+  /** Ignore assessments older than this many months. Absent means no limit. */
+  lookbackMonths?: ResponseLookbackMonths;
 }
 
 // ---------------------------------------------------------------------------
