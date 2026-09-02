@@ -219,6 +219,11 @@ export interface AssessmentResponseCondition {
   /** Required in per-question mode; unused when the filter's aggregate is set. */
   operator?: AssessmentResponseConditionOperator;
   value?: string;
+  /**
+   * Several accepted answers for this one question, combined with OR regardless of
+   * the filter's own and/or. Takes precedence over `value` when present.
+   */
+  values?: string[];
 }
 
 export interface AssessmentResponseAggregate {
