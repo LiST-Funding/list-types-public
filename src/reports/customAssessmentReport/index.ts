@@ -192,24 +192,24 @@ export interface AssessmentResponseMonitoringCheck extends MonitoringCheckBase {
   validityPeriod?: ValidityPeriod;
 }
 
-export const RESPONSE_CONDITION_OPERATORS = [
+export const ASSESSMENT_RESPONSE_CONDITION_OPERATORS = [
   'eq', 'neq',                    // pick list / checkbox
   'lt', 'lte', 'gt', 'gte',       // numeric
   'contains', 'notContains',      // free text, and multi-select token match
 ] as const;
-export type ResponseConditionOperator = typeof RESPONSE_CONDITION_OPERATORS[number];
+export type AssessmentResponseConditionOperator = typeof ASSESSMENT_RESPONSE_CONDITION_OPERATORS[number];
 
 // The aggregate compares a numeric total, so the text operators never apply.
-export const RESPONSE_AGGREGATE_OPERATORS = ['eq', 'neq', 'lt', 'lte', 'gt', 'gte'] as const;
-export type ResponseAggregateOperator = typeof RESPONSE_AGGREGATE_OPERATORS[number];
+export const ASSESSMENT_RESPONSE_AGGREGATE_OPERATORS = ['eq', 'neq', 'lt', 'lte', 'gt', 'gte'] as const;
+export type AssessmentResponseAggregateOperator = typeof ASSESSMENT_RESPONSE_AGGREGATE_OPERATORS[number];
 
 // How far back an assessment may be and still answer a condition. Absent means
 // no limit, which in practice is the mirror's own 12-month window.
-export const RESPONSE_LOOKBACK_MONTHS = [3, 6, 12] as const;
-export type ResponseLookbackMonths = typeof RESPONSE_LOOKBACK_MONTHS[number];
+export const ASSESSMENT_RESPONSE_LOOKBACK_MONTHS = [3, 6, 12] as const;
+export type AssessmentResponseLookbackMonths = typeof ASSESSMENT_RESPONSE_LOOKBACK_MONTHS[number];
 
-export const RESPONSE_AGGREGATE_FUNCTIONS = ['sum'] as const;
-export type ResponseAggregateFunction = typeof RESPONSE_AGGREGATE_FUNCTIONS[number];
+export const ASSESSMENT_RESPONSE_AGGREGATE_FUNCTIONS = ['sum'] as const;
+export type AssessmentResponseAggregateFunction = typeof ASSESSMENT_RESPONSE_AGGREGATE_FUNCTIONS[number];
 
 export interface AssessmentResponseCondition {
   questionKey: string;
@@ -217,13 +217,13 @@ export interface AssessmentResponseCondition {
   controlType: string;
   displayText?: string;
   /** Required in per-question mode; unused when the filter's aggregate is set. */
-  operator?: ResponseConditionOperator;
+  operator?: AssessmentResponseConditionOperator;
   value?: string;
 }
 
-export interface ResponseAggregate {
-  fn: ResponseAggregateFunction;
-  operator: ResponseAggregateOperator;
+export interface AssessmentResponseAggregate {
+  fn: AssessmentResponseAggregateFunction;
+  operator: AssessmentResponseAggregateOperator;
   value: number;
 }
 
@@ -235,11 +235,11 @@ export interface AssessmentResponseFilter extends PatientFilterBase {
   /** Combination across conditions. Ignored when aggregate is set. */
   operator: AssessmentResponseOperator;
   /** Sum mode: conditions carry only questions; the comparison happens on the total. */
-  aggregate?: ResponseAggregate;
+  aggregate?: AssessmentResponseAggregate;
   /** Restrict to assessments whose status is Complete. Default off. */
   completedOnly?: boolean;
   /** Ignore assessments older than this many months. Absent means no limit. */
-  lookbackMonths?: ResponseLookbackMonths;
+  lookbackMonths?: AssessmentResponseLookbackMonths;
 }
 
 // ---------------------------------------------------------------------------
