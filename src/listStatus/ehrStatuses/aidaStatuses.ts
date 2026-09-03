@@ -10,7 +10,7 @@ export   const AIDA_EHR_STATUS: StatusesMap = {
 
 export   const AIDA_HOSPITAL_STATUS: StatusesMap = {
     [ListStatus.Selected]: ["admitted","booked"],
-    [ListStatus.NotSelected]: [""],
+    [ListStatus.NotSelected]: ["booked_elsewhere"],
     [ListStatus.Cancelled]: ["cancelled"],
     [ListStatus.Closed]: ["expired"],  
     [ListStatus.New]: ["awaiting_response"],
