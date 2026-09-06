@@ -205,7 +205,7 @@ export type AssessmentResponseAggregateOperator = typeof ASSESSMENT_RESPONSE_AGG
 
 // How far back an assessment may be and still answer a condition. Absent means
 // no limit, which in practice is the mirror's own 12-month window.
-export const ASSESSMENT_RESPONSE_LOOKBACK_MONTHS = [3, 6, 12] as const;
+export const ASSESSMENT_RESPONSE_LOOKBACK_MONTHS = [1, 2, 3, 6, 12] as const;
 export type AssessmentResponseLookbackMonths = typeof ASSESSMENT_RESPONSE_LOOKBACK_MONTHS[number];
 
 export const ASSESSMENT_RESPONSE_AGGREGATE_FUNCTIONS = ['sum'] as const;
@@ -216,6 +216,11 @@ export interface AssessmentResponseCondition {
   questionNo: string;
   controlType: string;
   displayText?: string;
+  /**
+   * Which of the filter's `assessmentNames` answers this condition. Named rather
+   * than keyed by std_assess_id because one name spans several of those ids.
+   */
+  assessmentName: string;
   /** Required in per-question mode; unused when the filter's aggregate is set. */
   operator?: AssessmentResponseConditionOperator;
   value?: string;
@@ -234,8 +239,16 @@ export interface AssessmentResponseAggregate {
 
 export interface AssessmentResponseFilter extends PatientFilterBase {
   type: 'assessmentResponse';
-  /** Assessment templates to match, by description (versions ship as new descriptions). */
-  descriptions: string[];
+  /**
+   * Assessment templates to match, by the name PCC shows in the picker (mirrored
+   * in the `description` column of dr_as_std_assessment, hence the old name).
+   *
+   * TODO before merge: template versions ship as separate names ("X", "X - V 2"),
+   * and each condition binds to exactly one name, so a question asked on two
+   * versions cannot be satisfied by whichever version the patient actually
+   * answered. Decide whether a condition should target a group of names.
+   */
+  assessmentNames: string[];
   conditions: AssessmentResponseCondition[];
   /** Combination across conditions. Ignored when aggregate is set. */
   operator: AssessmentResponseOperator;
