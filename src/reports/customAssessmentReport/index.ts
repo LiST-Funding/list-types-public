@@ -205,8 +205,16 @@ export type AssessmentResponseAggregateOperator = typeof ASSESSMENT_RESPONSE_AGG
 
 // How far back an assessment may be and still answer a condition. Absent means
 // no limit, which in practice is the mirror's own 12-month window.
-export const ASSESSMENT_RESPONSE_LOOKBACK_MONTHS = [1, 2, 3, 6, 12] as const;
-export type AssessmentResponseLookbackMonths = typeof ASSESSMENT_RESPONSE_LOOKBACK_MONTHS[number];
+export const ASSESSMENT_RESPONSE_LOOKBACK_UNITS = ['day', 'week', 'month'] as const;
+export type AssessmentResponseLookbackUnit = typeof ASSESSMENT_RESPONSE_LOOKBACK_UNITS[number];
+// The finest unit is a day, so one cap in days covers every unit.
+export const ASSESSMENT_RESPONSE_LOOKBACK_MAX = 365;
+
+export interface AssessmentResponseLookback {
+  /** Whole number of `unit`s, at least 1. */
+  value: number;
+  unit: AssessmentResponseLookbackUnit;
+}
 
 export const ASSESSMENT_RESPONSE_AGGREGATE_FUNCTIONS = ['sum'] as const;
 export type AssessmentResponseAggregateFunction = typeof ASSESSMENT_RESPONSE_AGGREGATE_FUNCTIONS[number];
@@ -256,8 +264,8 @@ export interface AssessmentResponseFilter extends PatientFilterBase {
   aggregate?: AssessmentResponseAggregate;
   /** Restrict to assessments whose status is Complete. Default off. */
   completedOnly?: boolean;
-  /** Ignore assessments older than this many months. Absent means no limit. */
-  lookbackMonths?: AssessmentResponseLookbackMonths;
+  /** Ignore assessments older than this window. Absent means no limit. */
+  lookback?: AssessmentResponseLookback;
 }
 
 // ---------------------------------------------------------------------------
