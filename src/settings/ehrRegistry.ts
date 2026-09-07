@@ -4,7 +4,7 @@
  * A registry holds one preset per `srcType`: the `ehr_config` document and the
  * `ehr_settings` document for that system, side by side. Shapes are derived
  * from the live dev dumps of both collections (49 `ehr_config` docs /
- * 13 `ehr_settings` docs).
+ * 13 `ehr_settings` docs) plus the two referral-response `ehr_config` docs.
  *
  * A preset is client-agnostic. Every per-client field is an inert default the
  * consumer MUST override when applying a preset:
@@ -14,15 +14,26 @@
  * The preset data itself lives in the workflow server; this module is only the
  * shape contract.
  */
-import type { EpicEhrConfig } from "./ehrConfigs";
+import type { BaseEhrConfig, EpicEhrConfig } from "./ehrConfigs";
+import type { ExecutingAccountMode } from "../tasks/referralResponse/constants";
 
-/** Every srcType known to the system: the union of both collections. */
+/**
+ * Every srcType the registry knows.
+ *
+ * The first 48 are the union of the two collections. `"Aidin Response"` and
+ * `"EnsoCare Response"` are registry-only keys for the referral-response
+ * processes: their `ehr_config` docs carry the PARENT system's
+ * `config.srcType` (`"Aidin"` / `"EnsoCare"`), so they need a key of their own
+ * to sit in the registry. See {@link ResponseEhrPreset.respondsFor}.
+ */
 export type SrcType =
     "4NEXT"
   | "Aida"
   | "Aidin"
+  | "Aidin Response"
   | "AllScripts"
   | "EnsoCare"
+  | "EnsoCare Response"
   | "Epic Ascension"
   | "Epic Atlantic"
   | "Epic Boston Medical Center"
@@ -59,17 +70,18 @@ export type SrcType =
   | "Epic WellStar"
   | "Epic Yale"
   | "Incoming Faxes"
-  | "Lawrence General"
   | "Manual Referral"
-  | "Milford Regional"
+  | "Meditech Lawrence General"
+  | "Meditech Milford Regional"
+  | "Meditech Steward"
   | "Navi"
   | "Repisodic"
-  | "Steward"
   | "eFax"
 ;
 
 /**
- * Body of `ehr_config.config` as it appears across all 43 preset configs.
+ * Body of `ehr_config.config` for a scraper config, as it appears across all 43
+ * of them.
  *
  * Reuses {@link EpicEhrConfig} — the Epic-shaped fields (`reportType`,
  * `markAsUnReadId`, `responseIsFrom*`) are present on non-Epic systems too
@@ -81,6 +93,23 @@ export interface EhrConfigBody extends Omit<EpicEhrConfig, "requestType"> {
   requestType?: string;
 }
 
+/**
+ * Body of `ehr_config.config` for a referral-response process
+ * (`aidinResponse`, `ensocareResponse`).
+ *
+ * A response config drives responding, not scraping, so it carries no
+ * `shouldLoadMore`, and none of the Epic list-reading fields (`requestType`,
+ * `markAsUnReadId`, `reportType`) that {@link EhrConfigBody} has. What it adds
+ * is the account mode.
+ */
+export interface ResponseEhrConfigBody extends Omit<BaseEhrConfig, "shouldLoadMore"> {
+  /**
+   * How this process pulls tasks and which account executes them. `null` when
+   * the document does not set it, which is the case for `aidinResponse`.
+   */
+  executingAccountMode: ExecutingAccountMode | null;
+}
+
 /** An `ehr_config` document, minus `_id` and the encrypted `cred` subdoc. */
 export interface EhrConfigPreset {
   /** `ehr_config.name`; half of the unique index with `config.snfAccountId` */
@@ -89,6 +118,11 @@ export interface EhrConfigPreset {
   /** written to the literal DB key "Dispaly name" (the typo is in the schema) */
   displayName: string;
   config: EhrConfigBody;
+}
+
+/** The same document for a referral-response process. */
+export interface ResponseEhrConfigPreset extends Omit<EhrConfigPreset, "config"> {
+  config: ResponseEhrConfigBody;
 }
 
 /**
@@ -109,7 +143,7 @@ export interface EhrSettingsBody {
  * user-`_id` map, per client, never part of a preset).
  *
  * Only 13 srcTypes have a doc in `ehr_settings`; a registry synthesizes an
- * empty one for the other 35 so every srcType has both documents.
+ * empty one for the other 35 so every scraped srcType has both documents.
  */
 export interface EhrSettingsPreset {
   /** `ehr_settings.name`, equal to the srcType */
@@ -125,13 +159,31 @@ export interface EhrSettingsPreset {
   settings: EhrSettingsBody;
 }
 
-/** Both documents for one srcType. `ehr_config` is null for a non-scraped system. */
-export interface EhrPreset {
+interface EhrPresetBase {
   srcType: SrcType;
-  /** display name, taken from whichever document defines one */
   displayName: string;
+}
+
+/** A scraped system: what a Puppeteer scraper worker runs against. */
+export interface ScraperEhrPreset extends EhrPresetBase {
+  kind: "scraper";
+  /** null on the 5 systems that are not scraped (Manual Referral, faxes ...) */
   ehr_config: EhrConfigPreset | null;
   ehr_settings: EhrSettingsPreset;
 }
+
+/**
+ * A referral-response process. Has no `ehr_settings` document of its own: the
+ * response settings live on the parent srcType named by `respondsFor`.
+ */
+export interface ResponseEhrPreset extends EhrPresetBase {
+  kind: "response";
+  /** the scraped srcType this process responds for, and its `config.srcType` */
+  respondsFor: SrcType;
+  ehr_config: ResponseEhrConfigPreset;
+  ehr_settings: null;
+}
+
+export type EhrPreset = ScraperEhrPreset | ResponseEhrPreset;
 
 export type EhrPresetRegistry = Record<SrcType, EhrPreset>;
