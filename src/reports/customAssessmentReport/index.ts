@@ -207,14 +207,19 @@ export type AssessmentResponseAggregateOperator = typeof ASSESSMENT_RESPONSE_AGG
 // no limit, which in practice is the mirror's own 12-month window.
 export const ASSESSMENT_RESPONSE_LOOKBACK_UNITS = ['day', 'week', 'month'] as const;
 export type AssessmentResponseLookbackUnit = typeof ASSESSMENT_RESPONSE_LOOKBACK_UNITS[number];
-// The finest unit is a day, so one cap in days covers every unit.
-export const ASSESSMENT_RESPONSE_LOOKBACK_MAX = 365;
+// Bounds `lookback.value` itself, in whatever unit it carries.
+export const ASSESSMENT_RESPONSE_LOOKBACK_MAX_COUNT = 365;
 
 export interface AssessmentResponseLookback {
   /** Whole number of `unit`s, at least 1. */
   value: number;
   unit: AssessmentResponseLookbackUnit;
 }
+
+// Input ceilings the editor and the server both enforce.
+export const ASSESSMENT_RESPONSE_MAX_ASSESSMENT_NAMES = 25;
+export const ASSESSMENT_RESPONSE_MAX_CONDITIONS = 25;
+export const ASSESSMENT_RESPONSE_MAX_ANSWERS = 25;
 
 export const ASSESSMENT_RESPONSE_AGGREGATE_FUNCTIONS = ['sum'] as const;
 export type AssessmentResponseAggregateFunction = typeof ASSESSMENT_RESPONSE_AGGREGATE_FUNCTIONS[number];
@@ -233,8 +238,8 @@ export interface AssessmentResponseCondition {
   operator?: AssessmentResponseConditionOperator;
   value?: string;
   /**
-   * Several accepted answers for this one question, combined with OR regardless of
-   * the filter's own and/or. Takes precedence over `value` when present.
+   * Several accepted answers for this one question, OR-ed together and then negated
+   * under `neq`/`notContains` ("is none of these"). Wins over `value` when present.
    */
   values?: string[];
 }
@@ -248,13 +253,8 @@ export interface AssessmentResponseAggregate {
 export interface AssessmentResponseFilter extends PatientFilterBase {
   type: 'assessmentResponse';
   /**
-   * Assessment templates to match, by the name PCC shows in the picker (mirrored
-   * in the `description` column of dr_as_std_assessment, hence the old name).
-   *
-   * TODO before merge: template versions ship as separate names ("X", "X - V 2"),
-   * and each condition binds to exactly one name, so a question asked on two
-   * versions cannot be satisfied by whichever version the patient actually
-   * answered. Decide whether a condition should target a group of names.
+   * Assessment templates to match, by PCC's picker name (mirrored in
+   * `dr_as_std_assessment.description`). A condition binds to one name only.
    */
   assessmentNames: string[];
   conditions: AssessmentResponseCondition[];
