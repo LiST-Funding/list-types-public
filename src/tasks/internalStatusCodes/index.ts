@@ -14,6 +14,7 @@ import {
     InternalStatusObstacle,
     OBSTACLE_LABEL,
     classOf,
+    isWellFormedInternalStatusCode,
     obstacleOf,
 } from './types';
 import { PENDING_CODES } from './codes/1000';
@@ -120,49 +121,73 @@ export const formatInternalStatusCode = (code: number): string =>
     `${code} - ${describeInternalStatusCode(code)}`;
 
 /**
- * THE alarm policy. Imported, never reimplemented, in Server, Puppeteer and LogsCenter.
+ * THE alarm policy for a code. Imported, never reimplemented, in Server, Puppeteer and
+ * LogsCenter. Prefer {@link shouldAlertTask}, which carries the whole rule.
  *
- * Nullish means the throw site is not migrated yet, so legacy behaviour applies and
- * today's alerting is preserved through the whole rollout. `>= 5000` rather than class
- * equality is a deliberate decision: any class allocated above 5000 pages by default, so
- * allocating one is an alerting decision and not a free reservation.
+ * The code only ever downgrades a failure: absent or `>= 5000` alarms, and `1xxx` to
+ * `4xxx` is the case where an error is reclassified as a warning. It never upgrades a
+ * task that did not fail, which is why the task level rule tests `status` first.
  *
- * Callers apply this to a task that already ended in error. It is the alarm policy for a
- * failed outcome, not a predicate on every task, because a nullish code on a task that
- * never failed is simply an un-migrated success.
+ * Absent means the throw site is not migrated yet, so today's alerting is preserved
+ * through the whole rollout. `>= 5000` rather than class equality is a deliberate
+ * decision: any class allocated above 5000 pages by default, so allocating one is an
+ * alerting decision and not a free reservation.
+ *
+ * Fails safe on anything that is not a code. `NaN` reaching this must not buy silence,
+ * and a malformed value is not evidence that the outcome was acceptable.
  */
-export const shouldAlert = (code?: number | null): boolean => code == null || code >= InternalStatusClass.Unexpected;
+export const shouldAlert = (code?: number | null): boolean =>
+    !isWellFormedInternalStatusCode(code) || code >= InternalStatusClass.Unexpected;
+
+/**
+ * THE alarm rule, whole:
+ *
+ *     status === 'error' && (no code || code >= 5000)
+ *
+ * `status` decides whether anything failed. The code only decides whether that failure
+ * deserves a page, so a `2xxx` or `3xxx` error becomes a warning instead of an alarm.
+ */
+export const shouldAlertTask = (task: { status?: string; internalStatusCode?: number | null }): boolean =>
+    task.status === 'error' && shouldAlert(task.internalStatusCode);
 
 /** No code yet on a failed task: the throw site is not migrated. The migration burndown metric. */
 export const isLegacyOutcome = (task: { status?: string; internalStatusCode?: number | null }): boolean =>
     task.status === 'error' && task.internalStatusCode == null;
 
 /**
- * Severity order for aggregating sub-results. Deliberately not the numeric order.
+ * Precedence for folding sub-results into one code, lowest first. Deliberately not the
+ * numeric order.
  *
- * Eligibility runs one sub-process per payer and a multi site referral produces one
- * result per site, so a single task can legitimately hold a success and a lock at once.
- * The task level code must not let the lock mask the success.
+ * This is advisory, not how the field is written. `internalStatusCode` lives separately
+ * from `status`, and the last write wins: whichever throw site emits last sets the value
+ * on the document. Nothing merges sub-results on the write path today.
+ *
+ * It exists for the readers that do need one code out of many, since eligibility runs
+ * one sub-process per payer and a multi site referral produces one result per site.
+ * `Success` sits lowest on purpose: a task that also hit a lock or is still pending has
+ * a more informative code than "one of the sites worked". `Unexpected` is highest, so a
+ * defect is never folded away.
  */
 export const SEVERITY_ORDER = Object.freeze([
-    InternalStatusClass.Success,     // a goal was reached, that dominates benign non-outcomes
+    InternalStatusClass.Success,     // least informative when something else also happened
     InternalStatusClass.External,
     InternalStatusClass.TenantInput,
     InternalStatusClass.Pending,     // not terminal, outranks any finished but blocked result
-    InternalStatusClass.Unexpected,  // always wins
+    InternalStatusClass.Unexpected,  // always wins, a defect is never folded away
 ] as const);
 
 /**
- * The one code that represents a set of sub-results.
+ * The one code that represents a set of sub-results. See {@link SEVERITY_ORDER}: this is
+ * for readers folding many results into one, not for the write path.
  *
  * A class this build does not know ranks above everything, so a code emitted by a newer
- * Puppeteer surfaces instead of being masked by a success. That matches `shouldAlert`,
- * where an unknown class above 5000 already alarms.
+ * Puppeteer surfaces instead of being folded away. Malformed values are dropped rather
+ * than ranked, otherwise a `NaN` would outrank every real code and then read as silent.
  */
 export const aggregateInternalStatusCode = (
     codes: readonly (number | null | undefined)[],
 ): number | undefined => {
-    const present = codes.filter((code): code is number => code != null);
+    const present = codes.filter(isWellFormedInternalStatusCode);
     if (!present.length) return undefined;
 
     const rank = (code: number): number => {

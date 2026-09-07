@@ -31,8 +31,10 @@ import {
     formatInternalStatusCode,
     isLegacyOutcome,
     isRegisteredInternalStatusCode,
+    isWellFormedInternalStatusCode,
     obstacleOf,
     shouldAlert,
+    shouldAlertTask,
 } from '../index';
 
 let failures = 0;
@@ -226,6 +228,24 @@ check('shouldAlert alarms on 5xxx and on a nullish code, and is silent otherwise
     equal(shouldAlert(6000), true, 'a class above 5000 pages by default, by decision');
 });
 
+check('shouldAlert fails safe on anything that is not a code', () => {
+    for (const malformed of [NaN, 0, -3202, 3.5, 999, 10000, Infinity]) {
+        equal(shouldAlert(malformed), true, `shouldAlert(${malformed}) must not buy silence`);
+        equal(isWellFormedInternalStatusCode(malformed), false, `${malformed} is not a code`);
+    }
+    equal(isWellFormedInternalStatusCode(3299), true, 'an unregistered code is still well formed');
+});
+
+check('the whole alarm rule is status error and either no code or 5xxx', () => {
+    equal(shouldAlertTask({ status: 'error' }), true, 'un-migrated failure still alarms');
+    equal(shouldAlertTask({ status: 'error', internalStatusCode: 5700 }), true, 'a defect alarms');
+    equal(shouldAlertTask({ status: 'error', internalStatusCode: 3202 }), false, 'a lock is a warning');
+    equal(shouldAlertTask({ status: 'error', internalStatusCode: 2000 }), false, 'a success is a warning');
+    equal(shouldAlertTask({ status: 'error', internalStatusCode: NaN }), true, 'a malformed code alarms');
+    equal(shouldAlertTask({ status: 'done' }), false, 'nothing failed, nothing to page');
+    equal(shouldAlertTask({ status: 'done', internalStatusCode: 5700 }), false, 'the code never upgrades a pass');
+});
+
 check('isLegacyOutcome is the migration burndown predicate', () => {
     equal(isLegacyOutcome({ status: 'error' }), true, 'error with no code');
     equal(isLegacyOutcome({ status: 'error', internalStatusCode: null }), true, 'error with null code');
@@ -245,14 +265,16 @@ check('severity order covers every class and is not numeric order', () => {
     equal(SEVERITY_ORDER[SEVERITY_ORDER.length - 1], InternalStatusClass.Unexpected, 'Unexpected always wins');
 });
 
-check('aggregation does not let a lock mask a success', () => {
+check('aggregation folds sub-results by precedence, not by numeric order', () => {
     equal(aggregateInternalStatusCode([]), undefined, 'no sub-results');
     equal(aggregateInternalStatusCode([null, undefined]), undefined, 'no code on any sub-result');
-    equal(aggregateInternalStatusCode([2000, 3202]), 3202, 'a lock outranks a success');
+    equal(aggregateInternalStatusCode([2000, 3202]), 3202, 'a lock is more informative than a success');
     equal(aggregateInternalStatusCode([3202, 5700]), 5700, 'Unexpected always wins');
     equal(aggregateInternalStatusCode([4401, 1000]), 1000, 'Pending outranks TenantInput');
     equal(aggregateInternalStatusCode([2000, 2001]), 2000, 'a tie keeps the first');
-    equal(aggregateInternalStatusCode([2000, 6000]), 6000, 'an unknown class is never masked');
+    equal(aggregateInternalStatusCode([2000, 6000]), 6000, 'an unknown class is never folded away');
+    equal(aggregateInternalStatusCode([2000, NaN]), 2000, 'a malformed value is dropped, not ranked');
+    equal(aggregateInternalStatusCode([NaN, 0]), undefined, 'nothing well formed to fold');
 });
 
 check('every legacy mapping targets a registered code', () => {

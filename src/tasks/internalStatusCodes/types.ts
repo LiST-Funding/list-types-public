@@ -90,6 +90,16 @@ export const classOf = (code: number): number => Math.floor(code / 1000) * 1000;
 /** `3201` -> `200`. */
 export const obstacleOf = (code: number): number => Math.floor((code % 1000) / 100) * 100;
 
+/**
+ * Is this a code at all, as opposed to `NaN`, `0`, a float or a five digit number?
+ *
+ * An unregistered code is still well formed and still renders from its digits, which is
+ * what keeps an older consumer working against a newer writer. A malformed one is not a
+ * code, so the alarm policy fails safe on it and aggregation ignores it.
+ */
+export const isWellFormedInternalStatusCode = (code?: number | null): code is number =>
+    typeof code === 'number' && Number.isInteger(code) && code >= 1000 && code <= 9999;
+
 const DECLARED_OBSTACLES: ReadonlySet<number> = new Set<number>(Object.values(InternalStatusObstacle));
 
 /**
