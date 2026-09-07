@@ -189,6 +189,65 @@ test('null, undefined and non-string values all count as missing', () => {
   assert.deepEqual([...nameMethod.missing], ['LastName', 'FirstName', 'Sex']);
 });
 
+test('a fields object that is not an object reads as nothing supplied, never a throw', () => {
+  // NaviHealth and Workflow-Front are plain JavaScript, and these values arrive from Mongo
+  // documents and JSON bodies. The documented contract is a result, not an exception.
+  for (const badFields of [null, undefined, 'MedicaidNumber', 42, true]) {
+    const result = resolveSearchMethod(FLORIDA, badFields);
+
+    assert.equal(result.status, 'resolved');
+    assert.equal(result.satisfied, null);
+    assert.equal(result.chosenValid, false);
+    assert.deepEqual([...result.missing], []);
+    assert.ok(result.alternatives.length > 0);
+  }
+});
+
+test('a chosen method that is not an array reads as no choice, never a throw', () => {
+  for (const badChosen of [null, 5, 'Ssn', {}, true]) {
+    const result = resolveSearchMethod(FLORIDA, supply(['MedicaidNumber']), badChosen);
+
+    assert.equal(result.status, 'resolved');
+    assert.equal(result.chosenValid, false);
+    assert.deepEqual([...result.missing], []);
+    assert.deepEqual([...result.satisfied], ['MedicaidNumber']);
+  }
+});
+
+test('an inherited property on the fields object does not count as supplied', () => {
+  // A polluted Object.prototype must not make an empty object look like a filled form.
+  Object.prototype.MedicaidNumber = 'polluted';
+  try {
+    const result = resolveSearchMethod(FLORIDA, {});
+
+    assert.equal(result.satisfied, null, 'an empty object supplies nothing');
+  } finally {
+    delete Object.prototype.MedicaidNumber;
+  }
+});
+
+test('missing collapses a repeated field, as set equality already does', () => {
+  const result = resolveSearchMethod(FLORIDA, {}, ['Ssn', 'Ssn', 'BirthDate']);
+
+  assert.equal(result.chosenValid, true, 'the repeat is collapsed for equality');
+  assert.deepEqual([...result.missing], ['Ssn', 'BirthDate'], 'and for the gap list too');
+});
+
+test('a provider key resolves the same however it is spelled', () => {
+  // isMatrixEnabled already trimmed and upper-cased; these lookups did not, so a lower-case
+  // key was enabled on one path and unknown on the other.
+  for (const spelling of ['AA201030', 'aa201030', '  AA201030  ', 'aA201030']) {
+    const result = resolveSearchMethod(spelling, supply(['MedicaidNumber']));
+
+    assert.equal(result.status, 'resolved', `${spelling} must resolve`);
+    assert.equal(isMatrixEnabled(spelling), true, `${spelling} must be enabled`);
+  }
+
+  assert.equal(getProviderKeyByState('fl'), 'AA201030');
+  assert.equal(getStateByProviderKey('  aa201030 '), 'FL');
+  assert.equal(isMatrixEnabled('fl'), true);
+});
+
 test('the rules table cannot be mutated by a consumer', () => {
   assert.throws(() => {
     MEDICAID_SEARCH_RULES[FLORIDA][0].push('Ssn');

@@ -23,8 +23,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const ROOT_DIR = path.join(__dirname, '..');
-const SOURCE_TSV = path.join(ROOT_DIR, 'data', 'aa-medicaid-search-rules.tsv');
-const OUTPUT_TS = path.join(ROOT_DIR, 'src', 'eligibility', 'medicaidSearchRules.generated.ts');
+
+// Both paths may be overridden on the command line, so the generator's failure branches can
+// be exercised against fixture files without writing over the real generated module:
+//   node scripts/generate-medicaid-search-rules.mjs <sourceTsv> <outputTs>
+const [sourceArg, outputArg] = process.argv.slice(2);
+const SOURCE_TSV = sourceArg || path.join(ROOT_DIR, 'data', 'aa-medicaid-search-rules.tsv');
+const OUTPUT_TS = outputArg || path.join(ROOT_DIR, 'src', 'eligibility', 'medicaidSearchRules.generated.ts');
 
 /** AA's Medicare provider group. Routed by KEY, never by the state-column text, which
  *  literally reads "Medicare" and would otherwise be mapped as if it were a state. */
@@ -34,6 +39,11 @@ const MEDICARE_PROVIDER_KEY = 'AA201001';
  *  cannot hold both, so Texas LTC keeps its rules under its provider key and is not offered
  *  as a state. TX maps to AA201064, matching what Workflow-Front already sends today. */
 const PROVIDER_KEYS_WITHOUT_STATE_CODE = new Set(['AA201065']);
+
+/** AA's provider keys are the literal AA followed by digits. Validated because a mangled key
+ *  can still be a legal TypeScript identifier — a byte-order mark on the first row would
+ *  otherwise produce a key nothing can ever look up, with every gate still green. */
+const PROVIDER_KEY_PATTERN = /^AA\d+$/;
 
 const SEARCH_FIELDS = [
   'MedicaidNumber',
@@ -104,7 +114,10 @@ function fail(message) {
 }
 
 function parseSourceRows() {
-  const raw = fs.readFileSync(SOURCE_TSV, 'utf-8');
+  // Excel's "Save As UTF-8" prepends a byte-order mark. Left in place it becomes part of the
+  // first row's provider key, which stays a legal identifier, so the file compiles, the drift
+  // test re-parses the same mark and agrees, and only the lookup silently fails.
+  const raw = fs.readFileSync(SOURCE_TSV, 'utf-8').replace(/^\uFEFF/, '');
   const lines = raw.split('\n').filter(line => line.trim() !== '');
 
   return lines.map((line, index) => {
@@ -114,7 +127,13 @@ function parseSourceRows() {
       fail(`row ${rowNumber} has ${columns.length} tab-separated columns, expected 3`);
     }
 
-    const [providerKey, label, combinationsJson] = columns;
+    const providerKey = columns[0].trim();
+    const label = columns[1];
+    const combinationsJson = columns[2];
+
+    if (!PROVIDER_KEY_PATTERN.test(providerKey)) {
+      fail(`row ${rowNumber} has provider key "${providerKey}", which is not of the form AA<digits>`);
+    }
     let combinations;
     try {
       combinations = JSON.parse(combinationsJson);
@@ -188,7 +207,9 @@ function buildStateMap(medicaidRows) {
   return providerKeyByState;
 }
 
-const quote = value => `'${value}'`;
+/** JSON.stringify rather than wrapping in quotes by hand: a value carrying a quote or a
+ *  backslash would otherwise emit source that does not mean what the table says. */
+const quote = value => JSON.stringify(value);
 const renderCombination = combination => `[${combination.map(quote).join(', ')}]`;
 
 function renderStateCodeUnion(stateCodes) {

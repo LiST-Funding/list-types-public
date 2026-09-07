@@ -180,6 +180,15 @@ test('describeSearchMethod labels the shapes the form has to render', () => {
   assert.equal(describeSearchMethod([]), '');
 });
 
+test('describeSearchMethod ignores a token naming an inherited member', () => {
+  // Without an own-property lookup this rendered the source of Object's constructor into the
+  // label, and an unknown token printed as an empty slot: "Medicaid ID + ".
+  assert.equal(describeSearchMethod(['constructor']), '');
+  assert.equal(describeSearchMethod(['toString', 'valueOf']), '');
+  assert.equal(describeSearchMethod(['MedicaidNumber', 'constructor']), 'Medicaid ID');
+  assert.equal(describeSearchMethod(['Ssn', '__proto__']), 'SSN');
+});
+
 test('labels are keyed by field set, so AA writing one set two ways reads the same', () => {
   const combinations = providerEntries().flatMap(([, providerCombinations]) => providerCombinations);
   const labelsByFieldSet = new Map();

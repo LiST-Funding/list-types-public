@@ -1,5 +1,5 @@
 import type { MedicaidStateCode } from './medicaidSearchRules.generated';
-import { getStateByProviderKey } from './searchRulesLookup';
+import { getStateByProviderKey, normalizeLookupKey } from './searchRulesLookup';
 
 /**
  * The states whose eligibility search is driven by AA's rules table rather than by the fixed
@@ -74,7 +74,7 @@ const enabled = new Set<string>(MATRIX_ENABLED_STATES);
  * unrecognised value.
  */
 export function isMatrixEnabled(stateOrProviderKey: string): boolean {
-  const normalized = stateOrProviderKey.trim().toUpperCase();
+  const normalized = normalizeLookupKey(stateOrProviderKey);
   if (enabled.has(normalized)) return true;
 
   const state = getStateByProviderKey(normalized);
