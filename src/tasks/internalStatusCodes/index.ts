@@ -1,10 +1,11 @@
 /**
  * internalStatusCode registry: assembly, load time assertions, lookups, composer, policy.
  *
- * This is the sub-path export `list-types-public/internalStatusCodes`. It imports nothing
- * outside this folder, so LogsCenter (a browser app) can consume it even though the root
- * barrel of this package pulls in Node only dependencies such as `exceljs` and `pdf-lib`.
- * Do not add an import here that reaches outside `src/internalStatusCodes`.
+ * This is the sub-path export `list-types-public/tasks/internalStatusCodes`. It imports
+ * nothing outside this folder, so LogsCenter (a browser app) can consume it even though
+ * the root barrel of this package pulls in Node only dependencies such as `exceljs` and
+ * `pdf-lib`. Do not add an import here that reaches outside this folder, and note that
+ * `../types` from this file is the Task types, one level up, not the level definitions.
  */
 import {
     CLASS_LABEL,

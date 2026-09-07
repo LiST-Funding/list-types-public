@@ -3,16 +3,20 @@
  *
  * The split with `defineCodes` and the barrel is deliberate:
  *   module load asserts structural invariants that must never be importable when broken
- *     (code inside its class, declared obstacle digit, unique code, unique key,
- *      deprecated entries carry a live replacedBy).
- *   this suite asserts the intent that a broken build would still run with
- *     (the rendered strings the dashboard shows, the alarm truth table, severity order,
- *      label hygiene, legacy map coverage).
+ *     (four digit code, class digit matches the file, obstacle digit matches the group it
+ *      is filed under, unique code, unique key, deprecated entries carry a live
+ *      replacedBy). `npm run build` imports the built module so a wrong code fails the
+ *      build here instead of surfacing at boot in a consumer.
+ *   this suite asserts the intent that a structurally valid registry could still get
+ *     wrong (the rendered strings the dashboard shows, the alarm truth table, severity
+ *     order, label hygiene, legacy map coverage), plus that each load time assert still
+ *     fires, so the runtime guard cannot rot silently.
  *
  * Structure only. No patient values anywhere in here.
  */
 import {
     ALLSCRIPTS_RESPONSE_STATUS_TO_CODE,
+    InternalStatusObstacle,
     ALL_INTERNAL_STATUS_CODE_ENTRIES,
     CLASS_LABEL,
     INTERNAL_STATUS_CODES,
@@ -22,6 +26,7 @@ import {
     SEVERITY_ORDER,
     aggregateInternalStatusCode,
     classOf,
+    defineCodes,
     describeInternalStatusCode,
     formatInternalStatusCode,
     isLegacyOutcome,
@@ -48,6 +53,20 @@ const assert = (condition: boolean, message: string): void => {
 
 const equal = <T>(actual: T, expected: T, message: string): void => {
     if (actual !== expected) throw new Error(`${message}: expected ${String(expected)}, got ${String(actual)}`);
+};
+
+/** Asserts that a load time guard fires, and that it fires for the stated reason. */
+const throws = (fn: () => unknown, expected: string, message: string): void => {
+    try {
+        fn();
+    } catch (error) {
+        const actual = (error as Error).message;
+        if (!actual.includes(expected)) {
+            throw new Error(`${message}: expected a message containing "${expected}", got "${actual}"`);
+        }
+        return;
+    }
+    throw new Error(`${message}: expected a throw, got none`);
 };
 
 /** The registry as the spec table declares it. Kept literal so a silent edit fails here. */
@@ -93,6 +112,64 @@ check('every entry key matches its object key', () => {
     for (const [key, entry] of Object.entries(INTERNAL_STATUS_CODES)) {
         equal(entry.key as string, key, `injected key for ${key}`);
     }
+});
+
+check('every entry carries the obstacle it was filed under', () => {
+    for (const entry of ALL_INTERNAL_STATUS_CODE_ENTRIES) {
+        equal(entry.obstacle, obstacleOf(entry.code), `filed obstacle for ${entry.key}`);
+    }
+});
+
+check('defineCodes rejects a code whose digits contradict its group', () => {
+    throws(
+        () =>
+            defineCodes(InternalStatusClass.External, {
+                [InternalStatusObstacle.StateConflict]: { LOCKED_ASSIGNED_HERE: { code: 3301 } },
+            }),
+        'declared under obstacle 200 but its digits say 300',
+        'wrong obstacle digit',
+    );
+    throws(
+        () =>
+            defineCodes(InternalStatusClass.External, {
+                [InternalStatusObstacle.Authorization]: { NO_ACCESS_TO_TARGET: { code: 4400 } },
+            }),
+        'declared in class 3000 but its digits say 4000',
+        'wrong class digit',
+    );
+    throws(
+        () => defineCodes(InternalStatusClass.External, { 800: { SOMETHING: { code: 3800 } } }),
+        'obstacle 800 in class 3000 is not declared',
+        'undeclared obstacle',
+    );
+    throws(
+        () =>
+            defineCodes(InternalStatusClass.External, {
+                [InternalStatusObstacle.General]: { SHORT: { code: 30 } },
+            }),
+        'is not a four digit integer',
+        'not four digits',
+    );
+    throws(
+        () =>
+            defineCodes(InternalStatusClass.External, {
+                [InternalStatusObstacle.StateConflict]: {
+                    FIRST:  { code: 3200 },
+                    SECOND: { code: 3200 },
+                },
+            }),
+        'declared twice',
+        'duplicate code inside one group',
+    );
+    throws(
+        () =>
+            defineCodes(InternalStatusClass.External, {
+                [InternalStatusObstacle.NotFound]:      { SAME_KEY: { code: 3100 } },
+                [InternalStatusObstacle.StateConflict]: { SAME_KEY: { code: 3200 } },
+            }),
+        'key SAME_KEY declared twice',
+        'duplicate key across groups',
+    );
 });
 
 check('each code renders exactly the string the dashboard shows', () => {

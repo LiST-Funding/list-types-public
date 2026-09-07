@@ -20,10 +20,6 @@
       "types": "./dist/excel/index.d.ts",
       "default": "./dist/excel/index.js"
     },
-    "./internalStatusCodes": {
-      "types": "./dist/internalStatusCodes/index.d.ts",
-      "default": "./dist/internalStatusCodes/index.js"
-    },
     "./listStatus": {
       "types": "./dist/listStatus/index.d.ts",
       "default": "./dist/listStatus/index.js"
@@ -64,6 +60,10 @@
       "types": "./dist/tasks/index.d.ts",
       "default": "./dist/tasks/index.js"
     },
+    "./tasks/internalStatusCodes": {
+      "types": "./dist/tasks/internalStatusCodes/index.d.ts",
+      "default": "./dist/tasks/internalStatusCodes/index.js"
+    },
     "./tasks/referralResponse": {
       "types": "./dist/tasks/referralResponse/index.d.ts",
       "default": "./dist/tasks/referralResponse/index.js"
@@ -101,9 +101,6 @@
       "excel": [
         "./dist/excel/index.d.ts"
       ],
-      "internalStatusCodes": [
-        "./dist/internalStatusCodes/index.d.ts"
-      ],
       "listStatus": [
         "./dist/listStatus/index.d.ts"
       ],
@@ -134,6 +131,9 @@
       "tasks": [
         "./dist/tasks/index.d.ts"
       ],
+      "tasks/internalStatusCodes": [
+        "./dist/tasks/internalStatusCodes/index.d.ts"
+      ],
       "tasks/referralResponse": [
         "./dist/tasks/referralResponse/index.d.ts"
       ],
@@ -159,9 +159,10 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "check:internalStatusCodes": "ts-node src/internalStatusCodes/__tests__/registry.check.ts",
+    "check:internalStatusCodes": "ts-node src/tasks/internalStatusCodes/__tests__/registry.check.ts",
+    "verify:registry": "node -e \"require('./dist/tasks/internalStatusCodes/index.js')\"",
     "generate-exports": "node scripts/generate-exports.mjs",
-    "build": "npm run generate-exports && tsc",
+    "build": "npm run generate-exports && tsc && npm run verify:registry",
     "prepare": "npm run build",
     "dev": "tsc --watch",
     "dev:link:localProject": "npm i && npm run build && npm link"
