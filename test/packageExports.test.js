@@ -19,7 +19,14 @@ const { pathToFileURL } = require('node:url');
  * exports through the re-export chain, which a require() test would not exercise.
  */
 
+/**
+ * The exact public surface. Asserted as a closed list, not a subset, because an internal
+ * helper reaching the barrel is invisible otherwise: `export *` re-exports whatever a module
+ * happens to export, so one added `export` keyword silently widens what consumers may depend
+ * on and what we must keep working.
+ */
 const PUBLIC_NAMES = [
+  'CANONICAL_FIELD_ORDER',
   'MATRIX_ENABLED_STATES',
   'MEDICAID_PROVIDER_KEY_BY_STATE',
   'MEDICAID_SEARCH_RULES',
@@ -28,6 +35,7 @@ const PUBLIC_NAMES = [
   'SSN_NOT_ACCEPTED_STATES',
   'STATE_BY_MEDICAID_PROVIDER_KEY',
   'areSameCombination',
+  'canonicalKey',
   'describeSearchMethod',
   'getProviderKeyByState',
   'getSearchCombinations',
@@ -39,11 +47,18 @@ const PUBLIC_NAMES = [
 
 const distUrl = relative => pathToFileURL(path.join(__dirname, '..', 'dist', relative)).href;
 
-test('the subpath entry point exposes the whole public surface', () => {
+test('the subpath entry point exposes exactly the public surface, no more', () => {
   const subpath = require('../dist/eligibility');
   for (const name of PUBLIC_NAMES) {
     assert.notEqual(subpath[name], undefined, `${name} is missing from the eligibility subpath`);
   }
+
+  const actual = Object.keys(subpath).filter(name => name !== '__esModule').sort();
+  assert.deepEqual(
+    actual,
+    [...PUBLIC_NAMES].sort(),
+    'the export surface changed — add the name to PUBLIC_NAMES deliberately, or keep the helper internal'
+  );
 });
 
 test('the package root re-exports the module as a namespace', () => {

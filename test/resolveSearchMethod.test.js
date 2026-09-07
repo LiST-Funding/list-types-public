@@ -248,6 +248,18 @@ test('a provider key resolves the same however it is spelled', () => {
   assert.equal(isMatrixEnabled('fl'), true);
 });
 
+test('the resolved branch echoes the normalized key, the unknown branch the raw one', () => {
+  // A consumer persists this. Echoing the caller's spelling would record ' aa201030 ' as the
+  // provider a set of combinations came from.
+  const resolved = resolveSearchMethod('  aa201030  ', supply(['MedicaidNumber']));
+  assert.equal(resolved.status, 'resolved');
+  assert.equal(resolved.providerKey, 'AA201030');
+
+  // The unknown result exists to show what was sent, so it keeps the raw value.
+  const unknown = resolveSearchMethod('  aa999999  ', {});
+  assert.deepEqual(unknown, { status: 'unknownProvider', providerKey: '  aa999999  ' });
+});
+
 test('the rules table cannot be mutated by a consumer', () => {
   assert.throws(() => {
     MEDICAID_SEARCH_RULES[FLORIDA][0].push('Ssn');

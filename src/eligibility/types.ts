@@ -36,6 +36,9 @@ export interface UnknownProviderResolution {
 
 export interface ResolvedSearchMethod {
   readonly status: 'resolved';
+  /** The NORMALIZED key the rules were read under — trimmed and upper-cased — not the
+   *  caller's spelling. Persist this one. The unknownProvider variant echoes the raw key
+   *  instead, because that result exists to show what was sent. */
   readonly providerKey: string;
   /**
    * The first combination in AA's order whose every field is supplied, or null when none is.

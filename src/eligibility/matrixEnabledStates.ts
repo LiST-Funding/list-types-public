@@ -1,5 +1,6 @@
 import type { MedicaidStateCode } from './medicaidSearchRules.generated';
-import { getStateByProviderKey, normalizeLookupKey } from './searchRulesLookup';
+import { normalizeLookupKey } from './normalizeLookupKey';
+import { getStateByProviderKey } from './searchRulesLookup';
 
 /**
  * The states whose eligibility search is driven by AA's rules table rather than by the fixed

@@ -1,4 +1,5 @@
 import { areSameCombination } from './combinationSet';
+import { normalizeLookupKey } from './normalizeLookupKey';
 import { getSearchCombinations } from './searchRulesLookup';
 import type {
   SearchCombination,
@@ -75,8 +76,15 @@ export function resolveSearchMethod(
 ): SearchMethodResolution {
   const combinations = getSearchCombinations(providerKey);
   if (combinations === undefined) {
+    // The raw key, deliberately: an unknown-provider result is what a consumer puts in front
+    // of a human or a log, and it has to show what was actually sent.
     return { status: 'unknownProvider', providerKey };
   }
+
+  // The normalized key on the resolved branch, because that is the key the rules were read
+  // under. Echoing the caller's spelling would let a consumer persist ` aa201030 ` as the
+  // provider these combinations came from.
+  const resolvedProviderKey = normalizeLookupKey(providerKey);
 
   const chosenCombination: SearchCombination | null = Array.isArray(chosen) ? chosen : null;
 
@@ -101,5 +109,12 @@ export function resolveSearchMethod(
       !(chosenCombination !== null && areSameCombination(combination, chosenCombination))
   );
 
-  return { status: 'resolved', providerKey, satisfied, chosenValid, missing, alternatives };
+  return {
+    status: 'resolved',
+    providerKey: resolvedProviderKey,
+    satisfied,
+    chosenValid,
+    missing,
+    alternatives,
+  };
 }
