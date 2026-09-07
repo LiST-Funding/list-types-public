@@ -94,6 +94,17 @@ export interface Task <STEP_STATUS extends string = string, STEP_TYPE extends ob
     status?: string;
     /** Free-form; see {@link TaskStatusCode} for known values. Kept as string for back-compat. */
     statusCode?: string;
+    /**
+     * Numeric outcome code, `CZxx`. See the `internalStatusCodes` sub-path export for the
+     * registry, `formatInternalStatusCode` and `shouldAlert`. Stores the number and nothing
+     * else, never the rendered string, so a reworded label re-renders every historical row.
+     *
+     * Typed `number` rather than the `InternalStatusCode` union on purpose: a reader built
+     * against an older tag must still accept a code emitted by a newer writer. Writers should
+     * use `InternalStatusCode`. Absent means the throw site is not migrated yet, and legacy
+     * alerting applies.
+     */
+    internalStatusCode?: number;
     currentStep?: string;
     steps?: STEP_TYPE[];
     stepStatus?: STEP_STATUS;

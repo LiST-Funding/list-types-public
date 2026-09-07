@@ -20,6 +20,10 @@
       "types": "./dist/excel/index.d.ts",
       "default": "./dist/excel/index.js"
     },
+    "./internalStatusCodes": {
+      "types": "./dist/internalStatusCodes/index.d.ts",
+      "default": "./dist/internalStatusCodes/index.js"
+    },
     "./listStatus": {
       "types": "./dist/listStatus/index.d.ts",
       "default": "./dist/listStatus/index.js"
@@ -97,6 +101,9 @@
       "excel": [
         "./dist/excel/index.d.ts"
       ],
+      "internalStatusCodes": [
+        "./dist/internalStatusCodes/index.d.ts"
+      ],
       "listStatus": [
         "./dist/listStatus/index.d.ts"
       ],
@@ -152,6 +159,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "check:internalStatusCodes": "ts-node src/internalStatusCodes/__tests__/registry.check.ts",
     "generate-exports": "node scripts/generate-exports.mjs",
     "build": "npm run generate-exports && tsc",
     "prepare": "npm run build",
