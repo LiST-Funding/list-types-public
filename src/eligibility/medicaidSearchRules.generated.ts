@@ -9,9 +9,10 @@
  * Canonical consumer import: `list-types-public/eligibility`.
  *
  * Contents: 49 Medicaid provider groups holding 171 search
- * combinations, and 48 state codes (47 states plus DC — Alaska, Arizona and
- * Hawaii have no rows in AA's export). AA's combination order is preserved verbatim,
- * because resolveSearchMethod resolves to the first satisfied combination in that order.
+ * combinations, and 48 state codes — every jurisdiction AA publishes Medicaid
+ * rules for. A state absent from AA's export has no code here. AA's combination order is
+ * preserved verbatim, because resolveSearchMethod resolves to the first satisfied
+ * combination in that order.
  */
 import { freezeSearchRules } from './freezeSearchRules';
 import type { MedicaidSearchRules, SearchCombination } from './types';

@@ -6,6 +6,9 @@ const assert = require('node:assert/strict');
 const {
   MEDICAID_PROVIDER_KEY_BY_STATE,
   MEDICAID_SEARCH_RULES,
+  getProviderKeyByState,
+  getSearchCombinations,
+  getStateByProviderKey,
   isMatrixEnabled,
   resolveSearchMethod,
 } = require('../dist/eligibility');
@@ -20,6 +23,20 @@ test('an unknown provider key is reported, not thrown', () => {
   for (const unknown of ['AA201022', 'AA201023', 'AA201032', 'not-a-key', '']) {
     const result = resolveSearchMethod(unknown, supply(['MedicaidNumber']));
     assert.deepEqual(result, { status: 'unknownProvider', providerKey: unknown });
+  }
+});
+
+test('a provider key naming an inherited member is unknown, not table data', () => {
+  // The provider key is client-supplied: Workflow-Front derives it from a state dropdown and
+  // WorkflowServer stores task data verbatim. Reading the table without an own-property check
+  // returns Object.prototype members as if they were rules, which crashes the caller.
+  for (const inherited of ['constructor', 'toString', 'hasOwnProperty', '__proto__', 'valueOf']) {
+    const result = resolveSearchMethod(inherited, supply(['MedicaidNumber']));
+    assert.deepEqual(result, { status: 'unknownProvider', providerKey: inherited });
+
+    assert.equal(getSearchCombinations(inherited), undefined);
+    assert.equal(getStateByProviderKey(inherited), undefined);
+    assert.equal(getProviderKeyByState(inherited), undefined);
   }
 });
 
@@ -148,15 +165,28 @@ test('fields the provider never uses are ignored rather than penalised', () => {
   assert.deepEqual([...result.satisfied], ['MedicaidNumber']);
 });
 
-test('null and undefined values count as missing', () => {
+test('null, undefined and non-string values all count as missing', () => {
+  // Mongo returns null for a cleared field and a JSON body can carry a number, so these are
+  // the shapes the JavaScript consumers actually hand in, not hypotheticals.
   const result = resolveSearchMethod(FLORIDA, {
     MedicaidNumber: undefined,
+    FirstName: null,
+    LastName: 12345,
+    Sex: false,
     Ssn: 'Ssn-value',
     BirthDate: 'BirthDate-value',
   });
 
   assert.equal(result.status, 'resolved');
   assert.deepEqual([...result.satisfied], ['Ssn', 'BirthDate']);
+
+  const nameMethod = resolveSearchMethod(
+    FLORIDA,
+    { FirstName: null, LastName: 12345, BirthDate: 'BirthDate-value', Sex: false },
+    ['LastName', 'FirstName', 'BirthDate', 'Sex']
+  );
+  assert.equal(nameMethod.satisfied, null, 'a number is not a supplied name');
+  assert.deepEqual([...nameMethod.missing], ['LastName', 'FirstName', 'Sex']);
 });
 
 test('the rules table cannot be mutated by a consumer', () => {
