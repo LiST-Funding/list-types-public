@@ -68,6 +68,28 @@ test('SSN_NOT_ACCEPTED_STATES is exactly the states with no SSN path', () => {
   assert.deepEqual(sorted(SSN_NOT_ACCEPTED_STATES), sorted(derivedFromTable));
 });
 
+test('SSN_NOT_ACCEPTED_STATES holds no empty entries and no unmapped provider', () => {
+  for (const state of SSN_NOT_ACCEPTED_STATES) {
+    assert.equal(typeof state, 'string', 'an unmapped provider leaked into the derived list');
+    assert.notEqual(state, '', 'the derived list must hold no empty entries');
+    assert.ok(
+      Object.prototype.hasOwnProperty.call(MEDICAID_PROVIDER_KEY_BY_STATE, state),
+      `${state} is not a state AA publishes rules for`
+    );
+  }
+  assert.equal(new Set(SSN_NOT_ACCEPTED_STATES).size, SSN_NOT_ACCEPTED_STATES.length);
+});
+
+test('exactly one provider has rules but no state code of its own', () => {
+  // Texas LTC. This test fires when a future AA export adds another unmapped provider, which
+  // is the case that would otherwise leak silently through any provider-to-state derivation.
+  const unmapped = providerEntries()
+    .map(([providerKey]) => providerKey)
+    .filter(providerKey => stateOf(providerKey) === undefined);
+
+  assert.deepEqual(unmapped, ['AA201065']);
+});
+
 test('sex is part of a name path in exactly seven states', () => {
   const withSex = providerEntries()
     .filter(([, combinations]) => combinations.some(c => c.includes('Sex')))

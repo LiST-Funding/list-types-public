@@ -8,8 +8,15 @@ function deriveSsnNotAcceptedStates(): readonly MedicaidStateCode[] {
   for (const [providerKey, combinations] of Object.entries(MEDICAID_SEARCH_RULES)) {
     if (combinations.some(combination => combination.includes('Ssn'))) continue;
 
+    // Providers with no state code are dropped deliberately. Texas LTC is the only one
+    // today and it accepts an SSN, so it never reaches here — but that is a fact about the
+    // current export, not a property of this code. Without the guard, the next export that
+    // adds an unmapped provider with no SSN path would push undefined into an array that
+    // consumers read as state codes.
     const state = getStateByProviderKey(providerKey);
-    if (state !== undefined) states.push(state);
+    if (state === undefined) continue;
+
+    states.push(state);
   }
 
   return Object.freeze(states);
