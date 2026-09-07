@@ -95,14 +95,18 @@ export interface Task <STEP_STATUS extends string = string, STEP_TYPE extends ob
     /** Free-form; see {@link TaskStatusCode} for known values. Kept as string for back-compat. */
     statusCode?: string;
     /**
-     * Numeric outcome code, `CZxx`. See the `tasks/internalStatusCodes` sub-path export for the
-     * registry, `formatInternalStatusCode` and `shouldAlert`. Stores the number and nothing
-     * else, never the rendered string, so a reworded label re-renders every historical row.
+     * Numeric outcome code: class digit, obstacle digit, then a two digit entry label,
+     * for example `3201`. See the `tasks/internalStatusCodes` sub-path export for the
+     * registry, `formatInternalStatusCode` and `shouldAlert`.
      *
-     * Typed `number` rather than the `InternalStatusCode` union on purpose: a reader built
-     * against an older tag must still accept a code emitted by a newer writer. Writers should
-     * use `InternalStatusCode`. Absent means the throw site is not migrated yet, and legacy
-     * alerting applies.
+     * Absent means the throw site is not migrated yet, so legacy status handling and
+     * legacy alerting apply. The document stores the number only, never the rendered
+     * string, so a reworded label re-renders every historical row instead of freezing
+     * old prose onto every document.
+     *
+     * Typed `number` rather than the `InternalStatusCode` union on purpose: a reader
+     * built against an older tag must still accept a code emitted by a newer writer.
+     * Writers should use `InternalStatusCode`.
      */
     internalStatusCode?: number;
     currentStep?: string;
