@@ -57,8 +57,7 @@ test('the Medicare row is kept out of the Medicaid table and out of the state ma
 });
 
 test('SSN_NOT_ACCEPTED_STATES is exactly the states with no SSN path', () => {
-  // Generated into the table module by the generator; this re-derives it from the rules with
-  // an independent pass so a stale generated list fails here.
+  // Hand-listed in the table module; re-derived here from the rules so a stale list fails.
   assert.deepEqual(sorted(SSN_NOT_ACCEPTED_STATES), ['AR', 'CA', 'NE', 'PA', 'RI', 'TN', 'UT', 'VT']);
 
   const derivedFromTable = providerEntries()

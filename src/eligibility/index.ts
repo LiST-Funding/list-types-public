@@ -12,5 +12,5 @@
  * Canonical consumer import: `list-types-public/eligibility`.
  */
 export * from './types';
-export * from './medicaidSearchRules.generated';
+export * from './medicaidSearchRules';
 export * from './matrixEnabledStates';

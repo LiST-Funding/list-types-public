@@ -163,8 +163,7 @@
     "build": "npm run generate-exports && tsc",
     "prepare": "npm run build",
     "dev": "tsc --watch",
-    "dev:link:localProject": "npm i && npm run build && npm link",
-    "generate:medicaid-rules": "node scripts/generate-medicaid-search-rules.mjs"
+    "dev:link:localProject": "npm i && npm run build && npm link"
   },
   "author": "",
   "license": "ISC",

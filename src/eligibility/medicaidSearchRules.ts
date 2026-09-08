@@ -1,18 +1,18 @@
 /**
- * GENERATED FILE — DO NOT EDIT BY HAND.
+ * Approved Admissions' Medicaid search rules — the source of truth, maintained by hand.
  *
- * Written by scripts/generate-medicaid-search-rules.mjs from
- * data/aa-medicaid-search-rules.tsv (Approved Admissions' SearchOptions export).
- * Regenerate with `npm run generate:medicaid-rules`; `npm test` fails if this file
- * has drifted from the TSV.
+ * Transcribed from AA's SearchOptions export (RequiredFieldsRule / "Search combination" per
+ * provider group; the copy we received is kept in the docs vault under References/). When AA
+ * sends a new export, edit this object directly and run `npm test`: the tests re-derive the
+ * state maps and the SSN list from the table and fail on any inconsistency.
  *
  * Canonical consumer import: `list-types-public/eligibility`.
  *
- * Contents: 49 Medicaid provider groups holding 171 search
- * combinations, and 48 state codes — every jurisdiction AA publishes Medicaid
- * rules for. A state absent from AA's export has no code here. AA's combination order is
- * preserved verbatim, because consumers resolve to the first satisfied combination in that
- * order.
+ * Contents: 49 Medicaid provider groups holding 171 search combinations, and 48 state codes —
+ * every jurisdiction AA publishes Medicaid rules for (47 states + DC; Alaska, Arizona and
+ * Hawaii have no rows). A state absent from AA's export has no code here. AA's combination
+ * order is preserved verbatim, because consumers resolve to the first satisfied combination
+ * in that order.
  *
  * DATA ONLY. This package carries the rules and the maps needed to read them; the logic that
  * interprets them (which combination a request satisfies, labels, allowlist checks) lives in
@@ -235,8 +235,8 @@ export const MEDICAID_PROVIDER_KEY_BY_STATE: Readonly<Record<MedicaidStateCode, 
   WY: "AA201072",
 };
 
-/** The inverse of MEDICAID_PROVIDER_KEY_BY_STATE. Generated rather than derived at load
- *  so that neither direction can be built with an unchecked key cast. */
+/** The inverse of MEDICAID_PROVIDER_KEY_BY_STATE, written out so that neither direction is
+ *  built with an unchecked key cast; a test checks the two round-trip. */
 export const STATE_BY_MEDICAID_PROVIDER_KEY: Readonly<Record<string, MedicaidStateCode>> = {
   AA201021: "AL",
   AA201024: "AR",
@@ -288,8 +288,8 @@ export const STATE_BY_MEDICAID_PROVIDER_KEY: Readonly<Record<string, MedicaidSta
   AA201072: "WY",
 };
 
-/** The states with no combination that accepts an SSN. Written by the generator from the
- *  table above, so it cannot fall out of step with AA's rules. Sending an SSN to these
+/** The states with no combination that accepts an SSN. A test re-derives it from the table
+ *  above, so it cannot silently fall out of step with AA's rules. Sending an SSN to these
  *  states is pure downside: extra protected data on the wire with no way to improve a match. */
 export const SSN_NOT_ACCEPTED_STATES: readonly MedicaidStateCode[] = [
   "AR",

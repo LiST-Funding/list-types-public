@@ -1,4 +1,4 @@
-import type { MedicaidStateCode } from './medicaidSearchRules.generated';
+import type { MedicaidStateCode } from './medicaidSearchRules';
 
 /**
  * The states whose eligibility search is driven by AA's rules table rather than by the fixed
