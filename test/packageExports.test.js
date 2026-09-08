@@ -25,15 +25,7 @@ const { pathToFileURL } = require('node:url');
  * happens to export, so one added `export` keyword silently widens what consumers may depend
  * on. Logic lives in the consumers; a function appearing here is a regression.
  */
-const PUBLIC_NAMES = [
-  'MATRIX_ENABLED_STATES',
-  'MEDICAID_PROVIDER_KEY_BY_STATE',
-  'MEDICAID_SEARCH_RULES',
-  'MEDICARE_PROVIDER_KEY',
-  'MEDICARE_SEARCH_RULE',
-  'SSN_NOT_ACCEPTED_STATES',
-  'STATE_BY_MEDICAID_PROVIDER_KEY',
-];
+const PUBLIC_NAMES = ['MEDICAID_SEARCH_RULES'];
 
 const distUrl = relative => pathToFileURL(path.join(__dirname, '..', 'dist', relative)).href;
 
