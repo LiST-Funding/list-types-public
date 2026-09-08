@@ -3,7 +3,8 @@
  *
  * Transcribed from AA's SearchOptions export (RequiredFieldsRule / "Search combination" per
  * provider group; the copy we received is kept in the docs vault under References/). When AA
- * sends a new export, edit this object directly and run `npm test`.
+ * sends a new export, edit this object directly (and the MedicaidProviderKey union in types.ts
+ * if a provider group is added or removed); `npm run build` type-checks the two against each other.
  *
  * Canonical consumer import: `list-types-public/eligibility`. This is the module's ONLY
  * export: 49 provider groups, 171 combinations, 48 state codes. Everything else — which state
