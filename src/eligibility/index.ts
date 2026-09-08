@@ -1,24 +1,16 @@
 /**
  * Approved Admissions' per-provider eligibility search rules (SNF-598 / XC-8).
  *
- * CANONICAL CONSUMER IMPORT — use the subpath:
+ * DATA ONLY. This module carries the rules table AA publishes, the maps needed to read it
+ * (state code <-> provider key) and the rollout allowlist. It holds no logic: which
+ * combination a request satisfies, how a method is labelled and whether a state is enabled
+ * are decided in each consumer, from this data:
  *
- *   import { resolveSearchMethod } from 'list-types-public/eligibility';
+ *   NaviHealth      approvedAdmissions/v2/medicaidSearchRules.js
+ *   Workflow-Front  manageb/job-info-v2/payer-eligibility/medicaid-search-rules.ts
  *
- * The package root also re-exports this module as the `eligibility` namespace, but the
- * subpath is the supported entry point: it is the pattern already proven in production for
- * NaviHealth, which consumes this CommonJS build from ECMAScript modules.
- *
- * AA identifies a patient per provider group, and each state Medicaid program publishes its
- * own list of accepted field combinations. A request must satisfy at least one of them.
- * Encoding the table once here is what keeps Workflow-Front, NaviHealth and WorkflowServer
- * from disagreeing about what a given state will accept.
+ * Canonical consumer import: `list-types-public/eligibility`.
  */
 export * from './types';
 export * from './medicaidSearchRules.generated';
-export * from './combinationSet';
-export * from './searchRulesLookup';
 export * from './matrixEnabledStates';
-export * from './resolveSearchMethod';
-export * from './describeSearchMethod';
-export * from './ssnNotAcceptedStates';

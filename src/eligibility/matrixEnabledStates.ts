@@ -1,6 +1,4 @@
 import type { MedicaidStateCode } from './medicaidSearchRules.generated';
-import { normalizeLookupKey } from './normalizeLookupKey';
-import { getStateByProviderKey } from './searchRulesLookup';
 
 /**
  * The states whose eligibility search is driven by AA's rules table rather than by the fixed
@@ -14,7 +12,7 @@ import { getStateByProviderKey } from './searchRulesLookup';
  * Both Workflow-Front and NaviHealth read this list, so neither can disagree about which
  * states are on the new path.
  */
-export const MATRIX_ENABLED_STATES: readonly MedicaidStateCode[] = Object.freeze([
+export const MATRIX_ENABLED_STATES: readonly MedicaidStateCode[] = [
   'AL',
   'AR',
   'CA',
@@ -63,21 +61,4 @@ export const MATRIX_ENABLED_STATES: readonly MedicaidStateCode[] = Object.freeze
   'WI',
   'WV',
   'WY',
-]);
-
-const enabled = new Set<string>(MATRIX_ENABLED_STATES);
-
-/**
- * Whether a state code or an AA provider key is on the rules-driven path.
- *
- * False for anything AA publishes no state rules for, which is what routes a caller to
- * today's legacy behaviour: Alaska, Arizona and Hawaii, Texas LTC's provider key, and any
- * unrecognised value.
- */
-export function isMatrixEnabled(stateOrProviderKey: string): boolean {
-  const normalized = normalizeLookupKey(stateOrProviderKey);
-  if (enabled.has(normalized)) return true;
-
-  const state = getStateByProviderKey(normalized);
-  return state !== undefined && enabled.has(state);
-}
+];

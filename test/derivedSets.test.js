@@ -11,8 +11,6 @@ const {
   MEDICARE_SEARCH_RULE,
   SSN_NOT_ACCEPTED_STATES,
   STATE_BY_MEDICAID_PROVIDER_KEY,
-  describeSearchMethod,
-  isMatrixEnabled,
 } = require('../dist/eligibility');
 const { ALL_SEARCH_FIELDS, setKey, providerEntries } = require('./helpers');
 
@@ -59,6 +57,8 @@ test('the Medicare row is kept out of the Medicaid table and out of the state ma
 });
 
 test('SSN_NOT_ACCEPTED_STATES is exactly the states with no SSN path', () => {
+  // Generated into the table module by the generator; this re-derives it from the rules with
+  // an independent pass so a stale generated list fails here.
   assert.deepEqual(sorted(SSN_NOT_ACCEPTED_STATES), ['AR', 'CA', 'NE', 'PA', 'RI', 'TN', 'UT', 'VT']);
 
   const derivedFromTable = providerEntries()
@@ -124,6 +124,16 @@ test('the state map holds 48 jurisdictions and excludes Texas LTC', () => {
   assert.equal(MEDICAID_PROVIDER_KEY_BY_STATE.CA, 'AA201025');
 });
 
+test('the rules and maps are plain data: objects and arrays, nothing callable', () => {
+  const surface = require('../dist/eligibility');
+  for (const [name, value] of Object.entries(surface)) {
+    if (name === '__esModule') continue;
+    assert.notEqual(typeof value, 'function', `${name} is a function — logic belongs in the consumers`);
+  }
+  assert.equal(Object.getPrototypeOf(MEDICAID_SEARCH_RULES), Object.prototype);
+  assert.ok(Array.isArray(MEDICAID_SEARCH_RULES.AA201030[0]));
+});
+
 test('the state map and its inverse round-trip', () => {
   for (const [state, providerKey] of Object.entries(MEDICAID_PROVIDER_KEY_BY_STATE)) {
     assert.equal(STATE_BY_MEDICAID_PROVIDER_KEY[providerKey], state);
@@ -148,66 +158,4 @@ test('the allowlist currently enables every state AA publishes rules for', () =>
   // Owner decision of 2026-09-07. This is the line to change when product narrows the
   // rollout; MATRIX_ENABLED_STATES stays hand-written so that is a one-line edit.
   assert.deepEqual(sorted(MATRIX_ENABLED_STATES), sorted(Object.keys(MEDICAID_PROVIDER_KEY_BY_STATE)));
-});
-
-test('isMatrixEnabled accepts a state code or a provider key', () => {
-  assert.equal(isMatrixEnabled('FL'), true);
-  assert.equal(isMatrixEnabled('fl'), true);
-  assert.equal(isMatrixEnabled('  FL  '), true);
-  assert.equal(isMatrixEnabled('AA201030'), true);
-
-  for (const notEnabled of ['AK', 'AZ', 'HI', 'AA201022', 'AA201065', 'TX-LTC', '', 'nonsense']) {
-    assert.equal(isMatrixEnabled(notEnabled), false, `${notEnabled} must not be enabled`);
-  }
-});
-
-test('describeSearchMethod labels the shapes the form has to render', () => {
-  assert.equal(describeSearchMethod(['MedicaidNumber']), 'Medicaid ID');
-  assert.equal(describeSearchMethod(['Ssn', 'BirthDate']), 'SSN + date of birth');
-  assert.equal(describeSearchMethod(['BirthDate', 'Ssn']), 'SSN + date of birth');
-  assert.equal(
-    describeSearchMethod(['LastName', 'FirstName', 'BirthDate', 'Sex']),
-    'Name + date of birth + sex'
-  );
-  assert.equal(
-    describeSearchMethod(['FirstName', 'LastName', 'BirthDate', 'Sex']),
-    'Name + date of birth + sex'
-  );
-  assert.equal(describeSearchMethod(['Ssn', 'LastName']), 'SSN + last name');
-  assert.equal(describeSearchMethod(['MedicaidNumber', 'LastName']), 'Medicaid ID + last name');
-  assert.equal(describeSearchMethod(['MedicaidNumber', 'Ssn']), 'Medicaid ID + SSN');
-  assert.equal(describeSearchMethod(['MedicareNumber']), 'Medicare number');
-  assert.equal(describeSearchMethod([]), '');
-});
-
-test('describeSearchMethod ignores a token naming an inherited member', () => {
-  // Without an own-property lookup this rendered the source of Object's constructor into the
-  // label, and an unknown token printed as an empty slot: "Medicaid ID + ".
-  assert.equal(describeSearchMethod(['constructor']), '');
-  assert.equal(describeSearchMethod(['toString', 'valueOf']), '');
-  assert.equal(describeSearchMethod(['MedicaidNumber', 'constructor']), 'Medicaid ID');
-  assert.equal(describeSearchMethod(['Ssn', '__proto__']), 'SSN');
-});
-
-test('labels are keyed by field set, so AA writing one set two ways reads the same', () => {
-  const combinations = providerEntries().flatMap(([, providerCombinations]) => providerCombinations);
-  const labelsByFieldSet = new Map();
-
-  for (const combination of combinations) {
-    const key = setKey(combination);
-    const label = describeSearchMethod(combination);
-    const seen = labelsByFieldSet.get(key);
-    if (seen !== undefined) {
-      assert.equal(label, seen, `${key} renders as both "${seen}" and "${label}"`);
-    }
-    labelsByFieldSet.set(key, label);
-  }
-
-  const distinctArrays = new Set(combinations.map(c => c.join('|')));
-  const distinctLabels = new Set(labelsByFieldSet.values());
-  assert.ok(
-    distinctLabels.size < distinctArrays.size,
-    'labelling by field set must collapse the orderings AA writes the same set in'
-  );
-  assert.equal(distinctLabels.size, labelsByFieldSet.size, 'each field set needs its own label');
 });

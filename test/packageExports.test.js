@@ -20,13 +20,12 @@ const { pathToFileURL } = require('node:url');
  */
 
 /**
- * The exact public surface. Asserted as a closed list, not a subset, because an internal
+ * The exact public surface: data only. Asserted as a closed list, not a subset, because a
  * helper reaching the barrel is invisible otherwise: `export *` re-exports whatever a module
  * happens to export, so one added `export` keyword silently widens what consumers may depend
- * on and what we must keep working.
+ * on. Logic lives in the consumers; a function appearing here is a regression.
  */
 const PUBLIC_NAMES = [
-  'CANONICAL_FIELD_ORDER',
   'MATRIX_ENABLED_STATES',
   'MEDICAID_PROVIDER_KEY_BY_STATE',
   'MEDICAID_SEARCH_RULES',
@@ -34,15 +33,6 @@ const PUBLIC_NAMES = [
   'MEDICARE_SEARCH_RULE',
   'SSN_NOT_ACCEPTED_STATES',
   'STATE_BY_MEDICAID_PROVIDER_KEY',
-  'areSameCombination',
-  'canonicalKey',
-  'describeSearchMethod',
-  'getProviderKeyByState',
-  'getSearchCombinations',
-  'getStateByProviderKey',
-  'isMatrixEnabled',
-  'resolveSearchMethod',
-  'toCanonicalSet',
 ];
 
 const distUrl = relative => pathToFileURL(path.join(__dirname, '..', 'dist', relative)).href;
@@ -77,11 +67,11 @@ test('ECMAScript-modules consumers can name-import from the subpath', async () =
       `${name} is not statically detected as a named export`
     );
   }
-  assert.equal(typeof subpath.resolveSearchMethod, 'function');
+  assert.equal(typeof subpath.MEDICAID_SEARCH_RULES, 'object');
 });
 
 test('ECMAScript-modules consumers can name-import the namespace from the root', async () => {
   const root = await import(distUrl('index.js'));
   assert.ok(Object.prototype.hasOwnProperty.call(root, 'eligibility'));
-  assert.equal(typeof root.eligibility.resolveSearchMethod, 'function');
+  assert.equal(typeof root.eligibility.MEDICAID_SEARCH_RULES, 'object');
 });

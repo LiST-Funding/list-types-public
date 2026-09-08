@@ -11,10 +11,14 @@
  * Contents: 49 Medicaid provider groups holding 171 search
  * combinations, and 48 state codes — every jurisdiction AA publishes Medicaid
  * rules for. A state absent from AA's export has no code here. AA's combination order is
- * preserved verbatim, because resolveSearchMethod resolves to the first satisfied
- * combination in that order.
+ * preserved verbatim, because consumers resolve to the first satisfied combination in that
+ * order.
+ *
+ * DATA ONLY. This package carries the rules and the maps needed to read them; the logic that
+ * interprets them (which combination a request satisfies, labels, allowlist checks) lives in
+ * each consumer: NaviHealth approvedAdmissions/v2/medicaidSearchRules.js and Workflow-Front
+ * payer-eligibility/medicaid-search-rules.ts.
  */
-import { freezeSearchRules } from './freezeSearchRules';
 import type { MedicaidSearchRules, SearchCombination } from './types';
 
 /** The two-letter codes AA publishes Medicaid rules for. Texas LTC (AA201065) is a second
@@ -74,12 +78,10 @@ export type MedicaidStateCode =
 export const MEDICARE_PROVIDER_KEY = "AA201001";
 
 /** AA accepts exactly one combination for Medicare, which is what we already send. */
-export const MEDICARE_SEARCH_RULE: SearchCombination = Object.freeze(["FirstName", "LastName", "BirthDate", "MedicareNumber"]);
+export const MEDICARE_SEARCH_RULE: SearchCombination = ["FirstName", "LastName", "BirthDate", "MedicareNumber"];
 
-/** Every Medicaid provider group's accepted search combinations, in AA's own order.
- *  Frozen at load: `Readonly` is compile-time only and NaviHealth consumes this from
- *  plain JavaScript, where nothing else would stop a caller mutating the shared table. */
-export const MEDICAID_SEARCH_RULES: MedicaidSearchRules = freezeSearchRules({
+/** Every Medicaid provider group's accepted search combinations, in AA's own order. */
+export const MEDICAID_SEARCH_RULES: MedicaidSearchRules = {
   // Alabama
   AA201021: [["MedicaidNumber"], ["LastName", "FirstName", "BirthDate"], ["Ssn", "BirthDate"]],
   // Arkansas
@@ -178,11 +180,11 @@ export const MEDICAID_SEARCH_RULES: MedicaidSearchRules = freezeSearchRules({
   AA201071: [["MedicaidNumber"], ["Ssn", "BirthDate"], ["Ssn", "LastName", "FirstName"], ["LastName", "FirstName", "BirthDate", "Sex"]],
   // Wyoming
   AA201072: [["MedicaidNumber"], ["Ssn", "BirthDate"], ["Ssn", "LastName", "FirstName"], ["LastName", "FirstName", "BirthDate", "Sex"]],
-});
+};
 
 /** State code -> AA provider key. TX maps to AA201064, matching what Workflow-Front
  *  already sends; Texas LTC is deliberately absent. */
-export const MEDICAID_PROVIDER_KEY_BY_STATE: Readonly<Record<MedicaidStateCode, string>> = Object.freeze({
+export const MEDICAID_PROVIDER_KEY_BY_STATE: Readonly<Record<MedicaidStateCode, string>> = {
   AL: "AA201021",
   AR: "AA201024",
   CA: "AA201025",
@@ -231,11 +233,11 @@ export const MEDICAID_PROVIDER_KEY_BY_STATE: Readonly<Record<MedicaidStateCode, 
   WI: "AA201071",
   WV: "AA201070",
   WY: "AA201072",
-});
+};
 
 /** The inverse of MEDICAID_PROVIDER_KEY_BY_STATE. Generated rather than derived at load
  *  so that neither direction can be built with an unchecked key cast. */
-export const STATE_BY_MEDICAID_PROVIDER_KEY: Readonly<Record<string, MedicaidStateCode>> = Object.freeze({
+export const STATE_BY_MEDICAID_PROVIDER_KEY: Readonly<Record<string, MedicaidStateCode>> = {
   AA201021: "AL",
   AA201024: "AR",
   AA201025: "CA",
@@ -284,4 +286,18 @@ export const STATE_BY_MEDICAID_PROVIDER_KEY: Readonly<Record<string, MedicaidSta
   AA201071: "WI",
   AA201070: "WV",
   AA201072: "WY",
-});
+};
+
+/** The states with no combination that accepts an SSN. Written by the generator from the
+ *  table above, so it cannot fall out of step with AA's rules. Sending an SSN to these
+ *  states is pure downside: extra protected data on the wire with no way to improve a match. */
+export const SSN_NOT_ACCEPTED_STATES: readonly MedicaidStateCode[] = [
+  "AR",
+  "CA",
+  "NE",
+  "PA",
+  "RI",
+  "TN",
+  "UT",
+  "VT",
+];

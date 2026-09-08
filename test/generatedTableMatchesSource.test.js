@@ -50,7 +50,7 @@ test('the generated Medicaid table matches the checked-in AA export exactly', ()
   );
 
   // deepStrictEqual on ordered arrays, because AA's combination order decides which method
-  // resolveSearchMethod picks first.
+  // the consumers resolve first.
   assert.deepStrictEqual(fromModule, fromSource);
   assert.deepStrictEqual(
     Object.keys(MEDICAID_SEARCH_RULES),

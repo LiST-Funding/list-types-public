@@ -229,11 +229,29 @@ function renderRecord(entries) {
   return entries.map(([key, value]) => `  ${key}: ${quote(value)},`).join('\n');
 }
 
+function renderList(values) {
+  return values.map(value => `  ${quote(value)},`).join('\n');
+}
+
+/** States whose provider lists no combination containing Ssn. Providers with no state code
+ *  (Texas LTC) are skipped: this list is read as state codes. */
+function deriveSsnNotAcceptedStates(medicaidRows, providerKeyByState) {
+  const stateByProviderKey = Object.fromEntries(
+    Object.entries(providerKeyByState).map(([state, providerKey]) => [providerKey, state])
+  );
+  return medicaidRows
+    .filter(row => !row.combinations.some(combination => combination.includes('Ssn')))
+    .map(row => stateByProviderKey[row.providerKey])
+    .filter(state => state !== undefined)
+    .sort();
+}
+
 function buildFileContents(medicareRow, medicaidRows, providerKeyByState) {
   const stateCodes = Object.keys(providerKeyByState).sort();
   const stateEntries = stateCodes.map(code => [code, providerKeyByState[code]]);
   const inverseEntries = stateCodes.map(code => [providerKeyByState[code], code]);
   const totalCombinations = medicaidRows.reduce((sum, row) => sum + row.combinations.length, 0);
+  const ssnNotAcceptedStates = deriveSsnNotAcceptedStates(medicaidRows, providerKeyByState);
 
   return `/**
  * GENERATED FILE — DO NOT EDIT BY HAND.
@@ -248,10 +266,14 @@ function buildFileContents(medicareRow, medicaidRows, providerKeyByState) {
  * Contents: ${medicaidRows.length} Medicaid provider groups holding ${totalCombinations} search
  * combinations, and ${stateCodes.length} state codes — every jurisdiction AA publishes Medicaid
  * rules for. A state absent from AA's export has no code here. AA's combination order is
- * preserved verbatim, because resolveSearchMethod resolves to the first satisfied
- * combination in that order.
+ * preserved verbatim, because consumers resolve to the first satisfied combination in that
+ * order.
+ *
+ * DATA ONLY. This package carries the rules and the maps needed to read them; the logic that
+ * interprets them (which combination a request satisfies, labels, allowlist checks) lives in
+ * each consumer: NaviHealth approvedAdmissions/v2/medicaidSearchRules.js and Workflow-Front
+ * payer-eligibility/medicaid-search-rules.ts.
  */
-import { freezeSearchRules } from './freezeSearchRules';
 import type { MedicaidSearchRules, SearchCombination } from './types';
 
 /** The two-letter codes AA publishes Medicaid rules for. Texas LTC (AA201065) is a second
@@ -264,28 +286,31 @@ ${renderStateCodeUnion(stateCodes)};
 export const MEDICARE_PROVIDER_KEY = ${quote(medicareRow.providerKey)};
 
 /** AA accepts exactly one combination for Medicare, which is what we already send. */
-export const MEDICARE_SEARCH_RULE: SearchCombination = Object.freeze(${renderCombination(
-    medicareRow.combinations[0]
-  )});
+export const MEDICARE_SEARCH_RULE: SearchCombination = ${renderCombination(medicareRow.combinations[0])};
 
-/** Every Medicaid provider group's accepted search combinations, in AA's own order.
- *  Frozen at load: \`Readonly\` is compile-time only and NaviHealth consumes this from
- *  plain JavaScript, where nothing else would stop a caller mutating the shared table. */
-export const MEDICAID_SEARCH_RULES: MedicaidSearchRules = freezeSearchRules({
+/** Every Medicaid provider group's accepted search combinations, in AA's own order. */
+export const MEDICAID_SEARCH_RULES: MedicaidSearchRules = {
 ${renderRules(medicaidRows)}
-});
+};
 
 /** State code -> AA provider key. TX maps to AA201064, matching what Workflow-Front
  *  already sends; Texas LTC is deliberately absent. */
-export const MEDICAID_PROVIDER_KEY_BY_STATE: Readonly<Record<MedicaidStateCode, string>> = Object.freeze({
+export const MEDICAID_PROVIDER_KEY_BY_STATE: Readonly<Record<MedicaidStateCode, string>> = {
 ${renderRecord(stateEntries)}
-});
+};
 
 /** The inverse of MEDICAID_PROVIDER_KEY_BY_STATE. Generated rather than derived at load
  *  so that neither direction can be built with an unchecked key cast. */
-export const STATE_BY_MEDICAID_PROVIDER_KEY: Readonly<Record<string, MedicaidStateCode>> = Object.freeze({
+export const STATE_BY_MEDICAID_PROVIDER_KEY: Readonly<Record<string, MedicaidStateCode>> = {
 ${renderRecord(inverseEntries)}
-});
+};
+
+/** The states with no combination that accepts an SSN. Written by the generator from the
+ *  table above, so it cannot fall out of step with AA's rules. Sending an SSN to these
+ *  states is pure downside: extra protected data on the wire with no way to improve a match. */
+export const SSN_NOT_ACCEPTED_STATES: readonly MedicaidStateCode[] = [
+${renderList(ssnNotAcceptedStates)}
+];
 `;
 }
 
