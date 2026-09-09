@@ -14,8 +14,8 @@ export type SearchField =
   | 'Sex'
   | 'MedicareNumber';
 
-/** One accepted way to identify a patient. A request satisfies a provider's rules when it
- *  carries every field of at least one of that provider's combinations. */
+/** One way to identify a patient: the fields a request must all carry. Field order is AA's
+ *  own; consumers compare combinations as sets. */
 export type SearchCombination = readonly SearchField[];
 
 /** The two-letter codes AA publishes Medicaid rules for: 47 states + DC. Alaska, Arizona and
@@ -76,8 +76,12 @@ export interface MedicaidProviderRules {
   readonly state: MedicaidStateCode | null;
   /** AA's label for the program, for humans only. */
   readonly name: string;
-  /** Accepted search combinations in AA's own order. */
-  readonly combinations: readonly SearchCombination[];
+  /** The search anchored on the Medicaid ID: the ID alone in most programs, the ID plus a date
+   *  of birth (and in Utah the name) where the program demands it. Every program has one. */
+  readonly idRoute: SearchCombination;
+  /** The search anchored on the SSN, or null where the program accepts no SSN search. Always
+   *  the SSN plus whatever the program wants beside it: date of birth, name, or nothing. */
+  readonly ssnRoute: SearchCombination | null;
 }
 
 /** The AA provider keys (VerificationProviderGroupId) that have Medicaid rules — exactly the
