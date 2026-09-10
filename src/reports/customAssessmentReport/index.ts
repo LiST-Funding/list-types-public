@@ -230,8 +230,7 @@ export interface AssessmentResponseCondition {
   displayText?: string;
   assessmentName: string; // one of the filter's `assessmentNames`; named, not keyed by std_assess_id, since one name spans several
   operator?: AssessmentResponseConditionOperator; // required unless the filter sets `aggregate`
-  value?: string;
-  values?: string[]; // OR-ed, then the whole OR negated under `neq`/`notContains`; wins over `value`
+  values?: string[]; // accepted answers, OR-ed, then the whole OR negated under `neq`/`notContains`
 }
 
 // The total is always a sum, so there is nothing to name.
