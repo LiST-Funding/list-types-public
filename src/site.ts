@@ -85,6 +85,8 @@ export interface SnfPatientSite {
   ehrReferralIdOfSite?: string;
   srcReadStatus: string;
   responseStatus: string;
+  // FK to internal_decline_reasons._id. Null once the reason is cleared or deleted.
+  internalDeclineReasonId?: string | null;
   lastActivityDate: string;
   respondByDate:string
   assigned: string;
