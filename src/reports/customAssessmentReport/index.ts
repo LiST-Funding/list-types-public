@@ -15,7 +15,7 @@
 export const FILTER_OPERATORS = ['and', 'or'] as const;
 export type FilterOperator = typeof FILTER_OPERATORS[number];
 
-export const FILTER_TYPES = ['census', 'medicationCategory', 'order', 'diagnosis', 'payer', 'pdpm'] as const;
+export const FILTER_TYPES = ['census', 'medicationCategory', 'order', 'diagnosis', 'payer', 'pdpm', 'assessmentResponse'] as const;
 export type FilterType = typeof FILTER_TYPES[number];
 
 export const MONITORING_CHECK_TYPES = ['order', 'diagnosis', 'payer', 'pdpm', 'carePlan', 'assessment', 'assessmentResponse'] as const;
@@ -192,6 +192,63 @@ export interface AssessmentResponseMonitoringCheck extends MonitoringCheckBase {
   validityPeriod?: ValidityPeriod;
 }
 
+export const ASSESSMENT_RESPONSE_CONDITION_OPERATORS = [
+  'eq', 'neq',                    // pick list / checkbox
+  'lt', 'lte', 'gt', 'gte',       // numeric
+  'contains', 'notContains',      // free text, and multi-select token match
+] as const;
+export type AssessmentResponseConditionOperator = typeof ASSESSMENT_RESPONSE_CONDITION_OPERATORS[number];
+
+// The aggregate compares a numeric total, so the text operators never apply.
+export const ASSESSMENT_RESPONSE_AGGREGATE_OPERATORS = ['eq', 'neq', 'lt', 'lte', 'gt', 'gte'] as const;
+export type AssessmentResponseAggregateOperator = typeof ASSESSMENT_RESPONSE_AGGREGATE_OPERATORS[number];
+// Control types with no number to add, so a sum cannot include them.
+export const ASSESSMENT_RESPONSE_NON_SUMMABLE_CONTROL_TYPES = ['txt', 'mtxt', 'bdy', 'gbdy'] as const;
+
+// How far back an assessment may be and still answer a condition. Absent means
+// no limit, which in practice is the mirror's own 12-month window.
+export const ASSESSMENT_RESPONSE_LOOKBACK_UNITS = ['day', 'week', 'month'] as const;
+export type AssessmentResponseLookbackUnit = typeof ASSESSMENT_RESPONSE_LOOKBACK_UNITS[number];
+// Caps `lookback.value` per unit, so the longest window any unit can express is one year.
+export const ASSESSMENT_RESPONSE_LOOKBACK_MAX_BY_UNIT: Record<AssessmentResponseLookbackUnit, number> =
+  { day: 365, week: 52, month: 12 };
+
+export interface AssessmentResponseLookback {
+  value: number; // whole number of `unit`s, at least 1
+  unit: AssessmentResponseLookbackUnit;
+}
+
+// Input ceilings the editor and the server both enforce.
+export const ASSESSMENT_RESPONSE_MAX_ASSESSMENT_NAMES = 25;
+export const ASSESSMENT_RESPONSE_MAX_CONDITIONS = 25;
+export const ASSESSMENT_RESPONSE_MAX_ANSWERS = 25;
+
+export interface AssessmentResponseCondition {
+  questionKey: string;
+  questionNo: string;
+  controlType: string;
+  displayText?: string;
+  assessmentName: string; // one of the filter's `assessmentNames`; named, not keyed by std_assess_id, since one name spans several
+  operator?: AssessmentResponseConditionOperator; // required unless the filter sets `aggregate`
+  values?: string[]; // accepted answers, OR-ed, then the whole OR negated under `neq`/`notContains`
+}
+
+// The total is always a sum, so there is nothing to name.
+export interface AssessmentResponseAggregate {
+  operator: AssessmentResponseAggregateOperator;
+  value: number;
+}
+
+export interface AssessmentResponseFilter extends PatientFilterBase {
+  type: 'assessmentResponse';
+  assessmentNames: string[]; // PCC picker names, mirrored in `dr_as_std_assessment.description`
+  conditions: AssessmentResponseCondition[];
+  operator: AssessmentResponseOperator; // across conditions; ignored when `aggregate` is set
+  aggregate?: AssessmentResponseAggregate; // sum mode: conditions carry only questions, the total is compared
+  completedOnly?: boolean; // only assessments with status Complete
+  lookback?: AssessmentResponseLookback; // absent means no limit
+}
+
 // ---------------------------------------------------------------------------
 // Unions and container
 // ---------------------------------------------------------------------------
@@ -202,7 +259,8 @@ export type PatientFilter =
   | OrderFilter
   | DiagnosisFilter
   | PayerFilter
-  | PdpmFilter;
+  | PdpmFilter
+  | AssessmentResponseFilter;
 
 export type MonitoringCheck =
   | OrderMonitoringCheck
@@ -215,6 +273,5 @@ export type MonitoringCheck =
 
 export interface PatientFilters {
   filters: PatientFilter[];
-  /** Combination logic across filters. Defaults to 'or'. AND is reserved for the future. */
-  operator?: FilterOperator;
+  operator?: FilterOperator; // defaults to 'or'; AND is reserved for the future
 }
