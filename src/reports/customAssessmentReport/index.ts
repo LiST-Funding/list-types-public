@@ -202,17 +202,19 @@ export type AssessmentResponseConditionOperator = typeof ASSESSMENT_RESPONSE_CON
 // The aggregate compares a numeric total, so the text operators never apply.
 export const ASSESSMENT_RESPONSE_AGGREGATE_OPERATORS = ['eq', 'neq', 'lt', 'lte', 'gt', 'gte'] as const;
 export type AssessmentResponseAggregateOperator = typeof ASSESSMENT_RESPONSE_AGGREGATE_OPERATORS[number];
+// Control types with no number to add, so a sum cannot include them.
+export const ASSESSMENT_RESPONSE_NON_SUMMABLE_CONTROL_TYPES = ['txt', 'mtxt', 'bdy', 'gbdy'] as const;
 
 // How far back an assessment may be and still answer a condition. Absent means
 // no limit, which in practice is the mirror's own 12-month window.
 export const ASSESSMENT_RESPONSE_LOOKBACK_UNITS = ['day', 'week', 'month'] as const;
 export type AssessmentResponseLookbackUnit = typeof ASSESSMENT_RESPONSE_LOOKBACK_UNITS[number];
-// Bounds `lookback.value` itself, in whatever unit it carries.
-export const ASSESSMENT_RESPONSE_LOOKBACK_MAX_COUNT = 365;
+// Caps `lookback.value` per unit, so the longest window any unit can express is one year.
+export const ASSESSMENT_RESPONSE_LOOKBACK_MAX_BY_UNIT: Record<AssessmentResponseLookbackUnit, number> =
+  { day: 365, week: 52, month: 12 };
 
 export interface AssessmentResponseLookback {
-  /** Whole number of `unit`s, at least 1. */
-  value: number;
+  value: number; // whole number of `unit`s, at least 1
   unit: AssessmentResponseLookbackUnit;
 }
 
@@ -221,51 +223,31 @@ export const ASSESSMENT_RESPONSE_MAX_ASSESSMENT_NAMES = 25;
 export const ASSESSMENT_RESPONSE_MAX_CONDITIONS = 25;
 export const ASSESSMENT_RESPONSE_MAX_ANSWERS = 25;
 
-export const ASSESSMENT_RESPONSE_AGGREGATE_FUNCTIONS = ['sum'] as const;
-export type AssessmentResponseAggregateFunction = typeof ASSESSMENT_RESPONSE_AGGREGATE_FUNCTIONS[number];
-
 export interface AssessmentResponseCondition {
   questionKey: string;
   questionNo: string;
   controlType: string;
   displayText?: string;
-  /**
-   * Which of the filter's `assessmentNames` answers this condition. Named rather
-   * than keyed by std_assess_id because one name spans several of those ids.
-   */
-  assessmentName: string;
-  /** Required in per-question mode; unused when the filter's aggregate is set. */
-  operator?: AssessmentResponseConditionOperator;
+  assessmentName: string; // one of the filter's `assessmentNames`; named, not keyed by std_assess_id, since one name spans several
+  operator?: AssessmentResponseConditionOperator; // required unless the filter sets `aggregate`
   value?: string;
-  /**
-   * Several accepted answers for this one question, OR-ed together and then negated
-   * under `neq`/`notContains` ("is none of these"). Wins over `value` when present.
-   */
-  values?: string[];
+  values?: string[]; // OR-ed, then the whole OR negated under `neq`/`notContains`; wins over `value`
 }
 
+// The total is always a sum, so there is nothing to name.
 export interface AssessmentResponseAggregate {
-  fn: AssessmentResponseAggregateFunction;
   operator: AssessmentResponseAggregateOperator;
   value: number;
 }
 
 export interface AssessmentResponseFilter extends PatientFilterBase {
   type: 'assessmentResponse';
-  /**
-   * Assessment templates to match, by PCC's picker name (mirrored in
-   * `dr_as_std_assessment.description`). A condition binds to one name only.
-   */
-  assessmentNames: string[];
+  assessmentNames: string[]; // PCC picker names, mirrored in `dr_as_std_assessment.description`
   conditions: AssessmentResponseCondition[];
-  /** Combination across conditions. Ignored when aggregate is set. */
-  operator: AssessmentResponseOperator;
-  /** Sum mode: conditions carry only questions; the comparison happens on the total. */
-  aggregate?: AssessmentResponseAggregate;
-  /** Restrict to assessments whose status is Complete. Default off. */
-  completedOnly?: boolean;
-  /** Ignore assessments older than this window. Absent means no limit. */
-  lookback?: AssessmentResponseLookback;
+  operator: AssessmentResponseOperator; // across conditions; ignored when `aggregate` is set
+  aggregate?: AssessmentResponseAggregate; // sum mode: conditions carry only questions, the total is compared
+  completedOnly?: boolean; // only assessments with status Complete
+  lookback?: AssessmentResponseLookback; // absent means no limit
 }
 
 // ---------------------------------------------------------------------------
@@ -292,6 +274,5 @@ export type MonitoringCheck =
 
 export interface PatientFilters {
   filters: PatientFilter[];
-  /** Combination logic across filters. Defaults to 'or'. AND is reserved for the future. */
-  operator?: FilterOperator;
+  operator?: FilterOperator; // defaults to 'or'; AND is reserved for the future
 }
