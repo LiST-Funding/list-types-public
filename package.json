@@ -16,6 +16,10 @@
       "types": "./dist/dashboard/index.d.ts",
       "default": "./dist/dashboard/index.js"
     },
+    "./eligibility": {
+      "types": "./dist/eligibility/index.d.ts",
+      "default": "./dist/eligibility/index.js"
+    },
     "./excel": {
       "types": "./dist/excel/index.d.ts",
       "default": "./dist/excel/index.js"
@@ -93,6 +97,9 @@
     "*": {
       "dashboard": [
         "./dist/dashboard/index.d.ts"
+      ],
+      "eligibility": [
+        "./dist/eligibility/index.d.ts"
       ],
       "excel": [
         "./dist/excel/index.d.ts"

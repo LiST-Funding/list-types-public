@@ -130,3 +130,5 @@ output/
 .DS_Store
 src/.DS_Store
 .worktree/
+
+/.reviews
