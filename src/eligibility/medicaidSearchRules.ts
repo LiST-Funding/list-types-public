@@ -5,26 +5,38 @@
  * search is anchored on an identifier). `idRoute` is the shortest combination AA accepts that
  * names the Medicaid ID and not the SSN; `ssnRoute` the shortest that names the SSN and not the
  * Medicaid ID, or null for the eight programs with no SSN search (AR CA NE PA RI TN UT VT). On a
- * tie in length the route asking for a date of birth beats one asking for a name. Combinations
- * naming both identifiers, or neither (name + date of birth), are deliberately not carried.
+ * tie in length the route asking for a date of birth beats one asking for a name; the export we
+ * hold has no tie that rule does not settle, and a future tie between two date-of-birth or two
+ * name routes would need a decision recorded here. Combinations naming both identifiers, or
+ * neither (name + date of birth), are deliberately not carried.
  *
- * Derived from AA's SearchOptions export (RequiredFieldsRule / "Search combination" per
- * provider group; the full 171-combination copy we received is kept in the docs vault, SNF-598
- * page, "Routing table proposal"). When AA sends a new export, re-derive and edit this object
- * directly (and MedicaidProviderKey / MedicaidStateCode in types.ts if a program is added or
- * removed); `npm run build` type-checks them against each other.
+ * Source: AA's SearchOptions export (RequiredFieldsRule / "Search combination" per provider
+ * group), the copy received for SNF-598 in 2026-09. The verbatim, machine-readable export is the
+ * docs-vault file `References/aa-medicaid-search-rules.tsv` (tab-separated: provider key, label,
+ * combinations as JSON, 50 rows including the Medicare group). Re-derive from that TSV, not from
+ * the rendered table on the vault's SNF-598 page, which keeps only the identifier-bearing
+ * combinations and loses AA's field order. Keys are uppercase, exactly as AA publishes them.
  *
- * Canonical consumer import: `list-types-public/eligibility`. This is the module's ONLY export:
+ * What `npm run build` checks: the provider-key union and this object in both directions, every
+ * state code against its union and every member of the state union against this object, each
+ * idRoute leading with the Medicaid ID and never naming the SSN, each ssnRoute naming the SSN and
+ * never the Medicaid ID, and no state code claimed by two entries (assertions at the bottom of
+ * this file). It cannot check that a route is the one AA publishes for that program; only
+ * re-derivation from the TSV does.
+ *
+ * Canonical consumer import: `list-types-public/eligibility`. The module exports one value:
  * 49 provider groups, 48 state codes. Everything else — which state a key belongs to, which
  * route a request satisfies, labels — is derived from it in each consumer: NaviHealth
  * approvedAdmissions/v2/medicaidSearchRules.js and Workflow-Front
  * payer-eligibility/medicaid-search-rules.ts. Field order inside a route is AA's own; consumers
- * compare routes as sets. The Medicare provider group (AA201001, one combination: first + last
- * name, date of birth, Medicare number) is what we already send and is not listed.
+ * compare routes as sets but persist the array verbatim, so never re-order an existing route.
+ * The object and its arrays are plain and unfrozen; `readonly` is compile-time only. The
+ * Medicare provider group (AA201001, one combination: first + last name, date of birth, Medicare
+ * number) is what we already send and is not listed.
  */
-import type { MedicaidSearchRules } from "./types";
+import type { MedicaidSearchRules, MedicaidStateCode } from './types';
 
-export const MEDICAID_SEARCH_RULES: MedicaidSearchRules = {
+export const MEDICAID_SEARCH_RULES = {
   AA201021: { state: "AL", name: "Alabama", idRoute: ["MedicaidNumber"], ssnRoute: ["Ssn", "BirthDate"] },
   AA201024: { state: "AR", name: "Arkansas", idRoute: ["MedicaidNumber", "BirthDate"], ssnRoute: null },
   AA201025: { state: "CA", name: "California", idRoute: ["MedicaidNumber", "BirthDate"], ssnRoute: null },
@@ -74,4 +86,28 @@ export const MEDICAID_SEARCH_RULES: MedicaidSearchRules = {
   AA201070: { state: "WV", name: "West Virginia", idRoute: ["MedicaidNumber"], ssnRoute: ["Ssn", "BirthDate"] },
   AA201071: { state: "WI", name: "Wisconsin", idRoute: ["MedicaidNumber"], ssnRoute: ["Ssn", "BirthDate"] },
   AA201072: { state: "WY", name: "Wyoming", idRoute: ["MedicaidNumber"], ssnRoute: ["Ssn", "BirthDate"] },
-};
+} as const satisfies MedicaidSearchRules;
+
+// Build-time assertions over the literal table. Type aliases only: nothing here is emitted.
+// Each one is `[X] extends [never] ? true : false`; a `never` branch would make Assert inert.
+type Rules = typeof MEDICAID_SEARCH_RULES;
+type Assert<T extends true> = T;
+
+/** Provider keys whose state code is also claimed by another entry. Must be never. */
+type DuplicateStates = {
+  [K in keyof Rules]: Rules[K]['state'] extends null
+    ? never
+    : Rules[K]['state'] extends Rules[Exclude<keyof Rules, K>]['state'] ? K : never;
+}[keyof Rules];
+type _statesUnique = Assert<[DuplicateStates] extends [never] ? true : false>;
+
+/** Every MedicaidStateCode member has a row. */
+type _noOrphanStateCode = Assert<MedicaidStateCode extends NonNullable<Rules[keyof Rules]['state']> ? true : false>;
+
+/** Provider keys whose SSN route does not name the SSN. Must be never. */
+type SsnRoutesWithoutSsn = {
+  [K in keyof Rules]: Rules[K]['ssnRoute'] extends null
+    ? never
+    : 'Ssn' extends NonNullable<Rules[K]['ssnRoute']>[number] ? never : K;
+}[keyof Rules];
+type _ssnRoutesNameSsn = Assert<[SsnRoutesWithoutSsn] extends [never] ? true : false>;
