@@ -15,7 +15,7 @@
 export const FILTER_OPERATORS = ['and', 'or'] as const;
 export type FilterOperator = typeof FILTER_OPERATORS[number];
 
-export const FILTER_TYPES = ['census', 'medicationCategory', 'order', 'diagnosis', 'payer', 'pdpm', 'assessmentResponse'] as const;
+export const FILTER_TYPES = ['census', 'medicationCategory', 'order', 'diagnosis', 'payer', 'pdpm', 'carePlan', 'assessment', 'assessmentResponse'] as const;
 export type FilterType = typeof FILTER_TYPES[number];
 
 export const MONITORING_CHECK_TYPES = ['order', 'diagnosis', 'payer', 'pdpm', 'carePlan', 'assessment', 'assessmentResponse'] as const;
@@ -137,6 +137,11 @@ export interface PdpmMonitoringCheck extends MonitoringCheckBase {
 // Care plan
 // ---------------------------------------------------------------------------
 
+export interface CarePlanFilter extends PatientFilterBase {
+  type: 'carePlan';
+  descriptions: string[];
+}
+
 export interface CarePlanMonitoringCheck extends MonitoringCheckBase {
   type: 'carePlan';
   descriptions?: string[];
@@ -153,6 +158,15 @@ export type PeriodResolution = typeof PERIOD_RESOLUTIONS[number];
 // 'ytd' = start of calendar year to now; 'trailing12' (the default when absent) = rolling last 12 months.
 export const YEAR_MODES = ['trailing12', 'ytd'] as const;
 export type YearMode = typeof YEAR_MODES[number];
+
+// Presence filter: the patient has at least one assessment of a listed type.
+// `lookback` reuses the assessment-response window shape, declared further down.
+export interface AssessmentFilter extends PatientFilterBase {
+  type: 'assessment';
+  descriptions: string[];
+  completedOnly?: boolean;
+  lookback?: AssessmentResponseLookback;
+}
 
 export interface AssessmentMonitoringCheck extends MonitoringCheckBase {
   type: 'assessment';
@@ -260,6 +274,8 @@ export type PatientFilter =
   | DiagnosisFilter
   | PayerFilter
   | PdpmFilter
+  | CarePlanFilter
+  | AssessmentFilter
   | AssessmentResponseFilter;
 
 export type MonitoringCheck =
