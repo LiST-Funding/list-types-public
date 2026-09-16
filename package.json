@@ -1,6 +1,6 @@
 {
   "name": "list-types-public",
-  "version": "1.1.128",
+  "version": "1.1.129",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,6 +15,10 @@
     "./dashboard": {
       "types": "./dist/dashboard/index.d.ts",
       "default": "./dist/dashboard/index.js"
+    },
+    "./eligibility": {
+      "types": "./dist/eligibility/index.d.ts",
+      "default": "./dist/eligibility/index.js"
     },
     "./excel": {
       "types": "./dist/excel/index.d.ts",
@@ -93,6 +97,9 @@
     "*": {
       "dashboard": [
         "./dist/dashboard/index.d.ts"
+      ],
+      "eligibility": [
+        "./dist/eligibility/index.d.ts"
       ],
       "excel": [
         "./dist/excel/index.d.ts"
