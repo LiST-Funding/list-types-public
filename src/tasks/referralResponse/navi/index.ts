@@ -4,7 +4,9 @@ type NaviReferralResponseTaskData = {
     facilityName:string;
     response:string;
     responseReason:string;
-
+    // Optional: the producer cannot always resolve it and pre-change tasks lack
+    // it. The server treats an absent value as an unresolvable (soft) task.
+    listSiteId?:number;
 }
 
 type ResponseReasonOption = {
