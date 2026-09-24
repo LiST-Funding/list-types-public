@@ -18,3 +18,4 @@ export * as user from './user/index';
 export * as reports from './reports/index';
 export * as dashboard from './dashboard/index';
 export * as internalStatusCodes from './tasks/internalStatusCodes/index';
+export * as eligibility from './eligibility/index';
