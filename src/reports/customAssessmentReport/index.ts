@@ -181,6 +181,7 @@ export interface AssessmentMonitoringCheck extends MonitoringCheckBase {
   periodCount?: number; // period mode only, required there
   yearMode?: YearMode;
   recentCount?: number; // recent mode only, 1..ASSESSMENT_RECENT_COUNT_MAX, required there
+  validityPeriod?: ValidityPeriod; // both modes: an assessment older than this reads as outside validity
 }
 
 // ---------------------------------------------------------------------------
