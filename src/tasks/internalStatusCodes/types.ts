@@ -137,7 +137,7 @@ type FlattenGroups<T extends InternalStatusCodeGroups> = Flatten<
  * code that is checked in wrong, so they cannot fire in production on data that was
  * previously fine.
  */
-export function defineCodes<const T extends InternalStatusCodeGroups>(
+export function defineCodes<T extends InternalStatusCodeGroups>(
     cls: InternalStatusClass,
     groups: T,
 ): FlattenGroups<T> {

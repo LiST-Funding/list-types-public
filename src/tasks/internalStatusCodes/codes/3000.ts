@@ -24,4 +24,4 @@ export const EXTERNAL_CODES = defineCodes(InternalStatusClass.External, {
     [InternalStatusObstacle.Authorization]: {
         NO_ACCESS_TO_TARGET: { code: 3400, label: 'No access to target' },
     },
-});
+} as const);

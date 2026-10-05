@@ -10,4 +10,4 @@ export const SUCCESS_CODES = defineCodes(InternalStatusClass.Success, {
         /** Response submitted, a later enrichment step failed. The ending is still acceptable. */
         COMPLETED_FOLLOW_UP_FAILED: { code: 2700, label: 'Follow-up step failed' },
     },
-});
+} as const);

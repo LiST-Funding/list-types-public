@@ -15,4 +15,4 @@ export const TENANT_INPUT_CODES = defineCodes(InternalStatusClass.TenantInput, {
     [InternalStatusObstacle.Configuration]: {
         REQUIRED_CONFIGURATION_MISSING: { code: 4600, label: 'Required setting missing' },
     },
-});
+} as const);

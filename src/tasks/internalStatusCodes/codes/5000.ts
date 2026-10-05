@@ -16,4 +16,4 @@ export const UNEXPECTED_CODES = defineCodes(InternalStatusClass.Unexpected, {
         SESSION_LOST:         { code: 5702, label: 'Session lost' },
         ACTION_NOT_CONFIRMED: { code: 5703, label: 'Action not confirmed' },
     },
-});
+} as const);

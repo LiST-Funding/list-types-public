@@ -8,4 +8,4 @@ export const PENDING_CODES = defineCodes(InternalStatusClass.Pending, {
     [InternalStatusObstacle.Authorization]: {
         AWAITING_CREDENTIALS: { code: 1400, label: 'Awaiting credentials' },
     },
-});
+} as const);
