@@ -154,6 +154,7 @@ export const EVENT_COLUMN_KEYS = [
   'facility',
   'admissionDate',
   'eventDate',
+  'actionCode',
   'daysToEvent',
   'locationType',
   'location',
