@@ -28,6 +28,7 @@ import {
     classOf,
     defineCodes,
     describeInternalStatusCode,
+    describeInternalStatusCodeReason,
     formatInternalStatusCode,
     isLegacyOutcome,
     isRegisteredInternalStatusCode,
@@ -187,6 +188,18 @@ check('an unregistered code still renders from its digits', () => {
     equal(describeInternalStatusCode(6000), 'Class 6000', 'unallocated class');
     equal(describeInternalStatusCode(3800), 'External; Obstacle 800', 'reserved obstacle');
     assert(!isRegisteredInternalStatusCode(3299), '3299 must not be registered');
+});
+
+check('the reason is the rendered string without its class', () => {
+    for (const [code, key, rendered] of EXPECTED_RENDERED) {
+        equal(describeInternalStatusCodeReason(code), rendered.split('; ').slice(1).join('; '), `reason ${key}`);
+    }
+});
+
+check('an unregistered code still gives a reason from its digits', () => {
+    equal(describeInternalStatusCodeReason(4599), 'Data mismatch', 'unregistered xx');
+    equal(describeInternalStatusCodeReason(4900), 'Obstacle 900', 'reserved obstacle');
+    equal(describeInternalStatusCodeReason(6000), 'Class 6000', 'unallocated class with no obstacle or label');
 });
 
 check('a label is omitted when class plus obstacle already say it', () => {

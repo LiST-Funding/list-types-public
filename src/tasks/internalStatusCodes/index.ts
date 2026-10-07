@@ -94,16 +94,9 @@ const classLabelOf = (cls: number): string | undefined => (CLASS_LABEL as Record
 const obstacleLabelOf = (obstacle: number): string | undefined =>
     (OBSTACLE_LABEL as Record<number, string | undefined>)[obstacle];
 
-/**
- * `3201` -> `"External; Exists but cannot change; Assigned here"`.
- *
- * The fallbacks are load bearing: an unregistered code still renders from its digits, so
- * a consumer built against an older tag shows a code emitted by a newer Puppeteer instead
- * of a blank cell.
- */
-export const describeInternalStatusCode = (code: number): string => {
-    const cls = classOf(code);
-    const parts: string[] = [classLabelOf(cls) ?? `Class ${cls}`];
+/** The obstacle and entry parts of a code, without its class. */
+const reasonPartsOf = (code: number): string[] => {
+    const parts: string[] = [];
 
     const obstacle = obstacleOf(code);
     if (obstacle !== InternalStatusObstacle.General) {
@@ -113,7 +106,33 @@ export const describeInternalStatusCode = (code: number): string => {
     const label = BY_CODE.get(code)?.label;
     if (label) parts.push(label);
 
-    return parts.join('; ');
+    return parts;
+};
+
+const classPartOf = (code: number): string => {
+    const cls = classOf(code);
+    return classLabelOf(cls) ?? `Class ${cls}`;
+};
+
+/**
+ * `3201` -> `"External; Exists but cannot change; Assigned here"`.
+ *
+ * The fallbacks are load bearing: an unregistered code still renders from its digits, so
+ * a consumer built against an older tag shows a code emitted by a newer Puppeteer instead
+ * of a blank cell.
+ */
+export const describeInternalStatusCode = (code: number): string =>
+    [classPartOf(code), ...reasonPartsOf(code)].join('; ');
+
+/**
+ * `4500` -> `"Data mismatch; Name"`: the description without its class, for a reader that
+ * already shows what the class means, such as a support warning row. Falls back like
+ * {@link describeInternalStatusCode}; a code with neither an obstacle nor a label gives its
+ * class.
+ */
+export const describeInternalStatusCodeReason = (code: number): string => {
+    const parts = reasonPartsOf(code);
+    return parts.length ? parts.join('; ') : classPartOf(code);
 };
 
 /** `3201` -> `"3201 - External; Exists but cannot change; Assigned here"`. */
