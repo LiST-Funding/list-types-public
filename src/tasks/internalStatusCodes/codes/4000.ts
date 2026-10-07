@@ -11,6 +11,7 @@ export const TENANT_INPUT_CODES = defineCodes(InternalStatusClass.TenantInput, {
         RECORD_NAME_MISMATCH:      { code: 4500, label: 'Name' },
         RECORD_DOB_MISMATCH:       { code: 4501, label: 'Date of birth' },
         RECORD_IDENTIFIER_INVALID: { code: 4502, label: 'Identifier invalid' },
+        RECORD_SEX_MISMATCH:       { code: 4503, label: 'Sex' },
     },
     [InternalStatusObstacle.Configuration]: {
         REQUIRED_CONFIGURATION_MISSING: { code: 4600, label: 'Required setting missing' },
