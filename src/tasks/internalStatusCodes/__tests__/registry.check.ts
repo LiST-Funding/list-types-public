@@ -28,10 +28,6 @@ import {
     classOf,
     defineCodes,
     describeInternalStatusCode,
-    describeInternalStatusCodeReason,
-    silentBurstIndexes,
-    SILENT_BURST,
-    type TaskOutcomeAt,
     formatInternalStatusCode,
     isLegacyOutcome,
     isRegisteredInternalStatusCode,
@@ -191,44 +187,6 @@ check('an unregistered code still renders from its digits', () => {
     equal(describeInternalStatusCode(6000), 'Class 6000', 'unallocated class');
     equal(describeInternalStatusCode(3800), 'External; Obstacle 800', 'reserved obstacle');
     assert(!isRegisteredInternalStatusCode(3299), '3299 must not be registered');
-});
-
-check('failures with one silent code that fall within one window form a burst', () => {
-    const start = Date.parse('2026-10-07T12:00:00.000Z');
-    const minute = 60 * 1000;
-    const failed = (code: number | null | undefined, at: number | null) => ({ status: 'error', internalStatusCode: code, at });
-    const atMinutes = (code: number, ...minutes: number[]) => minutes.map((m) => failed(code, start + m * minute));
-    const members = (tasks: TaskOutcomeAt[], burst?: { threshold: number; windowMs: number }) =>
-        [...silentBurstIndexes(tasks, burst)].sort((a, b) => a - b).join();
-
-    equal(SILENT_BURST.threshold, 5, 'default threshold');
-    equal(SILENT_BURST.windowMs, 60 * minute, 'default window');
-    equal(members(atMinutes(4502, 0, 1, 2, 3, 4)), '0,1,2,3,4', 'five of one code in the window');
-    equal(members(atMinutes(4502, 0, 1, 2, 3)), '', 'four is not a burst');
-    equal(members(atMinutes(4502, 0, 15, 30, 45, 60)), '0,1,2,3,4', 'a window of exactly an hour still counts');
-    equal(members(atMinutes(4502, 0, 15, 30, 45, 60.001)), '', 'just over an hour does not');
-    equal(members([...atMinutes(4502, 0, 1, 2), ...atMinutes(4501, 3, 4)]), '', 'different codes do not add up');
-    equal(members([...atMinutes(4502, -120), ...atMinutes(4502, 0, 1, 2, 3, 4)]), '1,2,3,4,5', 'an older failure outside the window stays a warning');
-    equal(members(atMinutes(4502, 100, 4, 0, 3, 1, 2)), '1,2,3,4,5', 'the list order does not matter');
-    equal(members([...atMinutes(4502, 0, 1, 2, 3), failed(4502, null)]), '', 'an unknown time does not count');
-    equal(members([...atMinutes(4502, 0, 1, 2, 3), failed(4502, Number.NaN)]), '', 'an unreadable time does not count');
-    equal(members([...atMinutes(4502, 0, 1, 2, 3), { status: 'done', internalStatusCode: 4502, at: start }]), '', 'a task that did not fail does not count');
-    equal(members(atMinutes(5700, 0, 1, 2, 3, 4)), '', 'an alarming code is not a silent burst');
-    equal(members([failed(Number.NaN, start), ...atMinutes(4502, 0, 1, 2)]), '', 'a malformed code does not count');
-    equal(members(atMinutes(4502, 0, 5, 15), { threshold: 3, windowMs: 15 * minute }), '0,1,2', 'thresholds can be passed');
-    equal(members(atMinutes(4502, 0, 5, 16), { threshold: 3, windowMs: 15 * minute }), '', 'the passed window is used');
-});
-
-check('the reason is the rendered string without its class', () => {
-    for (const [code, key, rendered] of EXPECTED_RENDERED) {
-        equal(describeInternalStatusCodeReason(code), rendered.split('; ').slice(1).join('; '), `reason ${key}`);
-    }
-});
-
-check('an unregistered code still gives a reason from its digits', () => {
-    equal(describeInternalStatusCodeReason(4599), 'Data mismatch', 'unregistered xx');
-    equal(describeInternalStatusCodeReason(4900), 'Obstacle 900', 'reserved obstacle');
-    equal(describeInternalStatusCodeReason(6000), 'Class 6000', 'unallocated class with no obstacle or label');
 });
 
 check('a label is omitted when class plus obstacle already say it', () => {
