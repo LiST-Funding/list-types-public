@@ -159,6 +159,11 @@ export type PeriodResolution = typeof PERIOD_RESOLUTIONS[number];
 export const YEAR_MODES = ['trailing12', 'ytd'] as const;
 export type YearMode = typeof YEAR_MODES[number];
 
+// How an assessment check lays out its columns: calendar periods, or the patient's N newest assessments.
+export const ASSESSMENT_COLUMN_MODES = ['period', 'recent'] as const;
+export type AssessmentColumnMode = typeof ASSESSMENT_COLUMN_MODES[number];
+export const ASSESSMENT_RECENT_COUNT_MAX = 6;
+
 // Presence filter: the patient has at least one assessment of a listed type.
 // `lookback` reuses the assessment-response window shape, declared further down.
 export interface AssessmentFilter extends PatientFilterBase {
@@ -171,9 +176,12 @@ export interface AssessmentFilter extends PatientFilterBase {
 export interface AssessmentMonitoringCheck extends MonitoringCheckBase {
   type: 'assessment';
   descriptions: string[];
-  resolution: PeriodResolution;
-  periodCount: number;
+  columnMode?: AssessmentColumnMode; // absent = 'period'
+  resolution?: PeriodResolution; // period mode only, required there
+  periodCount?: number; // period mode only, required there
   yearMode?: YearMode;
+  recentCount?: number; // recent mode only, 1..ASSESSMENT_RECENT_COUNT_MAX, required there
+  validityPeriod?: ValidityPeriod; // both modes: an assessment older than this reads as outside validity
 }
 
 // ---------------------------------------------------------------------------
@@ -200,10 +208,12 @@ export interface AssessmentResponseMonitoringCheck extends MonitoringCheckBase {
   stdAssessId?: number;
   questions: AssessmentResponseQuestion[];
   operator: AssessmentResponseOperator;
-  resolution: PeriodResolution;
-  periodCount: number;
+  columnMode?: AssessmentColumnMode; // absent = 'period'
+  resolution?: PeriodResolution; // period mode only, required there
+  periodCount?: number; // period mode only, required there
   yearMode?: YearMode;
-  validityPeriod?: ValidityPeriod;
+  recentCount?: number; // recent mode only, 1..ASSESSMENT_RECENT_COUNT_MAX, required there
+  validityPeriod?: ValidityPeriod; // both modes
 }
 
 export const ASSESSMENT_RESPONSE_CONDITION_OPERATORS = [
