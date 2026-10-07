@@ -15,7 +15,7 @@
 
 // The window is always relative so a saved report keeps working over time.
 // 'last' = last N units up to now; 'current' = start of the current
-// week/month/quarter/year to now; 'previous' = the last complete one.
+// day/week/month/quarter/year to now; 'previous' = the N complete ones before it.
 export const WINDOW_MODES = ['last', 'current', 'previous'] as const;
 export type WindowMode = typeof WINDOW_MODES[number];
 
@@ -24,7 +24,7 @@ export type WindowMode = typeof WINDOW_MODES[number];
 export const ROLLING_UNITS = ['days', 'weeks', 'months'] as const;
 export type RollingUnit = typeof ROLLING_UNITS[number];
 
-export const PERIOD_UNITS = ['week', 'month', 'quarter', 'year'] as const;
+export const PERIOD_UNITS = ['day', 'week', 'month', 'quarter', 'year'] as const;
 export type PeriodUnit = typeof PERIOD_UNITS[number];
 
 export interface RollingWindow {
@@ -35,6 +35,8 @@ export interface RollingWindow {
 
 export interface PeriodWindow {
   unit: PeriodUnit;
+  // 'previous' only: how many whole periods back. Missing means 1.
+  amount?: number;
 }
 
 // Discriminated on `mode`: the 'last' arm carries a RollingWindow; the
@@ -154,6 +156,7 @@ export const EVENT_COLUMN_KEYS = [
   'facility',
   'admissionDate',
   'eventDate',
+  'actionCode',
   'daysToEvent',
   'locationType',
   'location',
