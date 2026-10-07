@@ -91,6 +91,7 @@ const EXPECTED_RENDERED: ReadonlyArray<readonly [number, string, string]> = [
     [4500, 'RECORD_NAME_MISMATCH', 'Tenant input; Data mismatch; Name'],
     [4501, 'RECORD_DOB_MISMATCH', 'Tenant input; Data mismatch; Date of birth'],
     [4502, 'RECORD_IDENTIFIER_INVALID', 'Tenant input; Data mismatch; Identifier invalid'],
+    [4503, 'RECORD_SEX_MISMATCH', 'Tenant input; Data mismatch; Sex'],
     [4600, 'REQUIRED_CONFIGURATION_MISSING', 'Tenant input; Configuration; Required setting missing'],
     [5000, 'UNHANDLED_ERROR', 'Unexpected; Unhandled error'],
     [5700, 'ELEMENT_NOT_FOUND', 'Unexpected; Automation; Element not found'],
