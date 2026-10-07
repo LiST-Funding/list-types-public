@@ -169,6 +169,56 @@ export const shouldAlert = (code?: number | null): boolean =>
 export const shouldAlertTask = (task: { status?: string; internalStatusCode?: number | null }): boolean =>
     task.status === 'error' && shouldAlert(task.internalStatusCode);
 
+/**
+ * When the same silent outcome stops being the customer's problem. One mismatched record is
+ * theirs to fix; the same code on task after task points upstream of them, at us or a vendor
+ * (a vendor dropping a field from every request turns every check into a mismatch). Starting
+ * values, chosen without production counts: tune them here, never per reader.
+ */
+export const SILENT_BURST = Object.freeze({ threshold: 5, windowMs: 60 * 60 * 1000 });
+
+/** One task as {@link silentBurstIndexes} reads it. `at` is epoch ms, null when unknown. */
+export interface TaskOutcomeAt {
+    status?: string;
+    internalStatusCode?: number | null;
+    at?: number | null;
+}
+
+/**
+ * The indexes into `tasks` of the failures that form a burst: at least `threshold` failed tasks
+ * with the same silent code whose times all fall within one `windowMs` span, both ends included.
+ * Only well formed silent codes on failed tasks count, each code on its own, and a task whose
+ * time is unknown never counts, so a burst always rests on evidence.
+ *
+ * It reads the tasks, never the clock: the same list always gives the same answer, so a burst
+ * stays an error like any other until it is acknowledged or leaves the list, instead of quietly
+ * clearing itself an hour later.
+ */
+export const silentBurstIndexes = (
+    tasks: readonly TaskOutcomeAt[],
+    burst: { readonly threshold: number; readonly windowMs: number } = SILENT_BURST,
+): ReadonlySet<number> => {
+    const failuresByCode = new Map<number, { index: number; at: number }[]>();
+    tasks.forEach((task, index) => {
+        const code = task.internalStatusCode;
+        if (task.status !== 'error' || !isWellFormedInternalStatusCode(code) || shouldAlert(code)) return;
+        if (task.at == null || !Number.isFinite(task.at)) return;
+        failuresByCode.set(code, [...(failuresByCode.get(code) ?? []), { index, at: task.at }]);
+    });
+
+    const members = new Set<number>();
+    for (const failures of failuresByCode.values()) {
+        const byTime = [...failures].sort((a, b) => a.at - b.at);
+        let first = 0;
+        byTime.forEach((failure, last) => {
+            while (failure.at - byTime[first].at > burst.windowMs) first += 1;
+            if (last - first + 1 < burst.threshold) return;
+            byTime.slice(first, last + 1).forEach(({ index }) => members.add(index));
+        });
+    }
+    return members;
+};
+
 /** No code yet on a failed task: the throw site is not migrated. The migration burndown metric. */
 export const isLegacyOutcome = (task: { status?: string; internalStatusCode?: number | null }): boolean =>
     task.status === 'error' && task.internalStatusCode == null;
