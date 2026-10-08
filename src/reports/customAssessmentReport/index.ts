@@ -137,14 +137,29 @@ export interface PdpmMonitoringCheck extends MonitoringCheckBase {
 // Care plan
 // ---------------------------------------------------------------------------
 
+export const CARE_PLAN_LEVELS = ['need', 'goal', 'intervention'] as const;
+export type CarePlanLevel = typeof CARE_PLAN_LEVELS[number];
+
+// One row of a care plan block: which level to search and the free-text entries to match.
+export interface CarePlanCondition {
+  level: CarePlanLevel;
+  descriptions: string[];
+}
+
+// A block without `conditions` (every block saved before levels existed) reads as one
+// `need` row over `descriptions`. With `conditions`, `descriptions` is empty.
 export interface CarePlanFilter extends PatientFilterBase {
   type: 'carePlan';
   descriptions: string[];
+  conditions?: CarePlanCondition[];
+  operator?: FilterOperator; // defaults to 'or'
 }
 
 export interface CarePlanMonitoringCheck extends MonitoringCheckBase {
   type: 'carePlan';
   descriptions?: string[];
+  conditions?: CarePlanCondition[];
+  operator?: FilterOperator; // defaults to 'or'
 }
 
 // ---------------------------------------------------------------------------
