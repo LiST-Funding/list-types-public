@@ -139,7 +139,6 @@ export interface PdpmMonitoringCheck extends MonitoringCheckBase {
 
 export const CARE_PLAN_LEVELS = ['need', 'goal', 'intervention'] as const;
 export type CarePlanLevel = typeof CARE_PLAN_LEVELS[number];
-export const MAX_CARE_PLAN_CONDITIONS = 10;
 
 // One row of a care plan block: which level to search and the free-text entries to match.
 export interface CarePlanCondition {
