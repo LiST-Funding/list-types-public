@@ -51,14 +51,20 @@ export interface MedicationCategoryFilter extends PatientFilterBase {
 // Order
 // ---------------------------------------------------------------------------
 
+// Which order text the entries are matched against. Absent = 'description'.
+export const ORDER_SEARCH_FIELDS = ['description', 'directions', 'diet'] as const;
+export type OrderSearchField = typeof ORDER_SEARCH_FIELDS[number];
+
 export interface OrderFilter extends PatientFilterBase {
   type: 'order';
   descriptions: string[];
+  searchIn?: OrderSearchField;
 }
 
 export interface OrderMonitoringCheck extends MonitoringCheckBase {
   type: 'order';
   descriptions: string[];
+  searchIn?: OrderSearchField;
 }
 
 // ---------------------------------------------------------------------------
