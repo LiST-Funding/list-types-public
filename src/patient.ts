@@ -1,5 +1,6 @@
 import  {SnfPatientSite,ListPatientStatus, SnfPatientResponseHistoryItemAllScripts,SnfPatientResponseHistoryItemEpic,SnfPatientResponseHistoryItemBase,SnfPatientResponseHistoryItemEnsocare}  from "./site";
 import * as BaseInfo from "./patient/baseInfo";
+export * from "./patient/previous-referrals";
 export {SnfPatientSite,ListPatientStatus, SnfPatientResponseHistoryItemAllScripts,SnfPatientResponseHistoryItemEpic,SnfPatientResponseHistoryItemBase,SnfPatientResponseHistoryItemEnsocare}
 
 export {BaseInfo}
@@ -50,6 +51,7 @@ export interface SnfPatientDetails {
   listEligibility?:Record<string, any>;
   isArchived?: boolean;
   snfAccountId?: number;
+  hasPreviousReferral?: boolean;
 }
 
 export enum ReadStatus {
