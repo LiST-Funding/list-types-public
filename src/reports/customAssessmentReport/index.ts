@@ -51,20 +51,28 @@ export interface MedicationCategoryFilter extends PatientFilterBase {
 // Order
 // ---------------------------------------------------------------------------
 
-// Which order text the entries are matched against. Absent = 'description'.
+// Which order text a condition's entries are matched against.
 export const ORDER_SEARCH_FIELDS = ['description', 'directions', 'diet'] as const;
 export type OrderSearchField = typeof ORDER_SEARCH_FIELDS[number];
 
+// One row of an order block: which order text to search and the free-text entries to match.
+export interface OrderCondition {
+  searchIn: OrderSearchField;
+  descriptions: string[];
+}
+
+// A block without `conditions` (every block saved before them) reads as `description` rows
+// over `descriptions`. With `conditions`, `descriptions` is empty. Rows combine with OR.
 export interface OrderFilter extends PatientFilterBase {
   type: 'order';
   descriptions: string[];
-  searchIn?: OrderSearchField;
+  conditions?: OrderCondition[];
 }
 
 export interface OrderMonitoringCheck extends MonitoringCheckBase {
   type: 'order';
   descriptions: string[];
-  searchIn?: OrderSearchField;
+  conditions?: OrderCondition[];
 }
 
 // ---------------------------------------------------------------------------
