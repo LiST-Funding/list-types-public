@@ -55,10 +55,11 @@ export interface MedicationCategoryFilter extends PatientFilterBase {
 export const ORDER_SEARCH_FIELDS = ['description', 'directions', 'diet'] as const;
 export type OrderSearchField = typeof ORDER_SEARCH_FIELDS[number];
 
-// One row of an order block: which order text to search and the free-text entries to match.
+// One row of an order block: which order text to search and the text to match
+// (quoted = contains the phrase, unquoted = contains all the words).
 export interface OrderCondition {
   searchIn: OrderSearchField;
-  descriptions: string[];
+  text: string;
 }
 
 // A block without `conditions` (every block saved before them) reads as `description` rows
