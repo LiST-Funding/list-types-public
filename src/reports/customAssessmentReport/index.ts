@@ -42,8 +42,8 @@ export interface CensusFilter extends PatientFilterBase {
 // Medication category
 // ---------------------------------------------------------------------------
 
-// One row: a category, optionally narrowed to one medication (matched on the order's
-// drug name or generic name).
+// One row: a category, optionally narrowed to one medication. `medication` must equal an
+// order's whole drug or generic name in that category (case and spacing ignored); never a partial match.
 export interface MedicationEntry {
   category: string;
   medication?: string;
