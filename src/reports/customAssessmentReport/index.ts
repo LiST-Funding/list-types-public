@@ -18,7 +18,7 @@ export type FilterOperator = typeof FILTER_OPERATORS[number];
 export const FILTER_TYPES = ['census', 'medicationCategory', 'order', 'diagnosis', 'payer', 'pdpm', 'carePlan', 'assessment', 'assessmentResponse'] as const;
 export type FilterType = typeof FILTER_TYPES[number];
 
-export const MONITORING_CHECK_TYPES = ['order', 'medicationCategory', 'diagnosis', 'payer', 'pdpm', 'carePlan', 'assessment', 'assessmentResponse'] as const;
+export const MONITORING_CHECK_TYPES = ['order', 'medication', 'diagnosis', 'payer', 'pdpm', 'carePlan', 'assessment', 'assessmentResponse'] as const;
 export type MonitoringCheckType = typeof MONITORING_CHECK_TYPES[number];
 
 interface PatientFilterBase {
@@ -57,8 +57,8 @@ export interface MedicationCategoryFilter extends PatientFilterBase {
   entries?: MedicationEntry[];
 }
 
-export interface MedicationCategoryMonitoringCheck extends MonitoringCheckBase {
-  type: 'medicationCategory';
+export interface MedicationMonitoringCheck extends MonitoringCheckBase {
+  type: 'medication';
   entries: MedicationEntry[];
 }
 
@@ -335,7 +335,7 @@ export type PatientFilter =
 
 export type MonitoringCheck =
   | OrderMonitoringCheck
-  | MedicationCategoryMonitoringCheck
+  | MedicationMonitoringCheck
   | DiagnosisMonitoringCheck
   | PayerMonitoringCheck
   | PdpmMonitoringCheck
