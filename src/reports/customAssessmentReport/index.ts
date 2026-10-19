@@ -18,7 +18,7 @@ export type FilterOperator = typeof FILTER_OPERATORS[number];
 export const FILTER_TYPES = ['census', 'medicationCategory', 'order', 'diagnosis', 'payer', 'pdpm', 'carePlan', 'assessment', 'assessmentResponse'] as const;
 export type FilterType = typeof FILTER_TYPES[number];
 
-export const MONITORING_CHECK_TYPES = ['order', 'diagnosis', 'payer', 'pdpm', 'carePlan', 'assessment', 'assessmentResponse'] as const;
+export const MONITORING_CHECK_TYPES = ['order', 'medication', 'diagnosis', 'payer', 'pdpm', 'carePlan', 'assessment', 'assessmentResponse'] as const;
 export type MonitoringCheckType = typeof MONITORING_CHECK_TYPES[number];
 
 interface PatientFilterBase {
@@ -42,9 +42,24 @@ export interface CensusFilter extends PatientFilterBase {
 // Medication category
 // ---------------------------------------------------------------------------
 
+// One row: a category, optionally narrowed to one medication. `medication` must equal an
+// order's whole drug or generic name in that category (case and spacing ignored); never a partial match.
+export interface MedicationEntry {
+  category: string;
+  medication?: string;
+}
+
+// A filter without `entries` (every filter saved before them) reads as one row per
+// category with no medication. With `entries`, `categories` is empty. Rows combine with OR.
 export interface MedicationCategoryFilter extends PatientFilterBase {
   type: 'medicationCategory';
   categories: string[];
+  entries?: MedicationEntry[];
+}
+
+export interface MedicationMonitoringCheck extends MonitoringCheckBase {
+  type: 'medication';
+  entries: MedicationEntry[];
 }
 
 // ---------------------------------------------------------------------------
@@ -320,6 +335,7 @@ export type PatientFilter =
 
 export type MonitoringCheck =
   | OrderMonitoringCheck
+  | MedicationMonitoringCheck
   | DiagnosisMonitoringCheck
   | PayerMonitoringCheck
   | PdpmMonitoringCheck
