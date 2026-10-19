@@ -4,3 +4,4 @@ export * from './facility-registry';
 export * as credentials from './credentials';
 export * as ehrConfigs from './ehrConfigs';
 export * from './region';
+export * from './value-mapping';

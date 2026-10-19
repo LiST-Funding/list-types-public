@@ -5,6 +5,7 @@ export * from './ehr';
 export * from './settings/facilities';
 export * from './settings/facility-assignment';
 export * from './settings/facility-registry';
+export * from './settings/value-mapping';
 export * as settings from './settings';
 export * from './types/le'
 export * from './utils/csv/ListCSV';
