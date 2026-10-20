@@ -1,3 +1,6 @@
+export const ROLE_NUMBER_MINIMAL_CI = 131; // Minimal CI (referrals only; not offered on the Users page)
+export const ROLE_NUMBER_TRIPLE_CHECK = 132; // MDS - triple check
+export const ROLE_NUMBER_SOCIAL_WORKER = 133; // Social Worker
 export const ROLE_NUMBER_CI = 141; // CI/Liason (Full Access)
 export const ROLE_NUMBER_CLINICAL_CI = 142; // Clinical + Admissions (Clinical and CI merged)
 export const ROLE_NUMBER_CLINICAL = 144; // Clinical
