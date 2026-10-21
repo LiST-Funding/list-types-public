@@ -1,6 +1,8 @@
 import  {SnfPatientSite,ListPatientStatus, SnfPatientResponseHistoryItemAllScripts,SnfPatientResponseHistoryItemEpic,SnfPatientResponseHistoryItemBase,SnfPatientResponseHistoryItemEnsocare}  from "./site";
 import * as BaseInfo from "./patient/baseInfo";
+import { ReturningReferral } from "./patient/returning-referral";
 export * from "./patient/previous-referrals";
+export * from "./patient/returning-referral";
 export {SnfPatientSite,ListPatientStatus, SnfPatientResponseHistoryItemAllScripts,SnfPatientResponseHistoryItemEpic,SnfPatientResponseHistoryItemBase,SnfPatientResponseHistoryItemEnsocare}
 
 export {BaseInfo}
@@ -52,6 +54,7 @@ export interface SnfPatientDetails {
   isArchived?: boolean;
   snfAccountId?: number;
   hasPreviousReferral?: boolean;
+  returningReferral?: ReturningReferral;
 }
 
 export enum ReadStatus {
