@@ -22,7 +22,7 @@ export const MONITORING_CHECK_TYPES = ['order', 'medication', 'diagnosis', 'paye
 export type MonitoringCheckType = typeof MONITORING_CHECK_TYPES[number];
 
 // Time window: only rows whose start date falls inside it count. Absent means no limit,
-// i.e. the mirror's own window. Every filter except census and every check can carry one.
+// i.e. the mirror's own window. Every filter and check carries one; census ignores it.
 export const LOOKBACK_UNITS = ['day', 'week', 'month'] as const;
 export type LookbackUnit = typeof LOOKBACK_UNITS[number];
 // Caps `value` per unit, so the longest window any unit can express is one year.
@@ -35,9 +35,6 @@ export interface Lookback {
 
 interface PatientFilterBase {
   id: string;
-}
-
-interface WindowedPatientFilterBase extends PatientFilterBase {
   lookback?: Lookback;
 }
 
@@ -68,7 +65,7 @@ export interface MedicationEntry {
 
 // A filter without `entries` (every filter saved before them) reads as one row per
 // category with no medication. With `entries`, `categories` is empty. Rows combine with OR.
-export interface MedicationCategoryFilter extends WindowedPatientFilterBase {
+export interface MedicationCategoryFilter extends PatientFilterBase {
   type: 'medicationCategory';
   categories: string[];
   entries?: MedicationEntry[];
@@ -96,7 +93,7 @@ export interface OrderCondition {
 
 // A block without `conditions` (every block saved before them) reads as `description` rows
 // over `descriptions`. With `conditions`, `descriptions` is empty. Rows combine with OR.
-export interface OrderFilter extends WindowedPatientFilterBase {
+export interface OrderFilter extends PatientFilterBase {
   type: 'order';
   descriptions: string[];
   conditions?: OrderCondition[];
@@ -112,7 +109,7 @@ export interface OrderMonitoringCheck extends MonitoringCheckBase {
 // Diagnosis
 // ---------------------------------------------------------------------------
 
-export interface DiagnosisFilter extends WindowedPatientFilterBase {
+export interface DiagnosisFilter extends PatientFilterBase {
   type: 'diagnosis';
   icdCodes: string[];
 }
@@ -138,7 +135,7 @@ export interface PayerEntry {
   payerId?: number;
 }
 
-export interface PayerFilter extends WindowedPatientFilterBase {
+export interface PayerFilter extends PatientFilterBase {
   type: 'payer';
   entries: PayerEntry[];
 }
@@ -169,7 +166,7 @@ export interface PdpmEntry {
   group: string;
 }
 
-export interface PdpmFilter extends WindowedPatientFilterBase {
+export interface PdpmFilter extends PatientFilterBase {
   type: 'pdpm';
   entries: PdpmEntry[];
 }
@@ -195,7 +192,7 @@ export interface CarePlanCondition {
 
 // A block without `conditions` (every block saved before levels existed) reads as one
 // `need` row over `descriptions`. With `conditions`, `descriptions` is empty.
-export interface CarePlanFilter extends WindowedPatientFilterBase {
+export interface CarePlanFilter extends PatientFilterBase {
   type: 'carePlan';
   descriptions: string[];
   conditions?: CarePlanCondition[];
@@ -227,7 +224,7 @@ export type AssessmentColumnMode = typeof ASSESSMENT_COLUMN_MODES[number];
 export const ASSESSMENT_RECENT_COUNT_MAX = 6;
 
 // Presence filter: the patient has at least one assessment of a listed type.
-export interface AssessmentFilter extends WindowedPatientFilterBase {
+export interface AssessmentFilter extends PatientFilterBase {
   type: 'assessment';
   descriptions: string[];
   completedOnly?: boolean;
@@ -310,7 +307,7 @@ export interface AssessmentResponseAggregate {
   value: number;
 }
 
-export interface AssessmentResponseFilter extends WindowedPatientFilterBase {
+export interface AssessmentResponseFilter extends PatientFilterBase {
   type: 'assessmentResponse';
   assessmentNames: string[]; // PCC picker names, mirrored in `dr_as_std_assessment.description`
   conditions: AssessmentResponseCondition[];
