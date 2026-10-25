@@ -25,9 +25,11 @@ interface PatientFilterBase {
   id: string;
 }
 
+// Every check takes an optional `lookback`: only rows whose start date is inside it count.
 interface MonitoringCheckBase {
   id: string;
   label: string;
+  lookback?: AssessmentResponseLookback;
 }
 
 // ---------------------------------------------------------------------------
@@ -55,6 +57,7 @@ export interface MedicationCategoryFilter extends PatientFilterBase {
   type: 'medicationCategory';
   categories: string[];
   entries?: MedicationEntry[];
+  lookback?: AssessmentResponseLookback; // absent means no limit
 }
 
 export interface MedicationMonitoringCheck extends MonitoringCheckBase {
@@ -83,6 +86,7 @@ export interface OrderFilter extends PatientFilterBase {
   type: 'order';
   descriptions: string[];
   conditions?: OrderCondition[];
+  lookback?: AssessmentResponseLookback; // absent means no limit
 }
 
 export interface OrderMonitoringCheck extends MonitoringCheckBase {
@@ -98,6 +102,7 @@ export interface OrderMonitoringCheck extends MonitoringCheckBase {
 export interface DiagnosisFilter extends PatientFilterBase {
   type: 'diagnosis';
   icdCodes: string[];
+  lookback?: AssessmentResponseLookback; // absent means no limit
 }
 
 export interface DiagnosisMonitoringCheck extends MonitoringCheckBase {
@@ -124,6 +129,7 @@ export interface PayerEntry {
 export interface PayerFilter extends PatientFilterBase {
   type: 'payer';
   entries: PayerEntry[];
+  lookback?: AssessmentResponseLookback; // absent means no limit
 }
 
 export interface PayerMonitoringCheck extends MonitoringCheckBase {
@@ -155,6 +161,7 @@ export interface PdpmEntry {
 export interface PdpmFilter extends PatientFilterBase {
   type: 'pdpm';
   entries: PdpmEntry[];
+  lookback?: AssessmentResponseLookback; // absent means no limit
 }
 
 export interface PdpmMonitoringCheck extends MonitoringCheckBase {
@@ -183,6 +190,7 @@ export interface CarePlanFilter extends PatientFilterBase {
   descriptions: string[];
   conditions?: CarePlanCondition[];
   operator?: FilterOperator; // defaults to 'or'
+  lookback?: AssessmentResponseLookback; // absent means no limit
 }
 
 export interface CarePlanMonitoringCheck extends MonitoringCheckBase {
@@ -274,8 +282,8 @@ export type AssessmentResponseAggregateOperator = typeof ASSESSMENT_RESPONSE_AGG
 // Control types with no number to add, so a sum cannot include them.
 export const ASSESSMENT_RESPONSE_NON_SUMMABLE_CONTROL_TYPES = ['txt', 'mtxt', 'bdy', 'gbdy'] as const;
 
-// How far back an assessment may be and still answer a condition. Absent means
-// no limit, which in practice is the mirror's own 12-month window.
+// The time window shared by every filter (except census) and every check: how far back a
+// row's start date may be and still count. Absent means no limit, i.e. the mirror's own window.
 export const ASSESSMENT_RESPONSE_LOOKBACK_UNITS = ['day', 'week', 'month'] as const;
 export type AssessmentResponseLookbackUnit = typeof ASSESSMENT_RESPONSE_LOOKBACK_UNITS[number];
 // Caps `lookback.value` per unit, so the longest window any unit can express is one year.
