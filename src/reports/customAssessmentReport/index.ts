@@ -21,15 +21,30 @@ export type FilterType = typeof FILTER_TYPES[number];
 export const MONITORING_CHECK_TYPES = ['order', 'medication', 'diagnosis', 'payer', 'pdpm', 'carePlan', 'assessment', 'assessmentResponse'] as const;
 export type MonitoringCheckType = typeof MONITORING_CHECK_TYPES[number];
 
+// Time window: only rows whose start date falls inside it count. Absent means no limit,
+// i.e. the mirror's own window. Every filter except census and every check can carry one.
+export const LOOKBACK_UNITS = ['day', 'week', 'month'] as const;
+export type LookbackUnit = typeof LOOKBACK_UNITS[number];
+// Caps `value` per unit, so the longest window any unit can express is one year.
+export const LOOKBACK_MAX_BY_UNIT: Record<LookbackUnit, number> = { day: 365, week: 52, month: 12 };
+
+export interface Lookback {
+  value: number; // whole number of `unit`s, at least 1
+  unit: LookbackUnit;
+}
+
 interface PatientFilterBase {
   id: string;
 }
 
-// Every check takes an optional `lookback`: only rows whose start date is inside it count.
+interface WindowedPatientFilterBase extends PatientFilterBase {
+  lookback?: Lookback;
+}
+
 interface MonitoringCheckBase {
   id: string;
   label: string;
-  lookback?: AssessmentResponseLookback;
+  lookback?: Lookback;
 }
 
 // ---------------------------------------------------------------------------
@@ -53,11 +68,10 @@ export interface MedicationEntry {
 
 // A filter without `entries` (every filter saved before them) reads as one row per
 // category with no medication. With `entries`, `categories` is empty. Rows combine with OR.
-export interface MedicationCategoryFilter extends PatientFilterBase {
+export interface MedicationCategoryFilter extends WindowedPatientFilterBase {
   type: 'medicationCategory';
   categories: string[];
   entries?: MedicationEntry[];
-  lookback?: AssessmentResponseLookback; // absent means no limit
 }
 
 export interface MedicationMonitoringCheck extends MonitoringCheckBase {
@@ -82,11 +96,10 @@ export interface OrderCondition {
 
 // A block without `conditions` (every block saved before them) reads as `description` rows
 // over `descriptions`. With `conditions`, `descriptions` is empty. Rows combine with OR.
-export interface OrderFilter extends PatientFilterBase {
+export interface OrderFilter extends WindowedPatientFilterBase {
   type: 'order';
   descriptions: string[];
   conditions?: OrderCondition[];
-  lookback?: AssessmentResponseLookback; // absent means no limit
 }
 
 export interface OrderMonitoringCheck extends MonitoringCheckBase {
@@ -99,10 +112,9 @@ export interface OrderMonitoringCheck extends MonitoringCheckBase {
 // Diagnosis
 // ---------------------------------------------------------------------------
 
-export interface DiagnosisFilter extends PatientFilterBase {
+export interface DiagnosisFilter extends WindowedPatientFilterBase {
   type: 'diagnosis';
   icdCodes: string[];
-  lookback?: AssessmentResponseLookback; // absent means no limit
 }
 
 export interface DiagnosisMonitoringCheck extends MonitoringCheckBase {
@@ -126,10 +138,9 @@ export interface PayerEntry {
   payerId?: number;
 }
 
-export interface PayerFilter extends PatientFilterBase {
+export interface PayerFilter extends WindowedPatientFilterBase {
   type: 'payer';
   entries: PayerEntry[];
-  lookback?: AssessmentResponseLookback; // absent means no limit
 }
 
 export interface PayerMonitoringCheck extends MonitoringCheckBase {
@@ -158,10 +169,9 @@ export interface PdpmEntry {
   group: string;
 }
 
-export interface PdpmFilter extends PatientFilterBase {
+export interface PdpmFilter extends WindowedPatientFilterBase {
   type: 'pdpm';
   entries: PdpmEntry[];
-  lookback?: AssessmentResponseLookback; // absent means no limit
 }
 
 export interface PdpmMonitoringCheck extends MonitoringCheckBase {
@@ -185,12 +195,11 @@ export interface CarePlanCondition {
 
 // A block without `conditions` (every block saved before levels existed) reads as one
 // `need` row over `descriptions`. With `conditions`, `descriptions` is empty.
-export interface CarePlanFilter extends PatientFilterBase {
+export interface CarePlanFilter extends WindowedPatientFilterBase {
   type: 'carePlan';
   descriptions: string[];
   conditions?: CarePlanCondition[];
   operator?: FilterOperator; // defaults to 'or'
-  lookback?: AssessmentResponseLookback; // absent means no limit
 }
 
 export interface CarePlanMonitoringCheck extends MonitoringCheckBase {
@@ -218,12 +227,10 @@ export type AssessmentColumnMode = typeof ASSESSMENT_COLUMN_MODES[number];
 export const ASSESSMENT_RECENT_COUNT_MAX = 6;
 
 // Presence filter: the patient has at least one assessment of a listed type.
-// `lookback` reuses the assessment-response window shape, declared further down.
-export interface AssessmentFilter extends PatientFilterBase {
+export interface AssessmentFilter extends WindowedPatientFilterBase {
   type: 'assessment';
   descriptions: string[];
   completedOnly?: boolean;
-  lookback?: AssessmentResponseLookback;
 }
 
 export interface AssessmentMonitoringCheck extends MonitoringCheckBase {
@@ -282,19 +289,6 @@ export type AssessmentResponseAggregateOperator = typeof ASSESSMENT_RESPONSE_AGG
 // Control types with no number to add, so a sum cannot include them.
 export const ASSESSMENT_RESPONSE_NON_SUMMABLE_CONTROL_TYPES = ['txt', 'mtxt', 'bdy', 'gbdy'] as const;
 
-// The time window shared by every filter (except census) and every check: how far back a
-// row's start date may be and still count. Absent means no limit, i.e. the mirror's own window.
-export const ASSESSMENT_RESPONSE_LOOKBACK_UNITS = ['day', 'week', 'month'] as const;
-export type AssessmentResponseLookbackUnit = typeof ASSESSMENT_RESPONSE_LOOKBACK_UNITS[number];
-// Caps `lookback.value` per unit, so the longest window any unit can express is one year.
-export const ASSESSMENT_RESPONSE_LOOKBACK_MAX_BY_UNIT: Record<AssessmentResponseLookbackUnit, number> =
-  { day: 365, week: 52, month: 12 };
-
-export interface AssessmentResponseLookback {
-  value: number; // whole number of `unit`s, at least 1
-  unit: AssessmentResponseLookbackUnit;
-}
-
 // Input ceilings the editor and the server both enforce.
 export const ASSESSMENT_RESPONSE_MAX_ASSESSMENT_NAMES = 25;
 export const ASSESSMENT_RESPONSE_MAX_CONDITIONS = 25;
@@ -316,14 +310,13 @@ export interface AssessmentResponseAggregate {
   value: number;
 }
 
-export interface AssessmentResponseFilter extends PatientFilterBase {
+export interface AssessmentResponseFilter extends WindowedPatientFilterBase {
   type: 'assessmentResponse';
   assessmentNames: string[]; // PCC picker names, mirrored in `dr_as_std_assessment.description`
   conditions: AssessmentResponseCondition[];
   operator: AssessmentResponseOperator; // across conditions; ignored when `aggregate` is set
   aggregate?: AssessmentResponseAggregate; // sum mode: conditions carry only questions, the total is compared
   completedOnly?: boolean; // only assessments with status Complete
-  lookback?: AssessmentResponseLookback; // absent means no limit
 }
 
 // ---------------------------------------------------------------------------
