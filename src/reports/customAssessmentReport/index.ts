@@ -21,13 +21,27 @@ export type FilterType = typeof FILTER_TYPES[number];
 export const MONITORING_CHECK_TYPES = ['order', 'medication', 'diagnosis', 'payer', 'pdpm', 'carePlan', 'assessment', 'assessmentResponse'] as const;
 export type MonitoringCheckType = typeof MONITORING_CHECK_TYPES[number];
 
+// Time window: only rows whose start date falls inside it count. Absent means no limit,
+// i.e. the mirror's own window. Every filter and check carries one; census ignores it.
+export const LOOKBACK_UNITS = ['day', 'week', 'month'] as const;
+export type LookbackUnit = typeof LOOKBACK_UNITS[number];
+// Caps `value` per unit, so the longest window any unit can express is one year.
+export const LOOKBACK_MAX_BY_UNIT: Record<LookbackUnit, number> = { day: 365, week: 52, month: 12 };
+
+export interface Lookback {
+  value: number; // whole number of `unit`s, at least 1
+  unit: LookbackUnit;
+}
+
 interface PatientFilterBase {
   id: string;
+  lookback?: Lookback;
 }
 
 interface MonitoringCheckBase {
   id: string;
   label: string;
+  lookback?: Lookback;
 }
 
 // ---------------------------------------------------------------------------
@@ -210,12 +224,10 @@ export type AssessmentColumnMode = typeof ASSESSMENT_COLUMN_MODES[number];
 export const ASSESSMENT_RECENT_COUNT_MAX = 6;
 
 // Presence filter: the patient has at least one assessment of a listed type.
-// `lookback` reuses the assessment-response window shape, declared further down.
 export interface AssessmentFilter extends PatientFilterBase {
   type: 'assessment';
   descriptions: string[];
   completedOnly?: boolean;
-  lookback?: AssessmentResponseLookback;
 }
 
 export interface AssessmentMonitoringCheck extends MonitoringCheckBase {
@@ -274,19 +286,6 @@ export type AssessmentResponseAggregateOperator = typeof ASSESSMENT_RESPONSE_AGG
 // Control types with no number to add, so a sum cannot include them.
 export const ASSESSMENT_RESPONSE_NON_SUMMABLE_CONTROL_TYPES = ['txt', 'mtxt', 'bdy', 'gbdy'] as const;
 
-// How far back an assessment may be and still answer a condition. Absent means
-// no limit, which in practice is the mirror's own 12-month window.
-export const ASSESSMENT_RESPONSE_LOOKBACK_UNITS = ['day', 'week', 'month'] as const;
-export type AssessmentResponseLookbackUnit = typeof ASSESSMENT_RESPONSE_LOOKBACK_UNITS[number];
-// Caps `lookback.value` per unit, so the longest window any unit can express is one year.
-export const ASSESSMENT_RESPONSE_LOOKBACK_MAX_BY_UNIT: Record<AssessmentResponseLookbackUnit, number> =
-  { day: 365, week: 52, month: 12 };
-
-export interface AssessmentResponseLookback {
-  value: number; // whole number of `unit`s, at least 1
-  unit: AssessmentResponseLookbackUnit;
-}
-
 // Input ceilings the editor and the server both enforce.
 export const ASSESSMENT_RESPONSE_MAX_ASSESSMENT_NAMES = 25;
 export const ASSESSMENT_RESPONSE_MAX_CONDITIONS = 25;
@@ -315,7 +314,6 @@ export interface AssessmentResponseFilter extends PatientFilterBase {
   operator: AssessmentResponseOperator; // across conditions; ignored when `aggregate` is set
   aggregate?: AssessmentResponseAggregate; // sum mode: conditions carry only questions, the total is compared
   completedOnly?: boolean; // only assessments with status Complete
-  lookback?: AssessmentResponseLookback; // absent means no limit
 }
 
 // ---------------------------------------------------------------------------
