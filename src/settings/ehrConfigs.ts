@@ -20,7 +20,8 @@ export interface BaseEhrConfig {
 
   // SNF user fields
   snfAccountName: string;
-  snfAccountId: string;
+  /** number in every ehr_config doc; half of the unique {name, config.snfAccountId} index */
+  snfAccountId: number;
 
   // Credentials
   accountId: string;
@@ -36,9 +37,11 @@ export interface BaseEhrConfig {
 export interface EpicEhrConfig extends BaseEhrConfig {
   refreshListButtonId?: string;
   requestType: string;
-  reportType: string;
+  /** mixed in the DB: a single string on some sites, a list on others */
+  reportType: string | string[];
   markAsUnReadId: string;
-  listFrameButtonsBarSelector?: string;
+  /** explicitly null on some sites, so null is meaningful and not "missing" */
+  listFrameButtonsBarSelector?: string | null;
   responseIsFromHospital_sentFromStrings?: string[];
   responseIsFromHospital_sentToStrings?: string[];
   responseIsFromSite_sentFromStrings?: string[];
