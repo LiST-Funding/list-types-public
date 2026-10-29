@@ -15,10 +15,10 @@
 export const FILTER_OPERATORS = ['and', 'or'] as const;
 export type FilterOperator = typeof FILTER_OPERATORS[number];
 
-export const FILTER_TYPES = ['census', 'medicationCategory', 'order', 'diagnosis', 'payer', 'pdpm', 'carePlan', 'assessment', 'assessmentResponse'] as const;
+export const FILTER_TYPES = ['census', 'medicationCategory', 'order', 'diagnosis', 'payer', 'pdpm', 'carePlan', 'assessment', 'assessmentResponse', 'advancedDirective'] as const;
 export type FilterType = typeof FILTER_TYPES[number];
 
-export const MONITORING_CHECK_TYPES = ['order', 'medication', 'diagnosis', 'payer', 'pdpm', 'carePlan', 'assessment', 'assessmentResponse'] as const;
+export const MONITORING_CHECK_TYPES = ['order', 'medication', 'diagnosis', 'payer', 'pdpm', 'carePlan', 'assessment', 'assessmentResponse', 'advancedDirective'] as const;
 export type MonitoringCheckType = typeof MONITORING_CHECK_TYPES[number];
 
 // Time window: only rows whose start date falls inside it count. Absent means no limit,
@@ -144,6 +144,59 @@ export interface PayerMonitoringCheck extends MonitoringCheckBase {
   type: 'payer';
   mode: PayerCheckMode;
   entries?: PayerEntry[];
+}
+
+// ---------------------------------------------------------------------------
+// Advanced directive
+// ---------------------------------------------------------------------------
+
+// The keys dr_sync writes to `dr_pho_phys_order.snf_normalized_directives`, in picker order.
+// 'CONFORT_ONLY' is the stored spelling.
+export const ADVANCED_DIRECTIVES = [
+  'FULL_CODE', 'CPR', 'DNR', 'INTUBATE', 'DNI', 'DNV', 'DNH', 'HOSPICE', 'CONFORT_ONLY',
+  'NURSE_MAY_PRONOUNCE', 'HCP', 'TRANSFER_ACUTE_ONLY', 'NO_TRANSFER', 'NO_ARTIFICIAL_NUTRITION',
+  'NO_ARTIFICIAL_HYDRATION', 'NO_NON_INVASIVE_VENTILATION', 'NO_DIALYSIS', 'NO_BLOOD_TRANSFUSION',
+] as const;
+export type AdvancedDirective = typeof ADVANCED_DIRECTIVES[number];
+
+export const ADVANCED_DIRECTIVE_LABELS: Record<AdvancedDirective, string> = {
+  FULL_CODE: 'Full Code',
+  CPR: 'CPR',
+  DNR: 'DNR',
+  INTUBATE: 'Intubate',
+  DNI: 'DNI',
+  DNV: 'DNV',
+  DNH: 'DNH',
+  HOSPICE: 'Hospice',
+  CONFORT_ONLY: 'Comfort Measures Only',
+  NURSE_MAY_PRONOUNCE: 'Nurse May Pronounce',
+  HCP: 'Health Care Proxy',
+  TRANSFER_ACUTE_ONLY: 'Transfer Acute Only',
+  NO_TRANSFER: 'No Transfer',
+  NO_ARTIFICIAL_NUTRITION: 'No Artificial Nutrition',
+  NO_ARTIFICIAL_HYDRATION: 'No Artificial Hydration',
+  NO_NON_INVASIVE_VENTILATION: 'No Non-Invasive Ventilation',
+  NO_DIALYSIS: 'No Dialysis',
+  NO_BLOOD_TRANSFUSION: 'No Blood Transfusion',
+};
+
+export interface AdvancedDirectiveEntry {
+  directive: AdvancedDirective;
+}
+
+// A patient matches when an active order carries any row's directive. `operator` joins the rows:
+// absent reads as 'or', and only 'or' is built ('and' is reserved).
+export interface AdvancedDirectiveFilter extends PatientFilterBase {
+  type: 'advancedDirective';
+  entries: AdvancedDirectiveEntry[];
+  operator?: FilterOperator;
+}
+
+// No entries: the cell shows the patient's directives without color. `operator` as on the filter.
+export interface AdvancedDirectiveMonitoringCheck extends MonitoringCheckBase {
+  type: 'advancedDirective';
+  entries?: AdvancedDirectiveEntry[];
+  operator?: FilterOperator;
 }
 
 // ---------------------------------------------------------------------------
@@ -329,7 +382,8 @@ export type PatientFilter =
   | PdpmFilter
   | CarePlanFilter
   | AssessmentFilter
-  | AssessmentResponseFilter;
+  | AssessmentResponseFilter
+  | AdvancedDirectiveFilter;
 
 export type MonitoringCheck =
   | OrderMonitoringCheck
@@ -339,7 +393,8 @@ export type MonitoringCheck =
   | PdpmMonitoringCheck
   | CarePlanMonitoringCheck
   | AssessmentMonitoringCheck
-  | AssessmentResponseMonitoringCheck;
+  | AssessmentResponseMonitoringCheck
+  | AdvancedDirectiveMonitoringCheck;
 
 export interface PatientFilters {
   filters: PatientFilter[];
