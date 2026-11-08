@@ -89,6 +89,8 @@ export type OrderSearchField = typeof ORDER_SEARCH_FIELDS[number];
 export interface OrderCondition {
   searchIn: OrderSearchField;
   text: string;
+  // Description only: match orders made from this PCC template (`std_order_id`); `text` is its name.
+  templateId?: number;
 }
 
 // A block without `conditions` (every block saved before them) reads as `description` rows
