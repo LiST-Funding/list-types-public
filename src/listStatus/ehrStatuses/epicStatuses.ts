@@ -6,7 +6,7 @@ export   const EPIC_EHR_STATUS: StatusesMap = {
     [ListStatus.Received]: [],
     [ListStatus.Interested]: ["Considering"],
     [ListStatus.Declined]: ["Declined"],
-    [ListStatus.New]: [],
+    [ListStatus.New]: ["Pending"],
   }
 
 export   const EPIC_HOSPITAL_STATUS: StatusesMap = {
