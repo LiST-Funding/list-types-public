@@ -3,4 +3,5 @@ export * from './facility-assignment';
 export * from './facility-registry';
 export * as credentials from './credentials';
 export * as ehrConfigs from './ehrConfigs';
+export * from './ehrRegistry';
 export * from './region';
