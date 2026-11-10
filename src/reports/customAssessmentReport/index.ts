@@ -63,17 +63,24 @@ export interface MedicationEntry {
   medication?: string;
 }
 
+// Keeps matched orders by their PRN ("as needed") schedules. Absent reads as 'all'.
+// An order with both a PRN and a non-PRN schedule passes 'prnOnly' and 'notPrn'.
+export const MEDICATION_PRN_MODES = ['all', 'prnOnly', 'notPrn'] as const;
+export type MedicationPrnMode = typeof MEDICATION_PRN_MODES[number];
+
 // A filter without `entries` (every filter saved before them) reads as one row per
 // category with no medication. With `entries`, `categories` is empty. Rows combine with OR.
 export interface MedicationCategoryFilter extends PatientFilterBase {
   type: 'medicationCategory';
   categories: string[];
   entries?: MedicationEntry[];
+  prnMode?: MedicationPrnMode;
 }
 
 export interface MedicationMonitoringCheck extends MonitoringCheckBase {
   type: 'medication';
   entries: MedicationEntry[];
+  prnMode?: MedicationPrnMode;
 }
 
 // ---------------------------------------------------------------------------
