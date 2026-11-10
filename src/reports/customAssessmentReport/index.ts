@@ -84,12 +84,11 @@ export interface MedicationMonitoringCheck extends MonitoringCheckBase {
 export const ORDER_SEARCH_FIELDS = ['description', 'directions', 'diet'] as const;
 export type OrderSearchField = typeof ORDER_SEARCH_FIELDS[number];
 
-// One row of an order block: which order text to search and the text to match
-// (quoted = contains the phrase, unquoted = contains all the words).
+// One row of an order block. Without `templateId`, `text` is matched (quoted = contains the phrase, unquoted = contains
+// all the words). With `templateId` (description only), orders made from that PCC template (`std_order_id`) match; `text` is only its name.
 export interface OrderCondition {
   searchIn: OrderSearchField;
   text: string;
-  // Description only: match orders made from this PCC template (`std_order_id`); `text` is its name.
   templateId?: number;
 }
 
