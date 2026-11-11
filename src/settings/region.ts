@@ -19,6 +19,8 @@ export interface ExternalAccountConfig {
 export interface RegionNewVersionPages {
   jobInfo?: boolean;
   referralResponseReport?: boolean;
+  /** Opt-in: true shows the new Hospital Tracker page; absent or false keeps the old one. */
+  hospitalTracker?: boolean;
 }
 
 /** Defines which system srcTypes are enabled for the referral response feature */
