@@ -12,5 +12,6 @@ export enum EhrType {
   Aida = "Aida",
   Ensocare = "EnsoCare",
   EnsocareVA = "EnsoCare VA",
-  EpicTanner = "Epic Tanner"
+  EpicTanner = "Epic Tanner",
+  Repisodic = "Repisodic"
 }
