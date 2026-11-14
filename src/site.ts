@@ -98,23 +98,37 @@ export interface SnfPatientSite {
   userStatusDate: Date;
   userStatusBy: string;
   userStatusByUsername: string;
+  userStatusSnapshot?: string;
+  userHospitalStatus?: string;
+  userHospitalStatusDate?: Date;
+  userHospitalStatusBy?: string;
+  userHospitalStatusByUsername?: string;
+  userHospitalStatusSnapshot?: string;
 
   userStatusHistory: {
     fromStatus: string;
     fromUserStatus: string;
     status: string;
-    byUser: string;
-    byUsername: string;
+    byUser?: string;
+    byUsername?: string;
     date: Date;
+    side?: 'snf' | 'hospital';
+    automated?: boolean;
+    fromUserStatusByUsername?: string;
+    fromUserStatusDate?: Date;
+    toStatus?: string;
   }[];
   firstPostingDate: Date;
   isArchived?: boolean;
   isArchivedOnDate?: Date;
   isArchivedByUser?: {
-    isArchived: true,
-    userId: string;
-    userName: string;
+    isArchived: boolean;
+    userId?: string;
+    userName?: string;
     date: Date;
+    siteStatusSnapshot?: string;
+    hospitalStatusSnapshot?: string;
+    automated?: boolean;
   };
   lastSeenOnEhrDate?: Date;
 
