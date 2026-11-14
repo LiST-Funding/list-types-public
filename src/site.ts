@@ -129,6 +129,9 @@ export interface SnfPatientSite {
     siteStatusSnapshot?: string;
     hospitalStatusSnapshot?: string;
     automated?: boolean;
+    archivedDate?: Date;
+    archivedUserId?: string;
+    archivedUserName?: string;
   };
   lastSeenOnEhrDate?: Date;
 
