@@ -3,6 +3,7 @@ export const ROLE_NUMBER_TRIPLE_CHECK = 132; // MDS - triple check
 export const ROLE_NUMBER_SOCIAL_WORKER = 133; // Social Services
 export const ROLE_NUMBER_MDS_REGIONAL = 134; // MDS Regional
 export const ROLE_NUMBER_MDS_NURSE = 135; // MDS Nurse
+export const ROLE_NUMBER_MDS_COORDINATOR = 136; // MDS Coordinator (MDS Nurse + PDPM + Pre-Authorizations)
 export const ROLE_NUMBER_CI = 141; // CI/Liason (Full Access)
 export const ROLE_NUMBER_CLINICAL_CI = 142; // Clinical + Admissions (Clinical and CI merged)
 export const ROLE_NUMBER_CLINICAL = 144; // Clinical
