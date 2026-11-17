@@ -56,6 +56,10 @@
       "types": "./dist/reports/referralResponseReport/index.d.ts",
       "default": "./dist/reports/referralResponseReport/index.js"
     },
+    "./reports/referralsSummaryClinical": {
+      "types": "./dist/reports/referralsSummaryClinical/index.d.ts",
+      "default": "./dist/reports/referralsSummaryClinical/index.js"
+    },
     "./settings": {
       "types": "./dist/settings/index.d.ts",
       "default": "./dist/settings/index.js"
@@ -132,6 +136,9 @@
       "reports/referralResponseReport": [
         "./dist/reports/referralResponseReport/index.d.ts"
       ],
+      "reports/referralsSummaryClinical": [
+        "./dist/reports/referralsSummaryClinical/index.d.ts"
+      ],
       "settings": [
         "./dist/settings/index.d.ts"
       ],
@@ -167,6 +174,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "check:internalStatusCodes": "ts-node src/tasks/internalStatusCodes/__tests__/registry.check.ts",
+    "check:referralsSummaryClinical": "tsc --noEmit --strict --target ES2020 --module commonjs --moduleResolution node --skipLibCheck src/reports/referralsSummaryClinical/__tests__/contract.check.ts",
     "verify:registry": "node -e \"require('./dist/tasks/internalStatusCodes/index.js')\"",
     "generate-exports": "node scripts/generate-exports.mjs",
     "build": "npm run generate-exports && tsc && npm run verify:registry",
