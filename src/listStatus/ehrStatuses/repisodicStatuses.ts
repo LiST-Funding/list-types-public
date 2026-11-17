@@ -4,7 +4,7 @@ import { ListStatus, StatusesMap } from "../listStatus"
 export   const REPISODIC_EHR_STATUS: StatusesMap = {
     [ListStatus.Accepted]: ["ACCEPTED"],
     [ListStatus.Received]: ["READ"],
-    [ListStatus.Interested]: [],
+    [ListStatus.Interested]: ["CONSIDERING"],
     [ListStatus.Declined]: ["DECLINED"],
     [ListStatus.New]: [],
   }
