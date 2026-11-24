@@ -284,6 +284,14 @@ export const ASSESSMENT_COLUMN_MODES = ['period', 'recent'] as const;
 export type AssessmentColumnMode = typeof ASSESSMENT_COLUMN_MODES[number];
 export const ASSESSMENT_RECENT_COUNT_MAX = 6;
 
+// In PCC every MDS is the one assessment type of this name; `mdsTypes` narrows a check's rows of it.
+export const MDS_ASSESSMENT_NAME = 'MDS 3.0';
+export const MDS_TYPES = [
+  'entry', 'admission', 'fiveDay', 'quarterly', 'annual', 'significantChange', 'significantCorrection',
+  'interimPayment', 'endOfPps', 'discharge',
+] as const;
+export type MdsType = typeof MDS_TYPES[number];
+
 // Presence filter: the patient has at least one assessment of a listed type.
 export interface AssessmentFilter extends PatientFilterBase {
   type: 'assessment';
@@ -300,6 +308,7 @@ export interface AssessmentMonitoringCheck extends MonitoringCheckBase {
   yearMode?: YearMode;
   recentCount?: number; // recent mode only, 1..ASSESSMENT_RECENT_COUNT_MAX, required there
   validityPeriod?: ValidityPeriod; // both modes: an assessment older than this reads as outside validity
+  mdsTypes?: MdsType[]; // only with MDS_ASSESSMENT_NAME in `descriptions`; absent = every MDS
 }
 
 // ---------------------------------------------------------------------------
