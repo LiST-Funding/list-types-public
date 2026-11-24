@@ -287,7 +287,7 @@ export const ASSESSMENT_RECENT_COUNT_MAX = 6;
 // In PCC every MDS is the one assessment type of this name; `mdsTypes` narrows a check's rows of it.
 export const MDS_ASSESSMENT_NAME = 'MDS 3.0';
 export const MDS_TYPES = [
-  'entry', 'admission', 'fiveDay', 'quarterly', 'annual', 'significantChange', 'significantCorrection',
+  'tracking', 'admission', 'fiveDay', 'quarterly', 'annual', 'significantChange', 'significantCorrection',
   'interimPayment', 'endOfPps', 'discharge',
 ] as const;
 export type MdsType = typeof MDS_TYPES[number];
