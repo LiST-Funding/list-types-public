@@ -291,6 +291,12 @@ export const MDS_TYPES = [
   'interimPayment', 'endOfPps', 'discharge',
 ] as const;
 export type MdsType = typeof MDS_TYPES[number];
+// One name per type for the editor and the report cells; no slash, since the cell joins types with " / ".
+export const MDS_TYPE_LABELS: Record<MdsType, string> = {
+  tracking: 'Entry or Death', admission: 'Admission', fiveDay: '5-Day', quarterly: 'Quarterly', annual: 'Annual',
+  significantChange: 'Significant change', significantCorrection: 'Significant correction', interimPayment: 'IPA',
+  endOfPps: 'End of PPS', discharge: 'Discharge',
+};
 
 // Presence filter: the patient has at least one assessment of a listed type.
 export interface AssessmentFilter extends PatientFilterBase {
