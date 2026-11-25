@@ -58,6 +58,8 @@ export type ClinicalFieldSection = 'findings' | 'patientDetails';
 export interface ClinicalFieldOption {
   value: string;
   label: string;
+  // Secondary text under the label, e.g. a high-cost generic's brands.
+  description?: string;
 }
 
 export interface ClinicalCatalogField {
