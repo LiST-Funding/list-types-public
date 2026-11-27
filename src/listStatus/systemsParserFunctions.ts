@@ -6,6 +6,7 @@ import { ENSOCARE_EHR_STATUS, ENSOCARE_HOSPITAL_STATUS } from "./ehrStatuses/ens
 import { EPIC_EHR_STATUS, EPIC_HOSPITAL_STATUS } from "./ehrStatuses/epicStatuses";
 import { GENERAL_EHR_STATUS, GENERAL_HOSPITAL_STATUS } from "./ehrStatuses/generalStatuses";
 import { MEDITECH_EHR_STATUS, MEDITECH_HOSPITAL_STATUS } from "./ehrStatuses/meditechStatuses";
+import { MORCARE_EHR_STATUS, MORCARE_HOSPITAL_STATUS } from "./ehrStatuses/morcareStatuses";
 import { REPISODIC_EHR_STATUS, REPISODIC_HOSPITAL_STATUS } from "./ehrStatuses/repisodicStatuses";
 
 export const meditech = new SystemSpecificStatusParser(
@@ -47,4 +48,9 @@ export const epic = new SystemSpecificStatusParser(
 export const ensocare = new SystemSpecificStatusParser(
   ENSOCARE_EHR_STATUS,
   ENSOCARE_HOSPITAL_STATUS
+);
+
+export const morcare = new SystemSpecificStatusParser(
+  MORCARE_EHR_STATUS,
+  MORCARE_HOSPITAL_STATUS
 );
